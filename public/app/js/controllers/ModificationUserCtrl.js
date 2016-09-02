@@ -2,8 +2,8 @@
 
 angular.module( 'portailApp' )
     .controller( 'ModificationUserCtrl',
-                 [ '$scope', '$rootScope', '$state', 'toastr', 'current_user', 'currentUser', 'apps', 'APP_PATH',
-                   function( $scope, $rootScope, $state, toastr, current_user, currentUser, apps, APP_PATH ) {
+                 [ '$scope', '$rootScope', '$state', 'toastr', 'current_user', 'currentUser', 'APP_PATH',
+                   function( $scope, $rootScope, $state, toastr, current_user, currentUser, APP_PATH ) {
                        var dirty = false;
 
                        $scope.prefix = APP_PATH;
@@ -25,17 +25,12 @@ angular.module( 'portailApp' )
 
                        $scope.password = { old: '',
                                            new1: '',
-                                           new2: '',
-                                           changeable: false };
+                                           new2: '' };
 
                        $scope.mark_as_dirty = function() {
                            dirty = true;
                        };
 
-                       apps.query( false )
-                           .then( function( response ) {
-                               $scope.password.changeable = _.chain(response).find({application_id: 'TELESRV'}).isUndefined().value();
-                           } );
                        $scope.uploaded_avatar = null;
 
                        $rootScope.current_user.hide_email = $rootScope.current_user.profil_actif.profil_id === 'TUT' && !_( $rootScope.current_user.info.MailAdressePrincipal.match( /laclasse.com$/ ) ).isNull();
