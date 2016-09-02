@@ -133,12 +133,12 @@
       {
           "title": "Tutoriel pour préparer la rentrée sur l'ENT",
           "url": "http://ent-laclasse.blogs.laclasse.com/2016/06/28/principal-de-college-comment-preparer-la-rentree-sur-lent/",
-          "profils": [ "DIR" ]
+          "profils": [ "DIR", "ENS" ]
       },
       {
           "title": "Tutoriel tuile 'Panneau d'Administration'",
           "url": "http://ent-laclasse.blogs.laclasse.com/2016/07/08/administrer-son-etablissement/",
-          "profils": [ "DIR" ]
+          "profils": [ "DIR", "ENS" ]
       },
       {
           "title": "Tutoriel 'Administrer son blog'",
