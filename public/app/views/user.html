@@ -25,7 +25,7 @@
                             <input type="file" ng-file-select="onFileSelect($files)" >
 
                             <footer>
-                                <button ng:if="avatar.image"
+                                <button ng:disabled="!avatar.image"
                                         ng:click="upload_avatar()">Valider l'avatar</button>
                             </footer>
                         </div>
@@ -111,7 +111,7 @@
 
             </accordion-group>
 
-            <accordion-group data-is-open="groups[ 1 ].ouvert" ng:if="groups[ 1 ].enabled && password.changeable">
+            <accordion-group data-is-open="groups[ 1 ].ouvert" ng:if="groups[ 1 ].enabled">
                 <accordion-heading>
                     <span class="glyphicon" ng-class="{'glyphicon-chevron-down': groups[ 1 ].ouvert, 'glyphicon-chevron-right': !groups[ 1 ].ouvert}"></span> Mot de passe
                 </accordion-heading>

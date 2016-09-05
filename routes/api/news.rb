@@ -59,7 +59,7 @@ module Portail
 
                   { image: image,
                     link: URI.unescape( article.link.force_encoding( 'UTF-8' ).encode! ),
-                    pubDate: article.pubDate,
+                    pubDate: article.pubDate.iso8601,
                     title: URI.unescape( article.title.force_encoding( 'UTF-8' ).encode! ),
                     description: URI.unescape( description.force_encoding( 'UTF-8' ).encode! ) }
                 end
@@ -71,8 +71,8 @@ module Portail
             end
 
             json news
-                  .flatten
-                  .uniq { |article| article[:description] }
+                   .flatten
+                   .uniq { |article| article[:description] }
           end
         end
       end

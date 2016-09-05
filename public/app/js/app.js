@@ -7,7 +7,6 @@ angular.module( 'portailApp', [ 'ngResource',
                                 'as.sortable',
                                 'ui.checkbox',
                                 'ngTouch',
-                                'ngAnimate',
                                 'angularMoment',
                                 'ngColorPicker',
                                 'angular-carousel',
@@ -39,8 +38,8 @@ angular.module( 'portailApp', [ 'ngResource',
                                  url: '/',
                                  views: {
                                      'main': {
-                                         templateUrl: 'views/apps.html',
-                                         controller: 'DamierAppsCtrl'
+                                         templateUrl: 'views/tiles.html',
+                                         controller: 'TilesCtrl'
                                      }
                                  }
                                } )

@@ -53,22 +53,22 @@ namespace :preprocess_assets do
 
   desc 'Minify CSS using Sass'
   task css: :load_config do
-    STDERR.puts 'Sassification of vendor CSS'
-    uglified = Sass.compile( [ 'public/app/vendor/bootstrap/dist/css/bootstrap-theme.min.css',
-                               'public/app/vendor/ngAnimate/css/ng-animation.css',
-                               'public/app/vendor/angular-toastr/dist/angular-toastr.css',
-                               'public/app/vendor/laclasse-common-client/css/main.css',
-                               'public/app/vendor/laclasse-common-client/css/damier.css',
-                               'public/app/vendor/laclasse-common-client/css/floating-buttons.css',
-                               'public/app/vendor/laclasse-common-client/css/flippable.css',
-                               'public/app/vendor/laclasse-common-client/css/bootstrap-theme.css',
-                               'public/app/vendor/ng-color-picker/color-picker.css',
-                               'public/app/vendor/ng-sortable/dist/ng-sortable.css',
-                               'public/app/vendor/angular-loading-bar/build/loading-bar.css' ]
+    STDERR.puts 'Sassification of node_modules CSS'
+    uglified = Sass.compile( [ 'public/app/node_modules/bootstrap/dist/css/bootstrap-theme.min.css',
+                               # 'public/app/node_modules/ngAnimate/css/ng-animation.css',
+                               'public/app/node_modules/angular-toastr/dist/angular-toastr.css',
+                               'public/app/node_modules/laclasse-common-client/css/main.css',
+                               'public/app/node_modules/laclasse-common-client/css/damier.css',
+                               'public/app/node_modules/laclasse-common-client/css/floating-buttons.css',
+                               'public/app/node_modules/laclasse-common-client/css/flippable.css',
+                               'public/app/node_modules/laclasse-common-client/css/bootstrap-theme.css',
+                               'public/app/node_modules/ng-color-picker/color-picker.css',
+                               'public/app/node_modules/ng-sortable/dist/ng-sortable.css',
+                               'public/app/node_modules/angular-loading-bar/build/loading-bar.css' ]
                              .map { |fichier| File.read( fichier ) }.join,
                              syntax: :scss,
                              style: :compressed )
-    File.open( './public/app/vendor/vendor.min.css', 'w' )
+    File.open( './public/app/node_modules/node_modules.min.css', 'w' )
         .write( uglified )
 
     STDERR.puts 'Sassification of application CSS'
@@ -82,28 +82,28 @@ namespace :preprocess_assets do
 
   desc 'Minify JS using Uglifier'
   task js: :load_config do
-    STDERR.puts 'Uglification of vendor Javascript'
-    uglified, source_map = Uglify.those_files_with_map( [ 'public/app/vendor/underscore/underscore.js',
-                                                          'public/app/vendor/moment/moment.js',
-                                                          'public/app/vendor/moment/locale/fr.js',
-                                                          'public/app/vendor/angular/angular.js',
-                                                          'public/app/vendor/angular-i18n/angular-locale_fr-fr.js',
-                                                          'public/app/vendor/angular-resource/angular-resource.js',
-                                                          'public/app/vendor/angular-moment/angular-moment.js',
-                                                          'public/app/vendor/angular-touch/angular-touch.js',
-                                                          'public/app/vendor/angular-ui-router/release/angular-ui-router.js',
-                                                          'public/app/vendor/ng-sortable/dist/ng-sortable.js',
-                                                          'public/app/vendor/angular-bootstrap/ui-bootstrap-tpls.js',
-                                                          'public/app/vendor/angular-bootstrap-checkbox/angular-bootstrap-checkbox.js',
-                                                          'public/app/vendor/angular-animate/angular-animate.js',
-                                                          'public/app/vendor/ng-color-picker/color-picker.js',
-                                                          'public/app/vendor/angular-carousel/dist/angular-carousel.js',
-                                                          'public/app/vendor/angular-toastr/dist/angular-toastr.tpls.js',
-                                                          'public/app/vendor/ngFitText/src/ng-FitText.js',
-                                                          'public/app/vendor/angular-loading-bar/build/loading-bar.js' ] )
-    File.open( './public/app/vendor/vendor.min.js', 'w' )
+    STDERR.puts 'Uglification of node_modules Javascript'
+    uglified, source_map = Uglify.those_files_with_map( [ 'public/app/node_modules/underscore/underscore.js',
+                                                          'public/app/node_modules/moment/moment.js',
+                                                          'public/app/node_modules/moment/locale/fr.js',
+                                                          'public/app/node_modules/angular/angular.js',
+                                                          'public/app/node_modules/angular-i18n/angular-locale_fr-fr.js',
+                                                          'public/app/node_modules/angular-resource/angular-resource.js',
+                                                          'public/app/node_modules/angular-moment/angular-moment.js',
+                                                          'public/app/node_modules/angular-touch/angular-touch.js',
+                                                          'public/app/node_modules/angular-ui-router/release/angular-ui-router.js',
+                                                          'public/app/node_modules/ng-sortable/dist/ng-sortable.js',
+                                                          'public/app/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js',
+                                                          'public/app/node_modules/angular-bootstrap-checkbox/angular-bootstrap-checkbox.js',
+                                                          'public/app/node_modules/angular-animate/angular-animate.js',
+                                                          'public/app/node_modules/ng-color-picker/color-picker.js',
+                                                          'public/app/node_modules/angular-carousel/dist/angular-carousel.js',
+                                                          'public/app/node_modules/angular-toastr/dist/angular-toastr.tpls.js',
+                                                          'public/app/node_modules/ng-fittext/src/ng-FitText.js',
+                                                          'public/app/node_modules/angular-loading-bar/build/loading-bar.js' ] )
+    File.open( './public/app/node_modules/node_modules.min.js', 'w' )
         .write( uglified )
-    File.open( './public/app/vendor/vendor.min.js.map', 'w' )
+    File.open( './public/app/node_modules/node_modules.min.js.map', 'w' )
         .write( source_map )
 
     STDERR.puts 'Uglification of application Javascript'
