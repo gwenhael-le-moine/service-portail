@@ -33,7 +33,7 @@ angular.module( 'portailApp' )
 
                                        if ( item.no_image ) {
                                            if ( item.title == 'Publipostage' ) {
-                                               item.image =  APP_PATH + '/app/vendor/laclasse-common-client/images/11_publipostage.svg';
+                                               item.image =  APP_PATH + '/app/node_modules/laclasse-common-client/images/11_publipostage.svg';
                                            } else if ( !_($rootScope.current_user.profil_actif.etablissement_logo).isNull() ) {
                                                item.image = $rootScope.current_user.profil_actif.etablissement_logo;
                                            } else {

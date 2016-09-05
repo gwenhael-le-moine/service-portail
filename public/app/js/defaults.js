@@ -25,7 +25,7 @@ angular.module( 'portailApp' )
                              '#e8c254' ] )
     .factory( 'RANDOM_IMAGES', [ 'APP_PATH',
                                  function( APP_PATH ) {
-                                     return [ APP_PATH + '/app/vendor/laclasse-common-client/images/logolaclasse.svg',
-                                              APP_PATH + '/app/vendor/laclasse-common-client/images/random/20150116_102448.jpg',
-                                              APP_PATH + '/app/vendor/laclasse-common-client/images/random/20150204_152946.jpg' ];
+                                     return [ APP_PATH + '/app/node_modules/laclasse-common-client/images/logolaclasse.svg',
+                                              APP_PATH + '/app/node_modules/laclasse-common-client/images/random/20150116_102448.jpg',
+                                              APP_PATH + '/app/node_modules/laclasse-common-client/images/random/20150204_152946.jpg' ];
                                  } ] );

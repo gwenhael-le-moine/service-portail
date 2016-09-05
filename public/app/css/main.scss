@@ -86,7 +86,7 @@ body {
         }
     }
     .bouton-config-news {
-        background-image: url('../vendor/laclasse-common-client/images/icon_admin-outils-gris.svg');
+        background-image: url('../node_modules/laclasse-common-client/images/icon_admin-outils-gris.svg');
     }
     .header {
         height: 25%;
@@ -244,7 +244,7 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
     .floating-button.off {
-        background-image: url('../vendor/laclasse-common-client/images/icon_admin-outils-gris.svg');
+        background-image: url('../node_modules/laclasse-common-client/images/icon_admin-outils-gris.svg');
     }
     ul {
         height: 100%;
@@ -302,10 +302,10 @@ body {
                     background-size: 100% 100%;
                 }
                 .icone.parametrer {
-                    background-image: url('../vendor/laclasse-common-client/images/icon_admin-parametrer.svg');
+                    background-image: url('../node_modules/laclasse-common-client/images/icon_admin-parametrer.svg');
                 }
                 .icone.visualiser {
-                    background-image: url('../vendor/laclasse-common-client/images/icon_admin-viz.svg');
+                    background-image: url('../node_modules/laclasse-common-client/images/icon_admin-viz.svg');
                 }
             }
             .configure {
@@ -1043,16 +1043,16 @@ svg {
 
 .floating-button {
     &.on {
-        background-image: url('../vendor/laclasse-common-client/images/icon_admin-outils-blancs.svg');
+        background-image: url('../node_modules/laclasse-common-client/images/icon_admin-outils-blancs.svg');
     }
     &.save {
-        background-image: url('../vendor/laclasse-common-client/images/icon_admin-valider.svg');
+        background-image: url('../node_modules/laclasse-common-client/images/icon_admin-valider.svg');
     }
     &.cancel {
-        background-image: url('../vendor/laclasse-common-client/images/icon_admin-annuler.svg');
+        background-image: url('../node_modules/laclasse-common-client/images/icon_admin-annuler.svg');
     }
     &.add-app {
-        background-image: url('../vendor/laclasse-common-client/images/icon_admin-ajouter.svg');
+        background-image: url('../node_modules/laclasse-common-client/images/icon_admin-ajouter.svg');
     }
 }
 
