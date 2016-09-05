@@ -39,8 +39,8 @@ angular.module( 'portailApp', [ 'ngResource',
                                  url: '/',
                                  views: {
                                      'main': {
-                                         templateUrl: 'views/apps.html',
-                                         controller: 'DamierAppsCtrl'
+                                         templateUrl: 'views/tiles.html',
+                                         controller: 'TilesCtrl'
                                      }
                                  }
                                } )

@@ -1,20 +1,18 @@
 'use strict';
 
 angular.module( 'portailApp' )
-    .controller( 'DamierAppsCtrl',
+    .controller( 'TilesCtrl',
                  [ '$scope', '$rootScope', '$uibModal', '$log', '$q', '$http', '$window', 'current_user', 'apps', 'Apps', 'APP_PATH', 'CASES', 'COULEURS', 'log',
                    function( $scope, $rootScope, $uibModal, $log, $q, $http, $window, current_user, apps, Apps, APP_PATH, CASES, COULEURS, log ) {
                        $scope.prefix = APP_PATH;
-
+                       $scope.couleurs = COULEURS;
                        var apps_indexes_changed = false;
-
                        var sortable_callback = function( event ) {
                            apps_indexes_changed = true;
                            _($scope.cases).each( function( c, i ) {
                                c.index = i;
                            } );
                        };
-
                        $scope.sortable_options = {
                            accept: function( sourceItemHandleScope, destSortableScope ) {
                                return true;
@@ -28,8 +26,6 @@ angular.module( 'portailApp' )
                            clone: false,
                            allowDuplicates: false
                        };
-
-                       $scope.couleurs = COULEURS;
 
                        var tool_app = function( app ) {
                            app.configure = false;
@@ -162,13 +158,19 @@ angular.module( 'portailApp' )
                                        if ( save && c.app.dirty ) {
                                            if ( c.app.to_delete ) {
                                                promesses.push( c.app.$delete() );
+                                               delete c.app;
+
+                                               if ( $scope.cases.length > 16 ) {
+                                                   $scope.cases = $scope.cases.splice( _($scope.cases).findLastIndex( function(c) {return !_(c).has('app'); } ), 1 );
+                                               }
                                            } else {
                                                promesses.push( c.app.$update() );
+                                               c.app = tool_app( c.app );
                                            }
-                                           c.app = tool_app( c.app );
                                        }
                                    }
                                } );
+
 
                                $q.all( promesses ).then( retrieve_apps( true ) );
                            }
