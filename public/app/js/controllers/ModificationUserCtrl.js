@@ -126,6 +126,7 @@ angular.module( 'portailApp' )
                                    $scope.operation_on_avatar = false;
                                    $scope.uploaded_avatar = null;
                                    currentUser.force_refresh();
+                                   delete $scope.avatar;
                                });
                        };
 

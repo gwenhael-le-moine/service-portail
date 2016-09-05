@@ -25,7 +25,7 @@
                             <input type="file" ng-file-select="onFileSelect($files)" >
 
                             <footer>
-                                <button ng:if="avatar.image"
+                                <button ng:disabled="!avatar.image"
                                         ng:click="upload_avatar()">Valider l'avatar</button>
                             </footer>
                         </div>
