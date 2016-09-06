@@ -1,7 +1,6 @@
 GIT
   remote: https://github.com/laclasse-com/laclasse-common
-  revision: 0080e7829576332b1ebe06ad8839094b55b1bf76
-  branch: develop
+  revision: 074b0536c1cd3f1e898697f81a913c2846afcad2
   specs:
     laclasse-common (0.2.32)
       redis-rack (~> 1.5.0)
