@@ -23,9 +23,9 @@ module Portail
 
             stats = AnnuaireWrapper::Log.stats( data )
 
-            uai_erasme = '0699990Z'
-            stats['uai'].delete( uai_erasme )
-            stats['general']['uai'].reject! { |item| item['uai'] == uai_erasme }
+            # uai_erasme = '0699990Z'
+            # stats['uai'].delete( uai_erasme )
+            # stats['general']['uai'].reject! { |item| item['uai'] == uai_erasme }
 
             stats.to_json
           end
