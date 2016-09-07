@@ -1,77 +1,77 @@
 <div class="row trombinoscope">
     <div class="filters gris3">
         <button class="col-xs-6 col-sm-4 col-md-3 col-lg-2 btn btn-default retour pull-left regroupement"
-                data-ng-if="eleves"
-                data-ng-click="retour()">
+                ng:if="eleves"
+                ng:click="retour()">
             <i class="glyphicon glyphicon-arrow-left"></i> Retour à la liste des classes
         </button>
 
         <div class="pull-left">
-            <label data-ng-if="!eleves"><checkbox class="checkbox" data-ng-model="filters.regroupements_types.classes"></checkbox> Classes </label>
-            <label data-ng-if="!eleves"><checkbox class="checkbox" data-ng-model="filters.regroupements_types.groupes_eleves"></checkbox> Groupes </label>
+            <label ng:if="!eleves"><checkbox class="checkbox" ng:model="filters.regroupements_types.classes"></checkbox> Classes </label>
+            <label ng:if="!eleves"><checkbox class="checkbox" ng:model="filters.regroupements_types.groupes_eleves"></checkbox> Groupes </label>
         </div>
         <div class="pull-right hidden-xs">
             <label>Filtre :
                 <input class="gris1"
-                       data-ng-model="filters.text.regroupement"
-                       data-ng-if="!eleves" />
+                       ng:model="filters.text.regroupement"
+                       ng:if="!eleves" />
                 <input class="gris1"
-                       data-ng-model="filters.text.user"
-                       data-ng-if="eleves" />
+                       ng:model="filters.text.user"
+                       ng:if="eleves" />
             </label>
         </div>
     </div>
 
     <div class="damier gris4">
-        <div data-ng-repeat="regroupement in regroupements | filter:{ libelle: filters.text.regroupement } | orderBy:'type' | orderBy:'libelle'"
+        <div ng:repeat="regroupement in regroupements | filter:{ libelle: filters.text.regroupement } | orderBy:'type' | orderBy:'libelle'"
              class="col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case animate scale-fade-in regroupement"
-             data-ng-class-odd="{'vert': regroupement.type == 'classe', 'bleu': regroupement.type == 'groupe_eleve'}"
-             data-ng-class-even="{'vert-moins': regroupement.type == 'classe', 'bleu-moins': regroupement.type == 'groupe_eleve'}"
-             data-ng-if="!eleves && ( ( regroupement.type == 'classe' && filters.regroupements_types.classes ) || ( regroupement.type == 'groupe_eleve' && filters.regroupements_types.groupes_eleves ) )">
+             ng:class-odd="{'vert': regroupement.type == 'classe', 'bleu': regroupement.type == 'groupe_eleve'}"
+             ng:class-even="{'vert-moins': regroupement.type == 'classe', 'bleu-moins': regroupement.type == 'groupe_eleve'}"
+             ng:if="!eleves && ( ( regroupement.type == 'classe' && filters.regroupements_types.classes ) || ( regroupement.type == 'groupe_eleve' && filters.regroupements_types.groupes_eleves ) )">
             <a title="Voir le trombinoscope du regroupement {{regroupement.libelle}}"
-               data-ng-click="showElevesRegroupement( regroupement )"
-               data-ng-if="regroupement.libelle">
+               ng:click="showElevesRegroupement( regroupement )"
+               ng:if="regroupement.libelle">
                 <h1 class="classe-name">{{regroupement.libelle}}</h1>
                 <h3 class="college-name">{{regroupement.etablissement_nom}}</h3>
             </a>
 
-            <div class="actions" data-ng-if="regroupement.libelle && actions.regroupement.length > 0">
+            <div class="actions" ng:if="regroupement.libelle && actions.regroupement.length > 0">
                 <button class="btn btn-default"
-                        data-ng-repeat="action in actions.regroupement"
+                        ng:repeat="action in actions.regroupement"
                         data-uib-tooltip="{{action.tooltip}}"
-                        data-ng-click="action.do( regroupement )">
+                        ng:click="action.do( regroupement )">
                     <span class="glyphicon" aria-hidden="true"
-                          data-ng-class="'glyphicon-' + action.glyphicon"></span>
+                          ng:class="'glyphicon-' + action.glyphicon"></span>
                 </button>
             </div>
         </div>
 
         <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 petite case animate scale-fade-in regroupement eleves"
-             data-ng-class="{'vert': regroupement.type == 'classe', 'bleu': regroupement.type == 'groupe_eleve'}"
-             data-ng-if="eleves">
+             ng:class="{'vert': regroupement.type == 'classe', 'bleu': regroupement.type == 'groupe_eleve'}"
+             ng:if="eleves">
             <h1 class="classe-name">{{regroupement.libelle}}</h1>
             <h3 class="college-name">{{regroupement.etablissement_nom}}</h3>
         </div>
 
-        <div data-ng-repeat="eleve in eleves | filter:filters.text.user | orderBy:'nom'"
+        <div ng:repeat="eleve in eleves | filter:filters.text.user | orderBy:'nom'"
              class="col-xs-4 col-sm-4 col-md-3 col-lg-2 petite case animate scale-fade-in people"
-             data-ng-class-odd="'jaune'"
-             data-ng-class-even="'jaune-moins'"
-             data-ng-if="eleves">
+             ng:class-odd="'jaune'"
+             ng:class-even="'jaune-moins'"
+             ng:if="eleves">
             <img draggable="false"
                  class="avatar"
-                 data-ng-src="{{eleve.avatar}}"
-                 data-ng-if="eleve.avatar != ''"/>
+                 ng:src="{{eleve.avatar}}"
+                 ng:if="eleve.avatar != ''"/>
             <h1 class="trombi-last-name">{{eleve.nom}}</h1>
             <h3 class="trombi-first-name">{{eleve.prenom}}</h3>
 
-            <div class="actions" data-ng-if="eleve.nom && actions.people.length > 0">
+            <div class="actions" ng:if="eleve.nom && actions.people.length > 0">
                 <button class="btn btn-default"
-                        data-ng-repeat="action in actions.people"
+                        ng:repeat="action in actions.people"
                         data-uib-tooltip="{{action.tooltip}}"
-                        data-ng-click="action.do( eleve )">
+                        ng:click="action.do( eleve )">
                     <span class="glyphicon" aria-hidden="true"
-                          data-ng-class="'glyphicon-' + action.glyphicon"></span>
+                          ng:class="'glyphicon-' + action.glyphicon"></span>
                 </button>
             </div>
         </div>

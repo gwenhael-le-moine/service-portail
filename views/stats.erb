@@ -54,29 +54,29 @@
 
     <body>
 
-        <div class= "container" data-ng-app="statsApp" data-ng-controller="StatsCtrl" data-ng-strict-di>
+        <div class= "container" ng:app="statsApp" ng:controller="StatsCtrl" ng:strict-di>
             <h2>
-                <select data-ng-options="period_type.value as period_type.label for period_type in period_types.list"
-                        data-ng-model="period_types.selected"
-                        data-ng-change="reset_period()"></select>
-                <button class="btn btn-lg" data-ng-click="reset_period()"> ✕ </button>
-                <button class="btn btn-lg" data-ng-click="decr_period()"> < </button>
-                <button class="btn btn-lg" data-ng-click="incr_period()"> > </button>
+                <select ng:options="period_type.value as period_type.label for period_type in period_types.list"
+                        ng:model="period_types.selected"
+                        ng:change="reset_period()"></select>
+                <button class="btn btn-lg" ng:click="reset_period()"> ✕ </button>
+                <button class="btn btn-lg" ng:click="decr_period()"> < </button>
+                <button class="btn btn-lg" ng:click="incr_period()"> > </button>
                 {{ debut | amDateFormat:'dddd Do MMMM YYYY' }} - {{ fin | amDateFormat:'dddd Do MMMM YYYY' }}
             </h2>
 
             <div class="row">
                 <div class="col-md-6"
-                     data-ng-repeat="(metric, data) in stats.general"
-                     data-ng-if="data.bar_graph_data[0].values.length > 0">
+                     ng:repeat="(metric, data) in stats.general"
+                     ng:if="data.bar_graph_data[0].values.length > 0">
                     <div class="panel panel-default">
                         <div class="panel-heading">{{metric}}</div>
                         <div class="panel-body">
-                            <nvd3 data-ng-if="metric == 'time_of_day' || metric == 'week_day'"
+                            <nvd3 ng:if="metric == 'time_of_day' || metric == 'week_day'"
                                   data="data.bar_graph_data"
                                   options="multibarchart_options">
                             </nvd3>
-                            <nvd3 data-ng-if="metric != 'time_of_day' && metric != 'week_day'"
+                            <nvd3 ng:if="metric != 'time_of_day' && metric != 'week_day'"
                                   data="data.bar_graph_data"
                                   options="multibarhorizontalchart_options">
                             </nvd3>
@@ -86,21 +86,21 @@
             </div>
             <div class="row">
                 <uib-tabset class="col-md-12">
-                    <uib-tab data-ng-repeat="etablissement in stats.uai"
+                    <uib-tab ng:repeat="etablissement in stats.uai"
                              heading="{{etablissement.uai}}"
                              active="etablissement.active_tab">
 
                         <div class="col-md-6"
-                             data-ng-repeat="(metric, data) in etablissement"
-                             data-ng-if="data.bar_graph_data">
+                             ng:repeat="(metric, data) in etablissement"
+                             ng:if="data.bar_graph_data">
                             <div class="panel panel-default">
                                 <div class="panel-heading">{{metric}}</div>
                                 <div class="panel-body">
-                                    <nvd3 data-ng-if="metric == 'time_of_day' || metric == 'week_day'"
+                                    <nvd3 ng:if="metric == 'time_of_day' || metric == 'week_day'"
                                           data="data.bar_graph_data"
                                           options="multibarchart_options" >
                                     </nvd3>
-                                    <nvd3 data-ng-if="metric != 'time_of_day' && metric != 'week_day'"
+                                    <nvd3 ng:if="metric != 'time_of_day' && metric != 'week_day'"
                                           data="data.bar_graph_data"
                                           options="multibarhorizontalchart_options" >
                                     </nvd3>
@@ -114,21 +114,21 @@
 
             <div class="row">
                 <uib-tabset class="col-md-12">
-                    <uib-tab data-ng-repeat="item in stats.user_type"
+                    <uib-tab ng:repeat="item in stats.user_type"
                              heading="{{item.user_type}}"
                              active="item.active_tab">
 
                         <div class="col-md-6"
-                             data-ng-repeat="(metric, data) in item"
-                             data-ng-if="data.bar_graph_data">
+                             ng:repeat="(metric, data) in item"
+                             ng:if="data.bar_graph_data">
                             <div class="panel panel-default">
                                 <div class="panel-heading">{{metric}}</div>
                                 <div class="panel-body">
-                                    <nvd3 data-ng-if="metric == 'time_of_day'"
+                                    <nvd3 ng:if="metric == 'time_of_day'"
                                           data="data.bar_graph_data"
                                           options="multibarchart_options">
                                     </nvd3>
-                                    <nvd3 data-ng-if="metric != 'time_of_day'"
+                                    <nvd3 ng:if="metric != 'time_of_day'"
                                           data="data.bar_graph_data"
                                           options="multibarhorizontalchart_options">
                                     </nvd3>

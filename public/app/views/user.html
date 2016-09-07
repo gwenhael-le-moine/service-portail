@@ -10,7 +10,7 @@
 
             <accordion-group data-is-open="groups[ 0 ].ouvert" ng:if="groups[ 0 ].enabled">
                 <accordion-heading>
-                    <span class="glyphicon" ng-class="{'glyphicon-chevron-down': groups[ 0 ].ouvert, 'glyphicon-chevron-right': !groups[ 0 ].ouvert}"></span> Informations
+                    <span class="glyphicon" ng:class="{'glyphicon-chevron-down': groups[ 0 ].ouvert, 'glyphicon-chevron-right': !groups[ 0 ].ouvert}"></span> Informations
                 </accordion-heading>
                 <div class="row">
 
@@ -62,7 +62,7 @@
                               class="dropdown form-control date-naissance"
                               ng:if="current_user.editable">
                             <a uib-dropdown-toggle class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="" ng:cloak>{{current_user.date_naissance | amDateFormat: 'LL'}}</a>
-                            <div uib-dropdown-menu class="dropdown-menu" role="menu" ng-click="$event.stopImmediatePropagation()">
+                            <div uib-dropdown-menu class="dropdown-menu" role="menu" ng:click="$event.stopImmediatePropagation()">
                                 <datepicker datepicker-options="datepicker_options"
                                             ng:disabled="!current_user.editable"
                                             ng:change="mark_as_dirty()"
@@ -113,7 +113,7 @@
 
             <accordion-group data-is-open="groups[ 1 ].ouvert" ng:if="groups[ 1 ].enabled">
                 <accordion-heading>
-                    <span class="glyphicon" ng-class="{'glyphicon-chevron-down': groups[ 1 ].ouvert, 'glyphicon-chevron-right': !groups[ 1 ].ouvert}"></span> Mot de passe
+                    <span class="glyphicon" ng:class="{'glyphicon-chevron-down': groups[ 1 ].ouvert, 'glyphicon-chevron-right': !groups[ 1 ].ouvert}"></span> Mot de passe
                 </accordion-heading>
                 <div class="row">
                     <div class="form-group">
@@ -141,14 +141,14 @@
 
             <accordion-group data-is-open="groups[ 2 ].ouvert" ng:if="groups[ 2 ].enabled">
                 <accordion-heading>
-                    <span class="glyphicon" ng-class="{'glyphicon-chevron-down': groups[ 2 ].ouvert, 'glyphicon-chevron-right': !groups[ 2 ].ouvert}"></span> droits
+                    <span class="glyphicon" ng:class="{'glyphicon-chevron-down': groups[ 2 ].ouvert, 'glyphicon-chevron-right': !groups[ 2 ].ouvert}"></span> droits
                 </accordion-heading>
                 <p>The body of the accordion group grows to fit the contents</p>
             </accordion-group>
 
             <accordion-group data-is-open="groups[ 3 ].ouvert" ng:if="groups[ 3 ].enabled">
                 <accordion-heading>
-                    <span class="glyphicon" ng-class="{'glyphicon-chevron-down': groups[ 3 ].ouvert, 'glyphicon-chevron-right': !groups[ 3 ].ouvert}"></span> statistiques
+                    <span class="glyphicon" ng:class="{'glyphicon-chevron-down': groups[ 3 ].ouvert, 'glyphicon-chevron-right': !groups[ 3 ].ouvert}"></span> statistiques
                 </accordion-heading>
                 <p>The body of the accordion group grows to fit the contents</p>
             </accordion-group>

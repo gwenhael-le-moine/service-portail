@@ -1,10 +1,11 @@
 <span class="compteur-notification orange-brillant"
-      data-ng-if="case.app.notifications > 0" data-ng-cloak>{{case.app.notifications}}</span>
-<img draggable="false" class="icone" data-ng-src="{{prefix}}/{{case.app.icon}}"
-	data-ng-if="case.app.icon"/>
+      ng:if="case.app.notifications > 0"
+      ng:cloak>{{case.app.notifications}}</span>
+<img draggable="false" class="icone" ng:src="{{prefix}}/{{case.app.icon}}"
+     ng:if="case.app.icon"/>
 <div class="icone"
-	data-fittext
-	data-ng-if="!case.app.icon">
-	{{case.app.libelle[0]}}
+     data-fittext
+     ng:if="!case.app.icon">
+    {{case.app.libelle[0]}}
 </div>
-<span class="app-name" data-ng-cloak>{{ case.app.libelle }} <i class="glyphicon glyphicon-new-window" data-ng-if="case.app.external"></i></span>
+<span class="app-name" ng:cloak>{{ case.app.libelle }} <i class="glyphicon glyphicon-new-window" ng:if="case.app.external"></i></span>
