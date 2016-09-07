@@ -31,9 +31,13 @@ angular.module( 'portailApp' )
                            dirty = true;
                        };
 
-                       $scope.uploaded_avatar = null;
+                       $scope.filter_emails = function() {
+                           return function( email ) {
+                               return ( current_user.profil_actif.profil_id !== 'TUT' || email.type !== 'Ent' ) && _(email.adresse.match( email.user_id )).isNull();
+                           };
+                       };
 
-                       $rootScope.current_user.hide_email = $rootScope.current_user.profil_actif.profil_id === 'TUT' && !_( $rootScope.current_user.info.MailAdressePrincipal.match( /laclasse.com$/ ) ).isNull();
+                       $scope.uploaded_avatar = null;
                        $scope.apply_reset_avatar = false;
 
                        // FIXME: modification disabled due to bug #163

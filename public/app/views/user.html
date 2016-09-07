@@ -99,13 +99,14 @@
                                ng:model="current_user.ville">
                     </div>
 
-                    <div class="form-group" ng:if="!current_user.hide_email">
-                        <label for="courriel">Courriel principal :</label>
+                    <div class="form-group"
+                         ng:repeat="email in current_user.emails | orderBy:'principal':true | filter:filter_emails()">
+                        <label for="courriel">Courriel <span ng:if="email.principal">principal</span> :</label>
                         <input type="text"
                                id="courriel"
                                class="form-control"
                                ng:disabled="true"
-                               ng:model="current_user.info.MailAdressePrincipal">
+                               ng:model="email.adresse">
                     </div>
                 </div>
 

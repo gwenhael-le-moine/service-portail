@@ -33,7 +33,7 @@ angular.module( 'portailApp' )
                            app.to_delete = false;
                            app.portail = app.url.match( /^app\..*/ ) !== null;
                            app.external = ( app.type == 'EXTERNAL' ) || ( app.application_id !== 'BLOGS' && app.url.match( /^http.*/ ) !== null );
-                           app.show = !_(app.hidden).includes( $rootScope.current_user.profil_actif.profil_id );
+                           app.show = !_(app.hidden).includes( $rootScope.current_user.profil_actif.profil_id ) && ( app.application_id !== 'MAIL' || !_.chain(current_user.emails).findWhere({type: 'Ent'}).isUndefined().value() );
                            app.highlight = app.application_id == 'CCNUM' && $rootScope.current_user.profil_actif.profil_id != 'TUT' && $rootScope.current_user.profil_actif.profil_id != 'ELV';
 
                            app.status = { app_id: app.application_id,
@@ -99,112 +99,112 @@ angular.module( 'portailApp' )
                                templateUrl: 'views/popup_ajout_app.html',
                                controller: 'PopupAjoutAppCtrl',
                                resolve: {
-                                   current_apps: function () {
-                                       return _.chain($scope.cases)
-                                           .map( function( c ) {
-                                               return c.app;
-                                           } )
-                                           .compact()
-                                           .value();
-                                   }
+                               current_apps: function () {
+                                   return _.chain($scope.cases)
+                                       .map( function( c ) {
+                                           return c.app;
+                                       } )
+                                       .compact()
+                                       .value();
                                }
-                           } )
-                               .result.then( function( new_apps ) {
-                                   var empty_tiles = _($scope.cases).select( function( c ) { return !_(c.app).has( 'libelle' ) || c.app.to_delete; } );
-
-                                   _(new_apps).each( function( new_app ) {
-                                       var recipient = null;
-                                       if ( _(empty_tiles).isEmpty() ) {
-                                           recipient = { index: $scope.cases.length,
-                                                         couleur: 'gris2' };
-                                           $scope.cases.push( recipient );
-                                       } else {
-                                           recipient = empty_tiles.shift();
-                                       }
-
-                                       new_app.index = recipient.index;
-                                       new_app.dirty = true;
-                                       new_app.configure = true;
-                                       new_app.active = true;
-                                       new_app.to_delete = false;
-
-                                       new_app.$save().then( function() {
-                                           recipient.app = tool_app( new_app );
-                                       } );
-                                   } );
-                               } );
-
-                       };
-
-                       $scope.toggle_modification = function( save ) {
-                           $rootScope.modification = !$rootScope.modification;
-                           $scope.sortable_options.disabled = !$scope.sortable_options.disabled;
-                           if ( !$scope.modification ) {
-                               var promesses = [];
-
-                               if ( save && apps_indexes_changed ) {
-                                   // mise à jour de l'annuaire avec les nouveaux index des apps suite au déplacement
-                                   _($scope.cases).each( function( c, i ) {
-                                       if ( _(c.app).has( 'id' ) ) {
-                                           c.app.index = i;
-                                           promesses.push( c.app.$update() );
-                                       }
-                                   } );
-                               }
-
-                               _($scope.cases).each( function( c ) {
-                                   if ( _(c).has( 'app' ) ) {
-                                       c.app.configure = false;
-                                       if ( save && c.app.dirty ) {
-                                           if ( c.app.to_delete ) {
-                                               promesses.push( c.app.$delete() );
-                                               delete c.app;
-
-                                               if ( $scope.cases.length > 16 ) {
-                                                   $scope.cases = $scope.cases.splice( _($scope.cases).findLastIndex( function(c) {return !_(c).has('app'); } ), 1 );
-                                               }
-                                           } else {
-                                               promesses.push( c.app.$update() );
-                                               c.app = tool_app( c.app );
-                                           }
-                                       }
-                                   }
-                               } );
-
-
-                               $q.all( promesses ).then( retrieve_apps( true ) );
                            }
-                       };
+                       } )
+                           .result.then( function( new_apps ) {
+                               var empty_tiles = _($scope.cases).select( function( c ) { return !_(c.app).has( 'libelle' ) || c.app.to_delete; } );
 
-                       var retrieve_apps = function( force_reload ) {
-                           $scope.cases = _(CASES).map( function( c, i ) {
-                               c.index = i;
+                               _(new_apps).each( function( new_app ) {
+                                   var recipient = null;
+                                   if ( _(empty_tiles).isEmpty() ) {
+                                       recipient = { index: $scope.cases.length,
+                                                     couleur: 'gris2' };
+                                       $scope.cases.push( recipient );
+                                   } else {
+                                       recipient = empty_tiles.shift();
+                                   }
 
-                               return c;
+                                   new_app.index = recipient.index;
+                                   new_app.dirty = true;
+                                   new_app.configure = true;
+                                   new_app.active = true;
+                                   new_app.to_delete = false;
+
+                                   new_app.$save().then( function() {
+                                       recipient.app = tool_app( new_app );
+                                   } );
+                               } );
                            } );
 
-                           apps.query( force_reload )
-                               .then( function( response ) {
-                                   $scope.current_apps = response;
+                   };
 
-                                   _.chain($scope.current_apps)
-                                       .sortBy( function( app ) { return !app.active; } )
-                                       .each( function( app ) {
-                                           if ( !_($scope.cases[ app.index ]).isUndefined() ) {
-                                               $scope.cases[ app.index ].app = tool_app( app );
-                                           } else {
-                                               $scope.cases.push( { app: tool_app( app ),
-                                                                    index: app.index,
-                                                                    couleur: CASES[ app.index % ( CASES.length - 1 ) ].couleur } );
-                                           }
-                                       } );
+                   $scope.toggle_modification = function( save ) {
+                       $rootScope.modification = !$rootScope.modification;
+                       $scope.sortable_options.disabled = !$scope.sortable_options.disabled;
+                       if ( !$scope.modification ) {
+                           var promesses = [];
+
+                           if ( save && apps_indexes_changed ) {
+                               // mise à jour de l'annuaire avec les nouveaux index des apps suite au déplacement
+                               _($scope.cases).each( function( c, i ) {
+                                   if ( _(c.app).has( 'id' ) ) {
+                                       c.app.index = i;
+                                       promesses.push( c.app.$update() );
+                                   }
                                } );
-                       };
+                           }
 
-                       $scope.log_and_open_link = function( app ) {
-                           log.add( app.application_id == 'PRONOTE' ? 'PRONOTE' : 'EXTERNAL', app.url, null );
-                           $window.open( app.url, 'laclasseexterne' );
-                       };
+                           _($scope.cases).each( function( c ) {
+                               if ( _(c).has( 'app' ) ) {
+                                   c.app.configure = false;
+                                   if ( save && c.app.dirty ) {
+                                       if ( c.app.to_delete ) {
+                                           promesses.push( c.app.$delete() );
+                                           delete c.app;
 
-                       current_user.$promise.then( function() { retrieve_apps( false ); } );
-                   } ] );
+                                           if ( $scope.cases.length > 16 ) {
+                                               $scope.cases = $scope.cases.splice( _($scope.cases).findLastIndex( function(c) {return !_(c).has('app'); } ), 1 );
+                                           }
+                                       } else {
+                                           promesses.push( c.app.$update() );
+                                           c.app = tool_app( c.app );
+                                       }
+                                   }
+                               }
+                           } );
+
+
+                           $q.all( promesses ).then( retrieve_apps( true ) );
+                       }
+                   };
+
+                   var retrieve_apps = function( force_reload ) {
+                       $scope.cases = _(CASES).map( function( c, i ) {
+                           c.index = i;
+
+                           return c;
+                       } );
+
+                       apps.query( force_reload )
+                           .then( function( response ) {
+                               $scope.current_apps = response;
+
+                               _.chain($scope.current_apps)
+                                   .sortBy( function( app ) { return !app.active; } )
+                                   .each( function( app ) {
+                                       if ( !_($scope.cases[ app.index ]).isUndefined() ) {
+                                           $scope.cases[ app.index ].app = tool_app( app );
+                                       } else {
+                                           $scope.cases.push( { app: tool_app( app ),
+                                                                index: app.index,
+                                                                couleur: CASES[ app.index % ( CASES.length - 1 ) ].couleur } );
+                                       }
+                                   } );
+                           } );
+                   };
+
+                   $scope.log_and_open_link = function( app ) {
+                       log.add( app.application_id == 'PRONOTE' ? 'PRONOTE' : 'EXTERNAL', app.url, null );
+                       $window.open( app.url, 'laclasseexterne' );
+                   };
+
+                   current_user.$promise.then( function() { retrieve_apps( false ); } );
+                 } ] );
