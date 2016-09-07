@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/laclasse-com/laclasse-common
-  revision: 074b0536c1cd3f1e898697f81a913c2846afcad2
+  revision: 9d7253db812ff1950551ace0b912061aec89e2d3
   specs:
-    laclasse-common (0.2.32)
+    laclasse-common (0.2.33)
       redis-rack (~> 1.5.0)
       rest-client
 
@@ -25,7 +25,7 @@ GEM
     css2less (0.0.2)
     daemon_controller (0.2.6)
     diff-lcs (1.2.5)
-    domain_name (0.5.20160615)
+    domain_name (0.5.20160826)
       unf (>= 0.0.5, < 1.0.0)
     execjs (2.7.0)
     hashie (3.4.4)
