@@ -2,10 +2,9 @@
 
 angular.module( 'portailApp' )
     .controller( 'CCNCtrl',
-                 [ '$rootScope', '$scope', '$state', '$window', 'APP_PATH', 'log', 'apps',
-                   function( $rootScope, $scope, $state, $window, APP_PATH, log, apps ) {
+                 [ '$rootScope', '$scope', '$state', '$sce', '$window', 'APP_PATH', 'log', 'apps',
+                   function( $rootScope, $scope, $state, $sce, $window, APP_PATH, log, apps ) {
                        $scope.prefix = APP_PATH;
-                       $scope.display_archives = true;
 
                        apps.query()
                            .then( function ( response ) {
@@ -13,163 +12,147 @@ angular.module( 'portailApp' )
                                    $state.go( 'portail.logged', {}, { reload: true, inherit: true, notify: true } );
                                }
 
-                               var additional_tile = { couleur: 'bleu-moins' };
-                               if ( $rootScope.current_user.profil_actif.profil_id != 'TUT' && $rootScope.current_user.profil_actif.profil_id != 'ELV' ) {
-                                   additional_tile = { couleur: 'bleu inscription highlight-ccn',
-                                                       url: $scope.prefix + '/inscription_CCN_2016/index.html',
-                                                       icon: '/app/node_modules/laclasse-common-client/images/06_thematiques.svg',
-                                                       nom: 'Inscription aux projets'};
-                               }
-
-                               $scope.thematiques_actuelles = [
-                                   { nom: '14-18',
-                                     description: '14-18',
-                                     url: 'http://14-18.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_14-18.svg',
-                                     couleur: 'jaune' },
-                                   { nom: 'Zérogaspi',
-                                     description: 'Zérogaspi',
-                                     url: 'http://zerogaspi.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_zero-gaspi.svg',
-                                     couleur: 'bleu' },
-                                   { nom: 'Théâtre',
-                                     description: 'Théâtre',
-                                     url: 'http://theatre.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_theatre.svg',
-                                     couleur: 'rouge' },
-                                   { nom: 'AIR 2015',
-                                     description: 'Assises du Roman',
-                                     url: 'http://air.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_air-2014.svg',
-                                     couleur: 'jaune' },
-                                   { nom: 'Habiter',
-                                     description: 'Représentations cartographiques de l\'espace vécu',
-                                     url: 'http://habiter.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_habiter.svg',
-                                     couleur: 'vert' },
-                                   { nom: 'Projets archivés',
-                                     description: 'Projets archivés',
-                                     url: 'toggle_archives',
-                                     icon: '/app/node_modules/laclasse-common-client/images/06_thematiques.svg',
-                                     couleur: 'gris1' } ];
-                               $scope.thematiques_actuelles.push( additional_tile );
-                               $scope.thematiques_actuelles = $scope.thematiques_actuelles.concat( [ { couleur: 'vert-moins' },
-                                                                                                     { couleur: 'bleu-moins' },
-                                                                                                     { couleur: 'jaune-moins' },
-                                                                                                     { couleur: 'violet-moins' },
-                                                                                                     { couleur: 'bleu-moins' },
-                                                                                                     { couleur: 'vert-moins' },
-                                                                                                     { couleur: 'rouge-moins' },
-                                                                                                     { couleur: 'bleu-moins' },
-                                                                                                     { couleur: 'vert-moins' } ] );
-
-                               $scope.thematiques_archivees = [
-                                   { nom: '← Retour aux projets en cours',
-                                     description: '← Retour aux projets en cours',
-                                     url: 'toggle_archives',
-                                     icon: '/app/node_modules/laclasse-common-client/images/06_thematiques.svg',
-                                     couleur: 'gris1' },
-                                   { nom: 'Philo',
-                                     description: 'Philo',
-                                     url: 'http://philo.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_philo.svg',
-                                     couleur: 'violet' },
-                                   { couleur: 'gris2',
-                                     url: 'http://miam.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_miam.svg',
-                                     nom: 'Miam',
-                                     titre: ''
-                                   },
-                                   { couleur: 'bleu',
-                                     url: 'http://novaterra.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_odysseespatiale.svg',
-                                     nom: 'Odyssée spatiale',
-                                     titre: ''
-                                   },
-                                   { couleur: 'jaune',
-                                     url: 'http://archeologies.laclasse.com/',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_archeologie.svg',
-                                     nom: 'Archéologie',
-                                     titre: ''
-                                   },
-                                   { couleur: 'orange',
-                                     url: 'http://bd.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_bd.svg',
-                                     nom: 'BD',
-                                     titre: ''
-                                   },
-                                   { couleur: 'violet',
-                                     url: 'http://cine.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_cine.svg',
-                                     nom: 'Ciné',
-                                     titre: ''
-                                   },
-                                   { couleur: 'vert',
-                                     url: 'http://cluemo.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_cluemo.svg',
-                                     nom: 'Cluémo',
-                                     titre: ''
-                                   },
-                                   { couleur: 'rouge',
-                                     url: 'http://etudiantsvoyageurs.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_etudiantsvoyageurs.svg',
-                                     nom: 'Etudiants voyageurs',
-                                     titre: ''
-                                   },
-                                   { couleur: 'vert',
-                                     url: 'http://finisterrae.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_finisterrae.svg',
-                                     nom: 'Finisterrae',
-                                     titre: ''
-                                   },
-                                   { couleur: 'gris4',
-                                     url: 'http://ledechetmatiere.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_dechetmatiere.svg',
-                                     nom: 'Le déchet matière',
-                                     titre: ''
-                                   },
-                                   { couleur: 'violet',
-                                     url: 'http://maisondeladanse.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_maisondeladanse.svg',
-                                     nom: 'Maison de la danse',
-                                     titre: ''
-                                   },
-                                   { couleur: 'bleu',
-                                     url: 'http://musique.laclasse.com/',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_musique.svg',
-                                     nom: 'Musique',
-                                     titre: ''
-                                   },
-                                   { couleur: 'jaune',
-                                     url: 'http://science.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_science.svg',
-                                     nom: 'Science',
-                                     titre: ''
-                                   },
-                                   { couleur: 'orange',
-                                     url: 'http://picture.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui',
-                                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_picture.svg',
-                                     nom: 'Picture',
-                                     titre: ''
-                                   }
-                               ];
-                               $scope.thematiques_archivees.push( additional_tile );
-
-                               $scope.log_and_open_link = function( url ) {
-                                   if ( url === 'toggle_archives' ) {
-                                       $scope.toggle_archives();
+                               var additional_tile = function() {
+                                   if ( $rootScope.current_user.profil_actif.profil_id != 'TUT' && $rootScope.current_user.profil_actif.profil_id != 'ELV' ) {
+                                       return { couleur: 'bleu inscription highlight-ccn',
+                                                action: function() { log_and_open_link( $scope.prefix + '/inscription_CCN_2016/index.html' ); },
+                                                icon: '/app/node_modules/laclasse-common-client/images/06_thematiques.svg',
+                                                nom: 'Inscription aux projets'};
                                    } else {
-                                       log.add( 'CCN', url, null );
-                                       $window.open( url, 'laclasseexterne' );
+                                       return { couleur: 'bleu-moins' };
                                    }
                                };
 
-                               $scope.toggle_archives = function() {
-                                   $scope.display_archives = !$scope.display_archives;
-                                   $scope.thematiques = $scope.display_archives ? $scope.thematiques_archivees : $scope.thematiques_actuelles;
+                               var log_and_open_link = function( url ) {
+                                   log.add( 'CCN', url, null );
+                                   $window.open( url, 'laclasseexterne' );
                                };
 
-                               $scope.toggle_archives();
+                               $scope.root_CCN = { laius: $sce.trustAsHtml( '<p class="laius">Des collégiens qui jouent sur le web et sur scène avec des auteurs de théâtre et des écrivains, qui découvrent que design et développement durable peuvent s\'allier contre le gaspillage alimentaire, qui cartographient leur territoire grâce à la Big Data en compagnie d\'un philosophe, ou encore qui réalisent une enquête-expo sur la grande guerre avec les archives du Rhône, tout cela ce sont les Classes Culturelles Numériques de laclasse.com. 50 classes, du cm2 à la 3ème engagées dans 5 projets collaboratifs et innovants sur l\'ENT, à suivre en ligne toute l\'année, et lors des rencontres finales.</p>\
+                                        <p class="laius">En partenariat avec <a href="http://www.ia69.ac-lyon.fr/" target="_blank">l\'Inspection Académique</a> et la DANE de <a href="http://www.ac-lyon.fr/" target="_blank">l\'Académie de Lyon</a>.</p>\
+                                        <p class="laius">Inscriptions en mai : <a href="mailto:info@laclasse.com">info@laclasse.com</a></p>' ),
+                                                   tiles: [ { nom: '14-18',
+                                                              description: '14-18',
+                                                              action: function() { log_and_open_link( 'http://14-18.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); },
+                                                              icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_14-18.svg',
+                                                              couleur: 'jaune' },
+                                                            { nom: 'Zérogaspi',
+                                                              description: 'Zérogaspi',
+                                                              action: function() { log_and_open_link( 'http://zerogaspi.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); },
+                                                              icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_zero-gaspi.svg',
+                                                              couleur: 'bleu' },
+                                                            { nom: 'Théâtre',
+                                                              description: 'Théâtre',
+                                                              action: function() { log_and_open_link( 'http://theatre.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); },
+                                                              icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_theatre.svg',
+                                                              couleur: 'rouge' },
+                                                            { nom: 'AIR 2015',
+                                                              description: 'Assises du Roman',
+                                                              action: function() { log_and_open_link( 'http://air.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); },
+                                                              icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_air-2014.svg',
+                                                              couleur: 'jaune' },
+                                                            { nom: 'Habiter',
+                                                              description: 'Représentations cartographiques de l\'espace vécu',
+                                                              action: function() { log_and_open_link( 'http://habiter.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); },
+                                                              icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_habiter.svg',
+                                                              couleur: 'vert' },
+                                                            { nom: 'Projets archivés',
+                                                              description: 'Projets archivés',
+                                                              action: function() { $scope.root = this.leaves; },
+                                                              icon: '/app/node_modules/laclasse-common-client/images/06_thematiques.svg',
+                                                              couleur: 'gris1',
+                                                              leaves: { laius: $sce.trustAsHtml( '<p class="laius">Au fil des années, des projets pédagogiques, des résidences d\'artistes, de scientifiques, et d\'écrivains se sont déroulés dans tout le département du rhône, et parfois au delà, amenant plusieurs classes de différents établissements à travailler ensemble autour de l\'outil numérique.<br/>\
+                                                              Retrouver et revisitez les travaux des classes sur ces projets, ici.<br/><br/>\
+                                                              </p>' ),
+                                                                        tiles: [ { nom: '← Retour aux projets en cours',
+                                                                                   description: '← Retour aux projets en cours',
+                                                                                   action: function() { console.log(this);$scope.root = $scope.root_CCN; },
+                                                                                   icon: '/app/node_modules/laclasse-common-client/images/06_thematiques.svg',
+                                                                                   couleur: 'gris1' },
+                                                                                 { nom: 'Philo',
+                                                                                   description: 'Philo',
+                                                                                   action: function() { log_and_open_link( 'http://philo.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); },
+                                                                                   icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_philo.svg',
+                                                                                   couleur: 'violet' },
+                                                                                 { couleur: 'gris2',
+                                                                                   action: function() { log_and_open_link( 'http://miam.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); },
+                                                                                   icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_miam.svg',
+                                                                                   nom: 'Miam',
+                                                                                   titre: '' },
+                                                                                 { couleur: 'bleu',
+                                                                                   action: function() { log_and_open_link( 'http://novaterra.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); },
+                                                                                   icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_odysseespatiale.svg',
+                                                                                   nom: 'Odyssée spatiale',
+                                                                                   titre: '' },
+                                                                                 { couleur: 'jaune',
+                                                                                   action: function() { log_and_open_link( 'http://archeologies.laclasse.com/' ); },
+                                                                                   icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_archeologie.svg',
+                                                                                   nom: 'Archéologie',
+                                                                                   titre: '' },
+                                                                                 { couleur: 'orange',
+                                                                                   action: function() { log_and_open_link( 'http://bd.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); },
+                                                                                   icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_bd.svg',
+                                                                                   nom: 'BD',
+                                                                                   titre: '' },
+                                                                                 { couleur: 'violet',
+                                                                                   action: function() { log_and_open_link( 'http://cine.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); },
+                                                                                   icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_cine.svg',
+                                                                                   nom: 'Ciné',
+                                                                                   titre: '' },
+                                                                                 { couleur: 'vert',
+                                                                                   action: function() { log_and_open_link( 'http://cluemo.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); },
+                                                                                   icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_cluemo.svg',
+                                                                                   nom: 'Cluémo',
+                                                                                   titre: '' },
+                                                                                 { couleur: 'rouge',
+                                                                                   action: function() { log_and_open_link( 'http://etudiantsvoyageurs.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); },
+                                                                                   icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_etudiantsvoyageurs.svg',
+                                                                                   nom: 'Etudiants voyageurs',
+                                                                                   titre: '' },
+                                                                                 { couleur: 'vert',
+                                                                                   action: function() { log_and_open_link( 'http://finisterrae.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); },
+                                                                                   icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_finisterrae.svg',
+                                                                                   nom: 'Finisterrae',
+                                                                                   titre: '' },
+                                                                                 { couleur: 'gris4',
+                                                                                   action: function() { log_and_open_link( 'http://ledechetmatiere.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); },
+                                                                                   icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_dechetmatiere.svg',
+                                                                                   nom: 'Le déchet matière',
+                                                                                   titre: '' },
+                                                                                 { couleur: 'violet',
+                                                                                   action: function() { log_and_open_link( 'http://maisondeladanse.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); },
+                                                                                   icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_maisondeladanse.svg',
+                                                                                   nom: 'Maison de la danse',
+                                                                                   titre: '' },
+                                                                                 { couleur: 'bleu',
+                                                                                   action: function() { log_and_open_link( 'http://musique.laclasse.com/' ); },
+                                                                                   icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_musique.svg',
+                                                                                   nom: 'Musique',
+                                                                                   titre: '' },
+                                                                                 { couleur: 'jaune',
+                                                                                   action: function() { log_and_open_link( 'http://science.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); },
+                                                                                   icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_science.svg',
+                                                                                   nom: 'Science',
+                                                                                   titre: '' },
+                                                                                 { couleur: 'orange',
+                                                                                   action: function() { log_and_open_link( 'http://picture.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); },
+                                                                                   icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_picture.svg',
+                                                                                   nom: 'Picture',
+                                                                                   titre: '' } ] } } ] };
+
+                               _($scope.root_CCN.tiles).last().leaves.tiles.push( additional_tile() );
+                               $scope.root_CCN.tiles.push( additional_tile() );
+                               $scope.root_CCN.tiles = $scope.root_CCN.tiles.concat( [ { couleur: 'vert-moins' },
+                                                                                       { couleur: 'bleu-moins' },
+                                                                                       { couleur: 'jaune-moins' },
+                                                                                       { couleur: 'violet-moins' },
+                                                                                       { couleur: 'bleu-moins' },
+                                                                                       { couleur: 'vert-moins' },
+                                                                                       { couleur: 'rouge-moins' },
+                                                                                       { couleur: 'bleu-moins' },
+                                                                                       { couleur: 'vert-moins' } ] );
+
+                               $scope.root = $scope.root_CCN;
                            } );
                    }
                  ]
