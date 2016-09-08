@@ -101,6 +101,10 @@ angular.module( 'portailApp', [ 'ngResource',
                                } );
                }
              ] )
+    .config( [ '$httpProvider',
+               function( $httpProvider ) {
+                   $httpProvider.defaults.withCredentials = true;
+               }] )
     .run( [ '$rootScope', 'log',
             function( $rootScope, log ) {
                 $rootScope.modification = false;
