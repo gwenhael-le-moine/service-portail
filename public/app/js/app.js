@@ -37,9 +37,39 @@ angular.module( 'portailApp', [ 'ngResource',
                                { parent: 'portail',
                                  url: '/',
                                  views: {
-                                     'main': {
+                                     'main': { // tiles
                                          templateUrl: 'views/tiles.html',
                                          controller: 'TilesCtrl'
+                                     }
+                                 }
+                               } )
+                       .state( 'app.trombinoscope',
+                               { parent: 'app',
+                                 url: '/trombinoscope',
+                                 views: {
+                                     'app': { // tiles
+                                         templateUrl: 'views/trombinoscope.html',
+                                         controller: 'TrombinoscopeCtrl'
+                                     }
+                                 }
+                               } )
+                       .state( 'app.ressources-numeriques',
+                               { parent: 'app',
+                                 url: '/ressources-numeriques',
+                                 views: {
+                                     'app': { // tiles
+                                         templateUrl: 'views/tiles_generic.html',
+                                         controller: 'RessourcesNumeriquesCtrl'
+                                     }
+                                 }
+                               } )
+                       .state( 'app.classes-culturelles-numeriques',
+                               { parent: 'app',
+                                 url: '/classes-culturelles-numeriques',
+                                 views: {
+                                     'app': { // tiles
+                                         templateUrl: 'views/tiles_generic.html',
+                                         controller: 'CCNCtrl'
                                      }
                                  }
                                } )
@@ -66,36 +96,6 @@ angular.module( 'portailApp', [ 'ngResource',
                                      'app': {
                                          templateUrl: 'views/iframe.html',
                                          controller: 'IframeCtrl'
-                                     }
-                                 }
-                               } )
-                       .state( 'app.trombinoscope',
-                               { parent: 'app',
-                                 url: '/trombinoscope',
-                                 views: {
-                                     'app': {
-                                         templateUrl: 'views/trombinoscope.html',
-                                         controller: 'TrombinoscopeCtrl'
-                                     }
-                                 }
-                               } )
-                       .state( 'app.ressources-numeriques',
-                               { parent: 'app',
-                                 url: '/ressources-numeriques',
-                                 views: {
-                                     'app': {
-                                         templateUrl: 'views/ressources_numeriques.html',
-                                         controller: 'RessourcesNumeriquesCtrl'
-                                     }
-                                 }
-                               } )
-                       .state( 'app.classes-culturelles-numeriques',
-                               { parent: 'app',
-                                 url: '/classes-culturelles-numeriques',
-                                 views: {
-                                     'app': {
-                                         templateUrl: 'views/ccn.html',
-                                         controller: 'CCNCtrl'
                                      }
                                  }
                                } );
