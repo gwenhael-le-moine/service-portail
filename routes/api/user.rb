@@ -149,24 +149,21 @@ module Portail
           app.get "#{APP_PATH}/api/user/ressources_numeriques/?" do
             content_type :json
 
-            # Ne prendre que les ressources de l'établissement courant.
-            # Qui sont dans la fenêtre d'abonnement
-            # Triées sur les types de ressources desc pour avoir 'MANUEL' en premier, puis 'DICO', puis 'AUTRES'
             ressources = AnnuaireWrapper::User::Ressources.query( user[:uid] )
                                                           .reject do |ressource|
               ressource[ 'etablissement_code_uai' ] != user[:user_detailed]['profil_actif']['etablissement_code_uai'] ||
                 Date.parse( ressource['date_deb_abon'] ) >= Date.today ||
                 Date.parse( ressource['date_fin_abon'] ) <= Date.today
             end
-                                                          .sort_by { |ressource| ressource['type_ressource'].to_s }
-                                                          .reverse_each do |ressource|
-              ressource['icone'] = '08_ressources.svg'
-              ressource['icone'] = '05_validationcompetences.svg'  if ressource['type_ressource'] == 'MANUEL'
-              ressource['icone'] = '07_blogs.svg'                  if ressource['type_ressource'] == 'AUTRE'
+                                                          .sort_by { |ressource| ressource['type_ressource'] }
+                                                          .map do |ressource|
+              rn = { nom: ressource['lib'],
+                     description: ressource['nom_court'],
+                     url: ressource['url_access_get'],
+                     icon: '/app/node_modules/laclasse-common-client/images/' + ressource['type_ressource'] == 'MANUEL' ? '05_validationcompetences.svg' : ressource['type_ressource'] == 'AUTRE' ? '07_blogs.svg' : '08_ressources.svg' }
             end
 
-            # Associer les couleurs des carrés
-            json colorize( ressources )
+            json ressources
           end
 
           #
