@@ -1,0 +1,79 @@
+<div class="front"
+     data-as-sortable-item-handle
+     ng:class="{ {{case.couleur}}: !case.tile.id || ( !case.tile.color && !case.tile.new_color ), 'highlight-ccn': case.tile.highlight }"
+     ng:style="case.tile.colorize()">
+
+    <!-- ## Lien vers app interne portail -->
+    <a ng:if="case.tile.type === 'portail' && case.tile.active && case.tile.show && !modification"
+       data-ui-sref="{{ case.tile.url }}"
+       title="{{ case.tile.description }}">
+        <div ng:include="'views/tile_app_content.html'"></div>
+    </a>
+
+    <!-- ## Lien vers app laclasse.com -->
+    <a ng:if="case.tile.type !== 'portail' && case.tile.type !== 'external' && case.tile.active && case.tile.show && case.tile.status.status == 'OK' && !modification"
+       data-ui-sref="app.external({ tile: case.tile.application_id ? case.tile.application_id : case.tile.libelle })"
+       title="{{ case.tile.description }}">
+        <div ng:include="'views/tile_app_content.html'"></div>
+    </a>
+    <!-- ## tile au status cassé -->
+    <a href
+       ng:if="case.tile.type !== 'portail' && case.tile.type !== 'external' && case.tile.active && case.tile.show && case.tile.status.status == 'KO' && !modification"
+       title="{{ case.tile.status.reason }}">
+        <div ng:include="'views/tile_app_content.html'"></div>
+    </a>
+
+    <!-- ## Lien vers site externe -->
+    <a href
+       ng:if="case.tile.type === 'external' && case.tile.active && case.tile.show && !modification"
+       ng:click="log_and_open_link( case.tile )"
+       target="_blank"
+       title="{{ case.tile.description }}">
+        <div ng:include="'views/tile_app_content.html'"></div>
+    </a>
+
+    <!-- # Mode modification -->
+    <button class="btn btn-lg toggle-configure open-configure"
+            ng:if="modification && case.tile && case.tile.active"
+            ng:click="case.tile.toggle_configure()">
+        <span class="icone parametrer"></span>
+    </button>
+    <ng-color-picker class="couleurs"
+                     ng:click="case.tile.is_dirty()"
+                     ng:if="modification && case.tile && case.tile.active"
+                     selected="case.tile.color"
+                     colors="couleurs"></ng-color-picker>
+    <a href
+       ng:if="case.tile.active && case.tile.show && modification"
+       title="{{ case.tile.description }}">
+        <div ng:include="'views/tile_app_content.html'"></div>
+    </a>
+</div>
+
+<button class="btn btn-lg toggle-configure close-configure"
+        ng:if="modification && case.tile"
+        ng:click="case.tile.toggle_configure()">
+    <span class="icone visualiser"></span>
+</button>
+<button class="btn btn-xs btn-link remove glyphicon glyphicon-trash"
+        ng:if="modification && case.tile"
+        ng:click="case.tile.remove()"></button>
+
+<div class="configure back blanc"
+     ng:if="modification">
+
+    <label>nom : <input type="text" class="form-control"
+                        ng:model="case.tile.libelle"
+                        ng:change="case.tile.is_dirty()" />
+    </label>
+
+    <label>description : <input type="text" class="form-control"
+                                ng:model="case.tile.description"
+                                ng:change="case.tile.is_dirty()" />
+    </label>
+
+    <label ng:if="case.tile.type === 'external' || case.tile.application_id == 'PRONOTE'">url : <input type="text" class="form-control"
+                                                                                                       ng:model="case.tile.url"
+                                                                                                       ng:change="case.tile.is_dirty()" />
+    </label>
+</div>

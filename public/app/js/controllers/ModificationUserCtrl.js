@@ -2,8 +2,8 @@
 
 angular.module( 'portailApp' )
     .controller( 'ModificationUserCtrl',
-                 [ '$scope', '$rootScope', '$state', 'toastr', 'current_user', 'currentUser', 'APP_PATH',
-                   function( $scope, $rootScope, $state, toastr, current_user, currentUser, APP_PATH ) {
+                 [ '$scope', '$rootScope', '$state', 'toastr', 'current_user', 'currentUser', 'APP_PATH', 'Utils',
+                   function( $scope, $rootScope, $state, toastr, current_user, currentUser, APP_PATH, Utils ) {
                        var dirty = false;
 
                        $scope.prefix = APP_PATH;
@@ -174,12 +174,12 @@ angular.module( 'portailApp' )
                                            $scope.delete_avatar();
                                        } else {
                                            currentUser.force_refresh();
-                                           $state.go( 'portail.logged', {}, { reload: true } );
+                                           Utils.go_home();
                                        }
                                    } );
                                }
                            } else {
-                               $state.go( 'portail.logged' );
+                               Utils.go_home();
                            }
                        };
                    } ] );

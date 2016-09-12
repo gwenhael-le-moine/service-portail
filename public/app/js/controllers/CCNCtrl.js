@@ -21,7 +21,7 @@ angular.module( 'portailApp' )
                        apps.query()
                            .then( function ( response ) {
                                if ( _.chain( response ).findWhere( { application_id: 'CCNUM' } ).isUndefined().value() ) {
-                                   $state.go( 'portail.logged', {}, { reload: true, inherit: true, notify: true } );
+                                   Utils.go_home();
                                }
 
                                $scope.tree = { class: 'classes-culturelles-numeriques',
@@ -142,5 +142,5 @@ angular.module( 'portailApp' )
                                $scope.root = $scope.tree;
                            } );
                    }
-               ]
-);
+                 ]
+               );

@@ -4,90 +4,15 @@
     <ul data-as-sortable="sortable_options"
         data-is-disabled="!modification"
         ng:model="cases">
-        <li ng:repeat="case in cases | orderBy:'index'"
+        <li class="col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case flippable"
             data-as-sortable-item
-            class="col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case flippable"
-            ng:class="{'show-back': case.app.configure, 'unavailable': case.app && !case.app.portail && !case.app.external && case.app.status.status == 'KO', 'empty hidden-xs hidden-sm': !case.app || !case.app.id || !case.app.active}"
-            ng:if="current_user.is_logged">
-
-            <div class="front"
-                 data-as-sortable-item-handle
-                 ng:class="{ {{case.couleur}}: !case.app.id || ( !case.app.color && !case.app.new_color ), 'highlight-ccn': case.app.highlight }"
-                 ng:style="case.app.colorize()">
-                <button class="btn btn-lg toggle-configure open-configure"
-                        ng:if="modification && case.app && case.app.active"
-                        ng:click="case.app.toggle_configure()">
-                    <span class="icone parametrer"></span>
-                </button>
-
-                <ng-color-picker class="couleurs"
-                                 ng:click="case.app.is_dirty()"
-                                 ng:if="modification && case.app && case.app.active"
-                                 selected="case.app.color"
-                                 colors="couleurs"></ng-color-picker>
-
-                <!-- # Affichage normal -->
-                <!-- ## Lien vers app interne portail -->
-                <a ng:if="case.app.portail && case.app.active && case.app.show && !modification"
-                   data-ui-sref="{{ case.app.url }}"
-                   title="{{ case.app.description }}">
-                    <div ng:include="'views/app-tile-content.html'"></div>
-                </a>
-
-                <!-- ## Lien vers app laclasse.com -->
-                <a ng:if="!case.app.portail && !case.app.external && case.app.active && case.app.show && case.app.status.status == 'OK' && !modification"
-                   data-ui-sref="app.external({ app: case.app.application_id ? case.app.application_id : case.app.libelle })"
-                   title="{{ case.app.description }}">
-                    <div ng:include="'views/app-tile-content.html'"></div>
-                </a>
-                <!-- ## app au status cassé -->
-                <a ng:if="!case.app.portail && !case.app.external && case.app.active && case.app.show && case.app.status.status == 'KO' && !modification"
-                   title="{{ case.app.status.reason }}">
-                    <div ng:include="'views/app-tile-content.html'"></div>
-                </a>
-
-                <!-- ## Lien vers site externe -->
-                <a href ng:if="case.app.external && case.app.active && case.app.show && !modification"
-                   ng:click="log_and_open_link( case.app )"
-                   target="_blank"
-                   title="{{ case.app.description }}">
-                    <div ng:include="'views/app-tile-content.html'"></div>
-                </a>
-
-                <!-- # Mode modification -->
-                <a ng:if="case.app.active && case.app.show && modification"
-                   title="{{ case.app.description }}">
-                    <div ng:include="'views/app-tile-content.html'"></div>
-                </a>
-            </div>
-
-            <button class="btn btn-lg toggle-configure close-configure"
-                    ng:if="modification && case.app"
-                    ng:click="case.app.toggle_configure()">
-                <span class="icone visualiser"></span>
-            </button>
-            <button class="btn btn-xs btn-link remove glyphicon glyphicon-trash"
-                    ng:if="modification && case.app"
-                    ng:click="case.app.remove()"></button>
-
-            <div class="configure back blanc"
-                 ng:if="modification">
-
-                <label>nom : <input type="text" class="form-control"
-                                    ng:model="case.app.libelle"
-                                    ng:change="case.app.is_dirty()" />
-                </label>
-
-                <label>description : <input type="text" class="form-control"
-                                            ng:model="case.app.description"
-                                            ng:change="case.app.is_dirty()" />
-                </label>
-
-                <label ng:if="case.app.external || case.app.application_id == 'PRONOTE'">url : <input type="text" class="form-control"
-                                                                                                      ng:model="case.app.url"
-                                                                                                      ng:change="case.app.is_dirty()" />
-                </label>
-            </div>
+            ng:repeat="case in cases | orderBy:'index'"
+            ng:class="{ {{case.couleur}}: !case.tile }"
+            ng:class="{ 'show-back': case.tile.configure,
+                      'unavailable': case.tile && case.tile.type !== 'portail' && case.tile.type !== 'external' && case.tile.status.status == 'KO',
+                      'empty hidden-xs hidden-sm': !case.tile || !case.tile.id || !case.tile.active }">
+            <div ng:include="tiles_templates[ case.tile.species ]"
+                 ng:if="case.tile"></div>
         </li>
     </ul>
 

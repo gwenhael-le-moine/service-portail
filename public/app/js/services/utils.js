@@ -2,8 +2,8 @@
 
 angular.module( 'portailApp' )
     .service( 'Utils',
-              [ '$window', 'CASES', 'log',
-                function( $window, CASES, log ) {
+              [ '$state', '$window', 'CASES', 'log',
+                function( $state, $window, CASES, log ) {
                     this.pad_tiles_tree = function( tiles_tree ) {
                         return tiles_tree.concat( _(CASES.slice( tiles_tree.length, CASES.length ))
                                                   .map( function( c ) {
@@ -16,5 +16,8 @@ angular.module( 'portailApp' )
                         $window.open( url, 'laclasseexterne' );
                     };
 
+                    this.go_home = function() {
+                        $state.go( 'portail.tiles', {}, { reload: true, inherit: true, notify: true } );
+                    };
                 }
               ] );

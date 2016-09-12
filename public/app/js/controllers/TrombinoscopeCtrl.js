@@ -2,12 +2,12 @@
 
 angular.module( 'portailApp' )
     .controller( 'TrombinoscopeCtrl',
-                 [ '$scope', '$state', 'currentUser', 'COULEURS', 'apps',
-                   function( $scope, $state, currentUser, COULEURS, apps ) {
+                 [ '$scope', '$state', 'currentUser', 'COULEURS', 'apps', 'Utils',
+                   function( $scope, $state, currentUser, COULEURS, apps, Utils ) {
                        apps.query()
                            .then( function ( response ) {
                                if ( _.chain( response ).findWhere( { application_id: 'TROMBI' } ).isUndefined().value() ) {
-                                   $state.go( 'portail.logged', {}, { reload: true, inherit: true, notify: true } );
+                                   Utils.go_home();
                                }
 
                                $scope.filters = {

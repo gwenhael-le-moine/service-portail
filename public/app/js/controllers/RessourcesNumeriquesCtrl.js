@@ -9,7 +9,7 @@ angular.module( 'portailApp' )
                        apps.query()
                            .then( function ( response ) {
                                if ( _.chain( response ).findWhere( { application_id: 'GAR' } ).isUndefined().value() ) {
-                                   $state.go( 'portail.logged', {}, { reload: true, inherit: true, notify: true } );
+                                   Utils.go_home();
                                }
 
                                currentUser.ressources().then( function ( response ) {

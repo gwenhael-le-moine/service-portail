@@ -15,90 +15,58 @@ angular.module( 'portailApp', [ 'ngResource',
                                 'angular-loading-bar' ] )
     .config( [ '$stateProvider', '$urlRouterProvider', 'APP_PATH',
                function ( $stateProvider, $urlRouterProvider, APP_PATH ) {
-                   $urlRouterProvider.otherwise( '/' );
-
                    var get_current_user = [ '$rootScope', 'currentUser',
                                             function( $rootScope, currentUser ) {
                                                 return currentUser.get( false )
                                                     .then( function( response ) {
                                                         $rootScope.current_user = response;
 
-                                                        return response;
+                                                        return $rootScope.current_user;
                                                     } );
                                             } ];
 
                    $stateProvider
-                       .state( 'portail', {
-                           resolve: { current_user: get_current_user },
-                           templateUrl: 'views/index.html',
-                           controller: 'PortailCtrl'
-                       } )
-                       .state( 'portail.logged',
+                       .state( 'portail',
+                               { resolve: { current_user: get_current_user },
+                                 templateUrl: 'views/index.html',
+                                 controller: 'PortailCtrl' } )
+                       .state( 'portail.tiles',
                                { parent: 'portail',
                                  url: '/',
-                                 views: {
-                                     'main': { // tiles
-                                         templateUrl: 'views/tiles.html',
-                                         controller: 'TilesCtrl'
-                                     }
-                                 }
-                               } )
-                       .state( 'app.trombinoscope',
-                               { parent: 'app',
-                                 url: '/trombinoscope',
-                                 views: {
-                                     'app': { // tiles
-                                         templateUrl: 'views/trombinoscope.html',
-                                         controller: 'TrombinoscopeCtrl'
-                                     }
-                                 }
-                               } )
-                       .state( 'app.ressources-numeriques',
-                               { parent: 'app',
-                                 url: '/ressources-numeriques',
-                                 views: {
-                                     'app': { // tiles
-                                         templateUrl: 'views/tiles_generic.html',
-                                         controller: 'RessourcesNumeriquesCtrl'
-                                     }
-                                 }
-                               } )
-                       .state( 'app.classes-culturelles-numeriques',
-                               { parent: 'app',
-                                 url: '/classes-culturelles-numeriques',
-                                 views: {
-                                     'app': { // tiles
-                                         templateUrl: 'views/tiles_generic.html',
-                                         controller: 'CCNCtrl'
-                                     }
-                                 }
-                               } )
+                                 views: { main: { templateUrl: 'views/tiles.html',
+                                                  controller: 'TilesCtrl' } } } )
                        .state( 'portail.user',
                                { parent: 'portail',
                                  url: '/user',
-                                 views: {
-                                     'main': {
-                                         templateUrl: 'views/user.html',
-                                         controller: 'ModificationUserCtrl'
-                                     }
-                                 }
-                               } )
+                                 views: { main: { templateUrl: 'views/user.html',
+                                                  controller: 'ModificationUserCtrl' } } } )
                        .state( 'app',
                                { resolve: { current_user: get_current_user },
                                  url: '/app',
                                  templateUrl: 'views/app-wrapper.html',
-                                 controller: 'AppWrapperCtrl'
-                               } )
+                                 controller: 'AppWrapperCtrl' } )
+                       .state( 'app.ressources-numeriques',
+                               { parent: 'app',
+                                 url: '/ressources-numeriques',
+                                 views: { app: { templateUrl: 'views/tiles_generic.html',
+                                                 controller: 'RessourcesNumeriquesCtrl' } } } )
+                       .state( 'app.classes-culturelles-numeriques',
+                               { parent: 'app',
+                                 url: '/classes-culturelles-numeriques',
+                                 views: { app: { templateUrl: 'views/tiles_generic.html',
+                                                 controller: 'CCNCtrl' } } } )
+                       .state( 'app.trombinoscope',
+                               { parent: 'app',
+                                 url: '/trombinoscope',
+                                 views: { app: { templateUrl: 'views/trombinoscope.html',
+                                                 controller: 'TrombinoscopeCtrl' } } } )
                        .state( 'app.external',
                                { parent: 'app',
                                  url: '/external/:app',
-                                 views: {
-                                     'app': {
-                                         templateUrl: 'views/iframe.html',
-                                         controller: 'IframeCtrl'
-                                     }
-                                 }
-                               } );
+                                 views: { app: { templateUrl: 'views/iframe.html',
+                                                 controller: 'IframeCtrl' } } } );
+
+                   $urlRouterProvider.otherwise( '/' );
                }
              ] )
     .config( [ '$httpProvider',
