@@ -26,10 +26,7 @@ angular.module( 'portailApp' )
 
                                var pad_tiles_tree = function( tiles_tree ) {
                                    if ( tiles_tree.length < CASES.length ) {
-                                       return tiles_tree.concat( _.chain(CASES.slice( tiles_tree.length, CASES.length )).map( function( c ) {
-                                           c.couleur += '-moins';
-                                           return c;
-                                       } ).value() );
+                                       return tiles_tree.concat( _(CASES.slice( tiles_tree.length, CASES.length )).map( function( c ) { return { couleur: c.couleur + '-moins' }; } ) );
                                    } else {
                                        return tiles_tree;
                                    }
