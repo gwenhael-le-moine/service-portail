@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module( 'portailApp' )
     .service( 'log',
               [ '$http', '$state', 'APP_PATH', 'currentUser',
