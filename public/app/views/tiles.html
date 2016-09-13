@@ -12,7 +12,8 @@
                       'unavailable': case.tile && case.tile.type !== 'portail' && case.tile.type !== 'external' && case.tile.status.status == 'KO',
                       'empty hidden-xs hidden-sm': !case.tile || !case.tile.id || !case.tile.active }">
             <div ng:include="tiles_templates[ case.tile.species ]"
-                 ng:if="case.tile"></div>
+                 ng:if="tile.content"
+                 style="height: auto;"></div>
         </li>
     </ul>
 
