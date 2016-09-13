@@ -160,7 +160,14 @@ module Portail
               rn = { nom: ressource['lib'],
                      description: ressource['nom_court'],
                      url: ressource['url_access_get'],
-                     icon: '/app/node_modules/laclasse-common-client/images/' + ressource['type_ressource'] == 'MANUEL' ? '05_validationcompetences.svg' : ressource['type_ressource'] == 'AUTRE' ? '07_blogs.svg' : '08_ressources.svg' }
+                     icon: '/app/node_modules/laclasse-common-client/images/' + case ressource['type_ressource']
+                                                                                when 'MANUEL'
+                                                                                  '05_validationcompetences.svg'
+                                                                                when 'AUTRE'
+                                                                                  '07_blogs.svg'
+                                                                                else
+                                                                                  '08_ressources.svg'
+                                                                                end }
             end
 
             json ressources
