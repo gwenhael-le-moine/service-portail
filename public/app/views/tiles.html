@@ -7,8 +7,8 @@
         <li class="col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case flippable"
             data-as-sortable-item
             ng:repeat="case in cases | orderBy:'index'"
-            ng:class="{ {{case.couleur}}: !case.tile }"
-            ng:class="{ 'show-back': case.tile.configure,
+            ng:class="{ {{case.couleur}}: !case.tile,
+                      'show-back': case.tile.configure,
                       'unavailable': case.tile && case.tile.type !== 'portail' && case.tile.type !== 'external' && case.tile.status.status == 'KO',
                       'empty hidden-xs hidden-sm': !case.tile || !case.tile.id || !case.tile.active }">
             <div ng:include="tiles_templates[ case.tile.species ]"
