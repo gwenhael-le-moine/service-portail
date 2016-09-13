@@ -286,6 +286,9 @@ body {
             }
         }
         &.petite {
+            .tile-content-container {
+                height: auto;
+            }
             .toggle-configure {
                 background: transparent;
                 position: absolute;

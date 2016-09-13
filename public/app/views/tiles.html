@@ -11,9 +11,9 @@
                       'show-back': case.tile.configure,
                       'unavailable': case.tile && case.tile.type !== 'portail' && case.tile.type !== 'external' && case.tile.status.status == 'KO',
                       'empty hidden-xs hidden-sm': !case.tile || !case.tile.id || !case.tile.active }">
-            <div ng:include="tiles_templates[ case.tile.species ]"
-                 ng:if="tile.content"
-                 style="height: auto;"></div>
+            <div class="tile-content-container"
+                 ng:include="tiles_templates[ case.tile.species ]"
+                 ng:if="case.tile"></div>
         </li>
     </ul>
 
