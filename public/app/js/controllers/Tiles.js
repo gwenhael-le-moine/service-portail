@@ -122,7 +122,6 @@ angular.module( 'portailApp' )
 
                                            $scope.cases[ tile.index ].tile = tool_tile( tile );
                                        } );
-                                   console.log($scope.cases)
                                } );
                        };
 
