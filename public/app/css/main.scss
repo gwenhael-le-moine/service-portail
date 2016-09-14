@@ -294,9 +294,9 @@ body {
                 position: absolute;
                 cursor: pointer;
                 top: 0.5em;
-                left: 0.5em;
                 height: 1em;
                 width: 1em;
+                left: 0.5em;
                 .icone {
                     display: inline-block;
                     height: 100%;
@@ -315,6 +315,11 @@ body {
                 padding: 0.5em;
                 padding-top: 1em;
                 font-size: 0.9em;
+                .toggle-configure {
+                    left: auto;
+                    right: 0.5em;
+                }
+
                 label {
                     text-align: left;
                     width: 100%;
@@ -386,7 +391,7 @@ body {
             animation-duration: 0.05s;
             animation-iteration-count: 5;
 
-            .inactive {
+            .inactive, .deleted {
                 opacity: 0.33;
             }
             .couleurs {
