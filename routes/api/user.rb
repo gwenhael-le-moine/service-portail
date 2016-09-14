@@ -155,19 +155,18 @@ module Portail
                 Date.parse( ressource['date_deb_abon'] ) >= Date.today ||
                 Date.parse( ressource['date_fin_abon'] ) <= Date.today
             end
-                                                          .sort_by { |ressource| ressource['type_ressource'] }
                                                           .map do |ressource|
-              rn = { nom: ressource['lib'],
-                     description: ressource['nom_court'],
-                     url: ressource['url_access_get'],
-                     icon: '/app/node_modules/laclasse-common-client/images/' + case ressource['type_ressource']
-                                                                                when 'MANUEL'
-                                                                                  '05_validationcompetences.svg'
-                                                                                when 'AUTRE'
-                                                                                  '07_blogs.svg'
-                                                                                else
-                                                                                  '08_ressources.svg'
-                                                                                end }
+              { nom: ressource['lib'],
+                description: ressource['nom_court'],
+                url: ressource['url_access_get'],
+                icon: case ressource['type_ressource']
+                      when 'MANUEL'
+                        '05_validationcompetences.svg'
+                      when 'AUTRE'
+                        '07_blogs.svg'
+                      else
+                        '08_ressources.svg'
+                      end }
             end
 
             json ressources

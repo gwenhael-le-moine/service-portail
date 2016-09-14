@@ -4,8 +4,6 @@ module Portail
   module Routes
     module Api
       module Apps
-        # rubocop:disable Metrics/CyclomaticComplexity
-        # rubocop:disable Metrics/PerceivedComplexity
         def self.registered( app )
           #
           # Service liste des applications
@@ -13,15 +11,13 @@ module Portail
           app.get "#{APP_PATH}/api/apps/default/?" do
             content_type :json
 
-            return [] unless logged?
-
             AnnuaireWrapper::Apps.query_defaults
                                  .map do |appli|
-              next if %w(ANNUAIRE ANN_ENT PORTAIL SSO STARTBOX).include? appli['id']
+              next if %w(ANNUAIRE ANN_ENT PORTAIL SSO STARTBOX).include?( appli['id'] )
 
               default = config[:apps][:default][ appli['id'].to_sym ]
 
-              appli.merge! default unless default.nil?
+              appli.merge!( default ) unless default.nil?
 
               appli[ 'application_id' ] = appli[ 'id' ]
               appli.delete( 'id' )
@@ -78,8 +74,6 @@ module Portail
             content_type :json
             param :id, Integer, required: true
 
-            return [] unless logged?
-
             json AnnuaireWrapper::Etablissement::Apps.app.get( params[:id] )
           end
 
@@ -119,8 +113,6 @@ module Portail
             json AnnuaireWrapper::Etablissement::Apps.delete( params[:id] )
           end
         end
-        # rubocop:enable Metrics/PerceivedComplexity
-        # rubocop:enable Metrics/CyclomaticComplexity
       end
     end
   end
