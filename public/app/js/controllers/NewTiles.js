@@ -25,10 +25,16 @@ angular.module( 'portailApp' )
                            return tiles_tree;
                        };
 
-                       var go_to_root_tile = { action: function() { $scope.tree = $scope.apps; },
-                                               taxonomy: 'back',
-                                               libelle: '↰ Retour',
-                                               description: 'Retour' };
+                       var go_to_root_tile = {
+                           action: function() {
+                               $scope.tree = $scope.apps;
+                               $scope.parent = null;
+                           },
+                           taxonomy: 'back',
+                           libelle: '↰ Retour',
+                           description: 'Retour',
+                           couleur: 'gris3'
+                       };
 
                        currentUser.apps().then( function( response ) {
                            $scope.apps = response.map( function( app ) {
@@ -53,10 +59,12 @@ angular.module( 'portailApp' )
                                                        ccn.taxonomy = 'ccn';
                                                        return ccn;
                                                    } ) );
+                                                   $scope.parent = ccn;
                                                };
                                            }
                                            return ccn;
                                        } ) ) );
+                                       $scope.parent = app;
                                    };
                                    break;
                                case 'GAR':
@@ -70,6 +78,7 @@ angular.module( 'portailApp' )
 
                                                return rn;
                                            } ) ) );
+                                           $scope.parent = app;
                                        } );
                                    };
                                    break;
@@ -90,11 +99,13 @@ angular.module( 'portailApp' )
 
                                                                return eleve;
                                                            } ) ) );
+                                                           $scope.parent = app;
                                                        } );
                                                };
 
                                                return regroupement;
                                            } ) ) );
+                                           $scope.parent = app;
                                        } );
                                    };
                                    break;
@@ -113,6 +124,6 @@ angular.module( 'portailApp' )
                            $scope.apps = fill_empty_tiles( $scope.apps );
                            $scope.apps = Utils.pad_tiles_tree( $scope.apps );
 
-                           $scope.tree = $scope.apps;
+                           go_to_root_tile.action();
                        } );
                    } ] );
