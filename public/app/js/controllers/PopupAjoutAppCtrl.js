@@ -2,8 +2,8 @@
 
 angular.module( 'portailApp' )
     .controller( 'PopupAjoutAppCtrl',
-                 [ '$scope', '$uibModalInstance', 'APP_PATH', 'Apps', 'current_apps',
-                   function( $scope, $uibModalInstance, APP_PATH, Apps, current_apps ) {
+                 [ '$scope', '$uibModalInstance', 'APP_PATH', 'Apps', 'current_tiles',
+                   function( $scope, $uibModalInstance, APP_PATH, Apps, current_tiles ) {
                        $scope.prefix = APP_PATH;
                        $scope.apps_selected = false;
 
@@ -44,7 +44,7 @@ angular.module( 'portailApp' )
 
                                _($scope.apps).each( function( app ) {
                                    app.available = function() {
-                                       return !_.chain(current_apps)
+                                       return !_.chain(current_tiles)
                                            .reject( function( a ) {
                                                return a.to_delete;
                                            } )
