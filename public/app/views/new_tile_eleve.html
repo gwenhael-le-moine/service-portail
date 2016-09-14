@@ -1,0 +1,11 @@
+<div ng:style="{'background-color': tile.color}"
+     ng:class="{'empty hidden-xs': !tile.id}"
+     ng:style="{'background-image': {{tile.avatar}}}">
+    <a href
+       ng:click="tile.action()"
+       title="{{tile.prenom + ' ' + tile.nom}}"
+       target="_blank">
+        <h1>{{tile.nom}}</h1>
+        <h3>{{tile.prenom}}</h3>
+    </a>
+</div>

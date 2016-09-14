@@ -52,8 +52,8 @@ angular.module( 'portailApp' )
 
 angular.module( 'portailApp' )
     .service( 'currentUser',
-              [ '$rootScope', '$http', '$resource', 'APP_PATH', 'User', 'UserRessources', 'UserRegroupements', 'UserHelpLinks',
-                function( $rootScope, $http, $resource, APP_PATH, User, UserRessources, UserRegroupements, UserHelpLinks ) {
+              [ '$rootScope', '$http', '$resource', 'APP_PATH', 'User', 'UserRessources', 'UserRegroupements', 'UserHelpLinks', 'Apps',
+                function( $rootScope, $http, $resource, APP_PATH, User, UserRessources, UserRegroupements, UserHelpLinks, Apps ) {
                     var user = null;
 
                     this.force_refresh = function( force_reload ) {
@@ -71,6 +71,7 @@ angular.module( 'portailApp' )
 
                     this.help_links = function() { return UserHelpLinks.query().$promise; };
                     this.ressources = function() { return UserRessources.query().$promise; };
+                    this.apps = function() { return Apps.query().$promise; };
                     this.regroupements = function() { return UserRegroupements.query().$promise; };
                     this.eleves_regroupement = function( id ) { return UserRegroupements.eleves( { id: id } ).$promise; };
 

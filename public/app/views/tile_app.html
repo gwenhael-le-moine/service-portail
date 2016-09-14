@@ -12,7 +12,7 @@
 
     <!-- ## Lien vers app laclasse.com -->
     <a ng:if="case.tile.type !== 'portail' && case.tile.type !== 'external' && case.tile.active && case.tile.show && case.tile.status.status == 'OK' && !modification"
-       data-ui-sref="app.external({ tile: case.tile.application_id ? case.tile.application_id : case.tile.libelle })"
+       data-ui-sref="app.external({ app: case.tile.application_id ? case.tile.application_id : case.tile.libelle })"
        title="{{ case.tile.description }}">
         <div ng:include="'views/tile_app_content.html'"></div>
     </a>

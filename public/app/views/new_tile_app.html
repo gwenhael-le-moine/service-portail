@@ -1,0 +1,21 @@
+<div ng:style="{'background-color': tile.color}"
+     ng:class="{'empty hidden-xs': !tile.id}">
+    <a href
+       ng:click="tile.action()"
+       title="{{tile.description}}"
+       target="_blank">
+        <div class="icone"
+             data-fittext
+             ng:if="!tile.icon">
+            {{tile.libelle[0]}}
+        </div>
+        <img draggable="false"
+             class="icone"
+             ng:src="{{prefix}}/{{ tile.icon }}"
+             ng:if="tile.icon">
+        <span class="app-name">
+            {{tile.libelle}} ({{tile.index}})
+            <i class="glyphicon glyphicon-new-window" ng:if="tile.type === 'EXTERNAL'"></i>
+        </span>
+    </a>
+</div>

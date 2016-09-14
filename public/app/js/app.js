@@ -35,6 +35,11 @@ angular.module( 'portailApp', [ 'ngResource',
                                  url: '/',
                                  views: { main: { templateUrl: 'views/tiles.html',
                                                   controller: 'TilesCtrl' } } } )
+                       .state( 'portail.newtiles',
+                               { parent: 'portail',
+                                 url: '/new',
+                                 views: { main: { templateUrl: 'views/new_tiles.html',
+                                                  controller: 'NewTilesCtrl' } } } )
                        .state( 'portail.user',
                                { parent: 'portail',
                                  url: '/user',
