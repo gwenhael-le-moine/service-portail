@@ -38,51 +38,24 @@ module Portail
 
             sleep 0.1 # FIXME, race condition
 
-            return [] unless logged?
+            apps = AnnuaireWrapper::Etablissement::Apps.query_etablissement( user[:user_detailed]['profil_actif']['etablissement_code_uai'] )
 
-            apps = AnnuaireWrapper::Etablissement::Apps
-                     .query_etablissement( user[:user_detailed]['profil_actif']['etablissement_code_uai'] )
-            if apps.empty?
-              apps = AnnuaireWrapper::Apps.query_defaults
-                                          .map do |appli|
-                default = config[:apps][:default][ appli['id'].to_sym ]
-                next if default.nil?
-                next unless default[:default]
+            apps = provision_default_apps( user[:user_detailed]['profil_actif']['etablissement_code_uai'] ) if apps.empty?
 
-                appli.merge!( default ) unless default.nil?
-
-                appli[ 'application_id' ] = appli[ 'id' ]
-                appli.delete( 'id' )
-                appli[ 'type' ] = 'INTERNAL'
-
-                Hash[ appli.map { |k, v| [k.to_sym, v] } ] # all keys to symbols
-              end.compact
-
-              apps.each { |appli| AnnuaireWrapper::Etablissement::Apps.create( user[:user_detailed]['profil_actif']['etablissement_code_uai'], appli ) }
-            end
-
-            apps.map do |application|
+            apps.each do |application|
               default = config[:apps][:default][ application['application_id'].to_sym ] unless application['application_id'].nil?
 
               application[ 'hidden' ] = []
-
               unless default.nil?
                 application[ 'icon' ] = default[ :icon ] if application[ 'icon' ].nil?
                 application[ 'color' ] = default[ :color ] if application[ 'color' ].nil?
                 application[ 'index' ] = default[ :index ] if application[ 'index' ] == -1
-
-                # FIXME: ideally this should come from Annuaire
-                application[ 'hidden' ] = default[ :hidden ]
+                application[ 'hidden' ] = default[ :hidden ] unless default[ :hidden ].nil?
               end
-
-              # FIXME: ideally this should come from Annuaire
-              application[ 'hidden' ] = default.nil? || default[ :hidden ].nil? ? [] : default[ :hidden ]
-
               application[ 'hidden' ] += %w(ELV TUT) if application['type'] == 'INTERNAL' && ( default.nil? || ( !default[:summer] && is_it_summer_yet ) )
-
-              application
             end
 
+            # fixing eventual duplicates
             indexes = apps.map { |a| a['index'] }.sort
             duplicates = indexes.select { |e| indexes.count( e ) > 1 }.uniq
             free_indexes = (0..15).to_a - indexes

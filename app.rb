@@ -20,6 +20,7 @@ require 'laclasse/helpers/app_infos'
 
 require_relative './lib/annuaire_wrapper'
 require_relative './lib/helpers/config'
+require_relative './lib/helpers/provision'
 
 require_relative './routes/index'
 require_relative './routes/auth'
@@ -68,6 +69,7 @@ class SinatraApp < Sinatra::Base
   helpers Laclasse::Helpers::AppInfos
 
   helpers Portail::Helpers::Config
+  helpers Portail::Helpers::Provision
 
   ##### routes #################################################################
 
