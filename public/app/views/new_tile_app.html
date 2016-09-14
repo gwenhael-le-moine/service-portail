@@ -1,5 +1,4 @@
-<div ng:style="{'background-color': tile.color}"
-     ng:class="{'empty hidden-xs': !tile.id}">
+<div ng:style="{'background-color': tile.color}">
     <a href
        ng:click="tile.action()"
        title="{{tile.description}}"
@@ -14,7 +13,7 @@
              ng:src="{{prefix}}/{{ tile.icon }}"
              ng:if="tile.icon">
         <span class="app-name">
-            {{tile.libelle}} ({{tile.index}})
+            {{tile.libelle}}
             <i class="glyphicon glyphicon-new-window" ng:if="tile.type === 'EXTERNAL'"></i>
         </span>
     </a>

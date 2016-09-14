@@ -1,6 +1,6 @@
 <div class="row damier gris4">
     <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case animate scale-fade-in {{tile.couleur}}"
-         ng:class="{'empty hidden-xs': !tile.nom}"
+         ng:class="{'empty hidden-xs': !tile.taxonomy}"
          ng:repeat="tile in tree | orderBy:'index'">
         <div ng:include="tiles_templates[ tile.taxonomy ]"></div>
     </div>

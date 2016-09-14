@@ -1,11 +1,8 @@
-<div ng:style="{'background-color': tile.color}"
-     ng:class="{'empty hidden-xs': !tile.id}">
-    <a href
-       ng:click="tile.action()"
-       title="{{tile.libelle}}"
-       target="_blank">
-        <h1>{{tile.libelle}}</h1>
-        <h3>{{tile.etablissement_nom}}</h3>
-        <em>{{tile.type}}</em>
-    </a>
-</div>
+<a href
+   ng:click="tile.action()"
+   title="{{tile.libelle}}"
+   target="_blank">
+    <h1>{{tile.libelle}}</h1>
+    <h3>{{tile.etablissement_nom}}</h3>
+    <em>{{tile.type}}</em>
+</a>
