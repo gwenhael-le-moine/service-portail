@@ -190,15 +190,22 @@ angular.module( 'portailApp' )
                                              resolve: { current_tiles: function () { return $scope.tree; },
                                                         inactive_tiles: function () { return $scope.inactive_apps; } } } )
                                .result.then( function( new_tiles ) {
-                                   var empty_tiles = _($scope.tree).select( function( tile ) {
-                                       return !_(tile).has( 'libelle' ) || tile.to_delete;
-                                   } );
-
                                    $q.all( _(new_tiles).map( function( new_tile ) {
-                                       var recipient = _(empty_tiles).isEmpty() ? { index: $scope.cases.length } : empty_tiles.shift();
+                                       var recipient_index = _($scope.tree).findIndex( function( tile ) { return !_(tile).has('taxonomy'); } );
 
-                                       new_tile.index = recipient.index;
-                                       new_tile.active = true;
+                                       if ( recipient_index === -1 ) {
+                                           recipient_index = $scope.tree.length;
+                                           $scope.tree.push( { index: recipient_index } );
+                                       }
+
+                                       $scope.tree[recipient_index].dirty = {};
+                                       _.chain(new_tile)
+                                           .keys()
+                                           .each( function( key ) {
+                                               $scope.tree[recipient_index][ key ] = new_tile[ key ];
+                                               $scope.tree[recipient_index].dirty[ key ] = true;
+                                           } );
+                                       $scope.tree[recipient_index].active = true;
 
                                        if ( _(new_tile).has('id') ) {
                                            return Apps.update( new_tile ).$promise;
