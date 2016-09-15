@@ -198,23 +198,12 @@ angular.module( 'portailApp' )
                                            $scope.tree.push( { index: recipient_index } );
                                        }
 
-                                       $scope.tree[recipient_index].dirty = {};
-                                       _.chain(new_tile)
-                                           .keys()
-                                           .each( function( key ) {
-                                               $scope.tree[recipient_index][ key ] = new_tile[ key ];
-                                               $scope.tree[recipient_index].dirty[ key ] = true;
-                                           } );
+                                       $scope.tree[recipient_index] = tool_tile( new_tile );
                                        $scope.tree[recipient_index].active = true;
-
-                                       if ( _(new_tile).has('id') ) {
-                                           return Apps.update( new_tile ).$promise;
-                                       } else {
-                                           return Apps.save( new_tile ).$promise;
+                                       if ( !_(new_tile).has('id') ) {
+                                           $scope.tree[recipient_index].to_create = true;
                                        }
-                                   } ) ).then( function( response ) {
-                                       retrieve_tiles_tree();
-                                   } );
+                                   } ) );
                                } );
                        };
 
@@ -230,7 +219,7 @@ angular.module( 'portailApp' )
                        $scope.save_tiles_edition = function( should_save ) {
                            _.chain($scope.tree)
                                .select( function( tile ) {
-                                   return _(tile).has('dirty') && !_(tile.dirty).isEmpty();
+                                   return _(tile).has('dirty') && !_(tile.dirty).isEmpty() && !_(tile).has('to_create');
                                } )
                                .each( function( tile ) {
                                    var updated_fields = { id: tile.id };
@@ -239,19 +228,20 @@ angular.module( 'portailApp' )
                                        .each( function( field ) {
                                            updated_fields[ field ] = tile[ field ];
                                        } );
-                                   Apps.update( updated_fields ).$promise
-                                       .then( function( response ) {
-                                           console.log( 'tile updated' )
-                                           console.log( response )
-                                       } );
+                                   Apps.update( updated_fields );
                                } );
 
-                           var delete_promises = _.chain($scope.tree)
+                           var promises = _.chain($scope.tree)
                                .where({ to_delete: true })
                                .map( function( tile ) {
                                    return Apps.delete({ id: tile.id }).$promise;
                                } );
-                           $q.all( delete_promises ).then( function( response ) {
+                           promises.concat( _.chain($scope.tree)
+                                            .where({ to_create: true })
+                                            .map( function( tile ) {
+                                                return Apps.save( tile ).$promise;
+                                            } ) );
+                           $q.all( promises ).then( function( response ) {
                                $scope.tree = fill_empty_tiles( _($scope.tree).reject( function( tile ) { return tile.to_delete; } ) );
                            } );
 
