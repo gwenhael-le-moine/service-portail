@@ -140,7 +140,8 @@ angular.module( 'portailApp' )
                                                      } )
                                                      .compact()
                                                      .value();
-                                             } } } )
+                                             },
+                                                        inactive_tiles: function() { return []; } } } )
                                .result.then( function( new_tiles ) {
                                    var empty_tiles = _($scope.cases).select( function( c ) { return !_(c.tile).has( 'libelle' ) || c.tile.to_delete; } );
 

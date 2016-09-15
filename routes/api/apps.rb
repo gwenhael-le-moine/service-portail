@@ -81,13 +81,14 @@ module Portail
             content_type :json
             param :index, Integer, required: true
             param :type, String, required: true, in: %w(INTERNAL EXTERNAL)
-            param :application_id, String, required: false
-            param :libelle, String, required: false
-            param :description, String, required: false
-            param :url, String, required: false
+
             param :active, TrueClass, required: false
-            param :icon, String, required: false
+            param :application_id, String, required: false
             param :color, String, required: false
+            param :description, String, required: false
+            param :icon, String, required: false
+            param :libelle, String, required: false
+            param :url, String, required: false
 
             json AnnuaireWrapper::Etablissement::Apps.create( user[:user_detailed]['profil_actif']['etablissement_code_uai'], params )
           end
@@ -96,13 +97,13 @@ module Portail
             content_type :json
             param :id, Integer, required: true
 
-            param :index, Integer, required: false
             param :active, TrueClass, required: false
-            param :url, String, required: false
-            param :libelle, String, required: false
+            param :color, String, required: false
             param :description, String, required: false
             param :icon, String, required: false
-            param :color, String, required: false
+            param :index, Integer, required: false
+            param :libelle, String, required: false
+            param :url, String, required: false
 
             json AnnuaireWrapper::Etablissement::Apps.update( params[:id], params )
           end

@@ -2,8 +2,8 @@
 
 angular.module( 'portailApp' )
     .controller( 'PopupAjoutAppCtrl',
-                 [ '$scope', '$uibModalInstance', 'APP_PATH', 'Apps', 'current_tiles',
-                   function( $scope, $uibModalInstance, APP_PATH, Apps, current_tiles ) {
+                 [ '$scope', '$uibModalInstance', 'APP_PATH', 'Apps', 'current_tiles', 'inactive_tiles',
+                   function( $scope, $uibModalInstance, APP_PATH, Apps, current_tiles, inactive_tiles ) {
                        $scope.prefix = APP_PATH;
                        $scope.apps_selected = false;
 
@@ -40,18 +40,19 @@ angular.module( 'portailApp' )
 
                        Apps.query_default().$promise
                            .then( function( response ) {
-                               $scope.apps = response;
-
-                               _($scope.apps).each( function( app ) {
-                                   app.available = function() {
-                                       return !_.chain(current_tiles)
-                                           .reject( function( a ) {
-                                               return a.to_delete;
-                                           } )
-                                           .pluck( 'application_id' )
-                                           .contains( app.application_id )
-                                           .value();
-                                   };
-                               } );
+                               $scope.apps = _.chain( inactive_tiles.concat( response ) )
+                                   .uniq( function( app ) { return app.application_id; } )
+                                   .each( function( app ) {
+                                       app.available = function() {
+                                           return !_.chain(current_tiles)
+                                               .reject( function( a ) {
+                                                   return a.to_delete;
+                                               } )
+                                               .pluck( 'application_id' )
+                                               .contains( app.application_id )
+                                               .value();
+                                       };
+                                   } )
+                                   .value();
                            } );
                    } ] );
