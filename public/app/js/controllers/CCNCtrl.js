@@ -10,7 +10,7 @@ angular.module( 'portailApp' )
                            if ( $rootScope.current_user.profil_actif.profil_id != 'TUT' && $rootScope.current_user.profil_actif.profil_id != 'ELV' ) {
                                return tiles_tree.concat( [ { couleur: 'bleu inscription highlight-ccn',
                                                              description: 'Inscription aux projets',
-                                                             action: function() { Utils.log_and_open_link( $scope.prefix + '/inscription_CCN_2016/index.html' ); },
+                                                             action: function() { Utils.log_and_open_link( 'CCN', $scope.prefix + '/inscription_CCN_2016/index.html' ); },
                                                              icon: '/app/node_modules/laclasse-common-client/images/06_thematiques.svg',
                                                              nom: 'Inscription aux projets' } ] );
                            } else {
