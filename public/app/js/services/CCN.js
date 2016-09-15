@@ -32,7 +32,7 @@ angular.module( 'portailApp' )
                                    action: function() { Utils.log_and_open_link( 'CCN', 'http://code.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); } },
                                  // { nom: 'Polar / Krimi',
                                  //   description: 'Ecrire un roman illustré franco-allemand avec un auteur de polar et un illustrateur, en collaboration avec des collégiens allemands',
-                                 //   icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_code.svg',
+                                 //   icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_krimi.svg',
                                  //   couleur: 'orange-brillant',
                                  //   action: function() { Utils.log_and_open_link( 'CCN', 'http://krimi.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); } },
                                  { nom: 'Projets archivés',
