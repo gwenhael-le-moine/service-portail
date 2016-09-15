@@ -95,7 +95,8 @@ module Portail
           app.put "#{APP_PATH}/api/apps/:id" do
             content_type :json
             param :id, Integer, required: true
-            param :index, Integer, required: true
+
+            param :index, Integer, required: false
             param :active, TrueClass, required: false
             param :url, String, required: false
             param :libelle, String, required: false
