@@ -2,8 +2,9 @@
 
 angular.module( 'portailApp' )
     .controller( 'NewTilesCtrl',
-                 [ '$scope', '$sce', '$state', '$uibModal', 'CASES', 'currentUser', 'Utils', 'CCN',
-                   function( $scope, $sce, $state, $uibModal, CASES, currentUser, Utils, CCN ) {
+                 [ '$scope', '$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Apps',
+                   function( $scope, $sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Apps ) {
+                       $scope.COULEURS = COULEURS;
                        $scope.tiles_templates = { app: 'views/new_tile_app.html',
                                                   back: 'views/new_tile_app.html',
                                                   regroupement: 'views/new_tile_regroupement.html',
@@ -46,8 +47,10 @@ angular.module( 'portailApp' )
                                            tile.configure = tile.index === app.index;
                                        } );
                                    };
-                                   app.dirty = false;
-                                   app.is_dirty = function() { app.dirty = true; };
+                                   app.dirty = {};
+                                   app.is_dirty = function( field ) {
+                                       app.dirty[ field ] = true;
+                                   };
                                    app.to_delete = false;
                                    app.remove = function() {
                                        app.to_delete = !app.to_delete;
@@ -156,6 +159,21 @@ angular.module( 'portailApp' )
 
                        // Edition
                        $scope.modification = false;
+                       var sortable_callback = function( event ) {
+                           _($scope.tree).each( function( tile, i ) {
+                               tile.index = i;
+                               tile.dirty.index = true;
+                           } );
+                       };
+                       $scope.sortable_options = { accept: function( sourceItemHandleScope, destSortableScope ) { return true; },
+                                                   longTouch: true,
+                                                   itemMoved: sortable_callback,
+                                                   orderChanged: sortable_callback,
+                                                   containment: '.damier',
+                                                   containerPositioning: 'relative',
+                                                   additionalPlaceholderClass: 'col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case',
+                                                   clone: false,
+                                                   allowDuplicates: false };
 
                        $scope.add_tile = function() {
                            $uibModal.open( { templateUrl: 'views/popup_ajout_app.html',
@@ -164,6 +182,7 @@ angular.module( 'portailApp' )
                                                  return $scope.tree;
                                              } } } )
                                .result.then( function( new_tiles ) {
+                                   console.log('TODO')
                                    console.log(new_tiles)
                                } );
                        };
@@ -175,26 +194,35 @@ angular.module( 'portailApp' )
                        $scope.exit_tiles_edition = function() {
                            $scope.modification = false;
                            retrieve_tiles_tree();
-                           // $scope.tree.forEach( function( tile ) {
-                           //     if ( _(tile).has('configure') ) {
-                           //         tile.configure = false;
-                           //     }
-                           // } );
                        };
 
                        $scope.save_tiles_edition = function( should_save ) {
                            _.chain($scope.tree)
-                               .where({ to_delete: true })
+                               .select( function( tile ) {
+                                   return _(tile).has('dirty') && !_(tile.dirty).isEmpty();
+                               } )
                                .each( function( tile ) {
-                                   console.log('delete ' + tile.index + ': ' + tile.application_id)
+                                   var updated_fields = { id: tile.id };
+                                   _.chain(tile.dirty)
+                                       .keys()
+                                       .each( function( field ) {
+                                           updated_fields[ field ] = tile[ field ];
+                                       } );
+                                   Apps.update( updated_fields ).$promise
+                                       .then( function( response ) {
+                                           console.log( 'tile updated' )
+                                           console.log( response )
+                                       } );
                                } );
-                           $scope.tree = fill_empty_tiles( _($scope.tree).reject( function( tile ) { return tile.to_delete; } ) );
 
-                           _.chain($scope.tree)
-                               .where({ dirty: true })
-                               .each( function( tile ) {
-                                   console.log('update ' + tile.index + ': ' + tile.application_id)
+                           var delete_promises = _.chain($scope.tree)
+                               .where({ to_delete: true })
+                               .map( function( tile ) {
+                                   return Apps.delete({ id: tile.id }).$promise;
                                } );
+                           $q.all( delete_promises ).then( function( response ) {
+                               $scope.tree = fill_empty_tiles( _($scope.tree).reject( function( tile ) { return tile.to_delete; } ) );
+                           } );
 
                            // $scope.exit_tiles_edition();
                            $scope.modification = false;

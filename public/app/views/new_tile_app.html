@@ -10,10 +10,10 @@
             <span class="icone parametrer"></span>
         </button>
         <ng-color-picker class="couleurs"
-                         ng:click="tile.is_dirty()"
+                         ng:click="tile.is_dirty( 'color' )"
                          ng:if="modification && tile.active"
                          selected="tile.color"
-                         colors="couleurs"></ng-color-picker>
+                         colors="COULEURS"></ng-color-picker>
 
         <a href
            ng:click="tile.action()"
@@ -48,17 +48,17 @@
 
         <label>nom : <input type="text" class="form-control"
                             ng:model="tile.libelle"
-                            ng:change="tile.is_dirty()" />
+                            ng:change="tile.is_dirty( 'libelle' )" />
         </label>
 
         <label>description : <input type="text" class="form-control"
                                     ng:model="tile.description"
-                                    ng:change="tile.is_dirty()" />
+                                    ng:change="tile.is_dirty( 'description' )" />
         </label>
 
         <label ng:if="tile.type === 'EXTERNAL' || tile.application_id == 'PRONOTE'">url : <input type="text" class="form-control"
                                                                                                  ng:model="tile.url"
-                                                                                                 ng:change="tile.is_dirty()" />
+                                                                                                 ng:change="tile.is_dirty( 'url' )" />
         </label>
     </div>
 </div>
