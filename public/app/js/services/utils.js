@@ -7,8 +7,9 @@ angular.module( 'portailApp' )
                     this.pad_tiles_tree = function( tiles_tree ) {
                         var suffix = '-moins';
                         return tiles_tree.concat( _(CASES.slice( tiles_tree.length, CASES.length ))
-                                                  .map( function( c ) {
-                                                      return { couleur: c.couleur + suffix };
+                                                  .map( function( c, i ) {
+                                                      return { index: i + tiles_tree.length,
+                                                               couleur: c.couleur + suffix };
                                                   } ) );
                     };
 
