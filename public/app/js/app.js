@@ -30,16 +30,16 @@ angular.module( 'portailApp', [ 'ngResource',
                                { resolve: { current_user: get_current_user },
                                  templateUrl: 'views/index.html',
                                  controller: 'PortailCtrl' } )
-                       .state( 'portail.tiles',
-                               { parent: 'portail',
-                                 url: '/',
-                                 views: { main: { templateUrl: 'views/tiles.html',
-                                                  controller: 'TilesCtrl' } } } )
-                       .state( 'portail.newtiles',
-                               { parent: 'portail',
-                                 url: '/new',
-                                 views: { main: { templateUrl: 'views/new_tiles.html',
-                                                  controller: 'NewTilesCtrl' } } } )
+                   .state( 'portail.tiles',
+                           { parent: 'portail',
+                             url: '/',
+                             //           views: { main: { templateUrl: 'views/tiles.html',
+                             //                            controller: 'TilesCtrl' } } } )
+                             // .state( 'portail.newtiles',
+                             //         { parent: 'portail',
+                             //           url: '/new',
+                             views: { main: { templateUrl: 'views/new_tiles.html',
+                                              controller: 'NewTilesCtrl' } } } )
                        .state( 'portail.user',
                                { parent: 'portail',
                                  url: '/user',
@@ -50,21 +50,21 @@ angular.module( 'portailApp', [ 'ngResource',
                                  url: '/app',
                                  templateUrl: 'views/app-wrapper.html',
                                  controller: 'AppWrapperCtrl' } )
-                       .state( 'app.ressources-numeriques',
-                               { parent: 'app',
-                                 url: '/ressources-numeriques',
-                                 views: { app: { templateUrl: 'views/tiles_generic.html',
-                                                 controller: 'RessourcesNumeriquesCtrl' } } } )
-                       .state( 'app.classes-culturelles-numeriques',
-                               { parent: 'app',
-                                 url: '/classes-culturelles-numeriques',
-                                 views: { app: { templateUrl: 'views/tiles_generic.html',
-                                                 controller: 'CCNCtrl' } } } )
-                       .state( 'app.trombinoscope',
-                               { parent: 'app',
-                                 url: '/trombinoscope',
-                                 views: { app: { templateUrl: 'views/trombinoscope.html',
-                                                 controller: 'TrombinoscopeCtrl' } } } )
+                   // .state( 'app.ressources-numeriques',
+                   //         { parent: 'app',
+                   //           url: '/ressources-numeriques',
+                   //           views: { app: { templateUrl: 'views/tiles_generic.html',
+                   //                           controller: 'RessourcesNumeriquesCtrl' } } } )
+                   // .state( 'app.classes-culturelles-numeriques',
+                   //         { parent: 'app',
+                   //           url: '/classes-culturelles-numeriques',
+                   //           views: { app: { templateUrl: 'views/tiles_generic.html',
+                   //                           controller: 'CCNCtrl' } } } )
+                   // .state( 'app.trombinoscope',
+                   //         { parent: 'app',
+                   //           url: '/trombinoscope',
+                   //           views: { app: { templateUrl: 'views/trombinoscope.html',
+                   //                           controller: 'TrombinoscopeCtrl' } } } )
                        .state( 'app.external',
                                { parent: 'app',
                                  url: '/external/:app',
