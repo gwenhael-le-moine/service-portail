@@ -1,5 +1,17 @@
 <div class="row damier gris4"
      ng:class="{'modification': modification}">
+
+    <div class="hidden-xs aside aside-blanc"
+         style="position: absolute;
+                height: 75%;
+                width: 50%;
+                top: 25%;
+                left: -50%;
+                background-color: #fff;"
+         ng:bind-html="tree.laius"
+         ng:if="tree.laius">
+    </div>
+
     <ul data-as-sortable="sortable_options"
         data-is-disabled="!modification"
         ng:model="tree">
