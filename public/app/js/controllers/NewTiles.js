@@ -160,6 +160,7 @@ angular.module( 'portailApp' )
                                    .where({ active: true })
                                    .map( tool_tile );
                                $scope.apps = fill_empty_tiles( $scope.apps );
+                               $scope.apps = _($scope.apps).sortBy( function( tile ) { return tile.index; } );
                                $scope.apps = Utils.pad_tiles_tree( $scope.apps );
 
                                go_to_root_tile.action();
@@ -198,10 +199,11 @@ angular.module( 'portailApp' )
                                            $scope.tree.push( { index: recipient_index } );
                                        }
 
-                                       $scope.tree[recipient_index] = tool_tile( new_tile );
-                                       $scope.tree[recipient_index].active = true;
+                                       $scope.tree[ recipient_index ] = tool_tile( new_tile );
+                                       $scope.tree[ recipient_index ].index = recipient_index;
+                                       $scope.tree[ recipient_index ].active = true;
                                        if ( !_(new_tile).has('id') ) {
-                                           $scope.tree[recipient_index].to_create = true;
+                                           $scope.tree[ recipient_index ].to_create = true;
                                        }
                                    } ) );
                                } );
