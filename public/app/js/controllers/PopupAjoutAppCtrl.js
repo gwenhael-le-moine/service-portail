@@ -40,7 +40,7 @@ angular.module( 'portailApp' )
 
                        Apps.query_default().$promise
                            .then( function( response ) {
-                               $scope.apps = _.chain( inactive_tiles.concat( response ) )
+                               $scope.apps = _.chain( inactive_tiles.concat( _(response).where({ active: true }) ) )
                                    .uniq( function( app ) { return app.application_id; } )
                                    .each( function( app ) {
                                        app.available = function() {
