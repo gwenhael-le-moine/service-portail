@@ -43,6 +43,7 @@ angular.module( 'portailApp' )
                                $scope.apps = _.chain( inactive_tiles.concat( _(response).where({ active: true }) ) )
                                    .uniq( function( app ) { return app.application_id; } )
                                    .each( function( app ) {
+                                       app.taxonomy = 'app';
                                        app.available = function() {
                                            return !_.chain(current_tiles)
                                                .reject( function( a ) {
