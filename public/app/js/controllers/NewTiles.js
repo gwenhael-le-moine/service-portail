@@ -38,28 +38,7 @@ angular.module( 'portailApp' )
                            }
                        };
 
-                       var tool_tile = function( app ) {
-                           app.taxonomy = 'app';
-
-                           app.configure = false;
-                           app.toggle_configure = function() {
-                               $scope.tree.forEach( function( tile ) {
-                                   tile.configure = tile.index === app.index;
-                               } );
-                           };
-
-                           app.dirty = {};
-                           app.is_dirty = function( field ) {
-                               app.dirty[ field ] = true;
-                           };
-
-                           app.to_delete = false;
-                           app.remove = function() {
-                               app.to_delete = !app.to_delete;
-                               app.dirty = app.dirty || app.to_delete;
-                               app.configure = false;
-                           };
-
+                       var tool_tile = function( node ) {
                            var go_to_parent_tile = function( parent ) {
                                var back_to_parent = angular.copy( go_to_root_tile );
                                back_to_parent.action = parent.action;
@@ -67,110 +46,132 @@ angular.module( 'portailApp' )
                                return back_to_parent;
                            };
 
-                           switch( app.application_id ) {
-                           case 'CCNUM':
-                               // app.laius = $sce.trustAsHtml( '<p class="laius">Des collégiens qui jouent sur le web et sur scène avec des auteurs de théâtre et des écrivains, qui découvrent que design et développement durable peuvent s\'allier contre le gaspillage alimentaire, qui cartographient leur territoire grâce à la Big Data en compagnie d\'un philosophe, ou encore qui réalisent une enquête-expo sur la grande guerre avec les archives du Rhône, tout cela ce sont les Classes Culturelles Numériques de laclasse.com. 50 classes, du cm2 à la 3ème engagées dans 5 projets collaboratifs et innovants sur l\'ENT, à suivre en ligne toute l\'année, et lors des rencontres finales.</p>\
-                               //      <p class="laius">En partenariat avec <a href="http://www.ia69.ac-lyon.fr/" target="_blank">l\'Inspection Académique</a> et la DANE de <a href="http://www.ac-lyon.fr/" target="_blank">l\'Académie de Lyon</a>.</p>\
-                               //      <p class="laius">Inscriptions en mai : <a href="mailto:info@laclasse.com">info@laclasse.com</a></p>' );
-                               app.action = function() {
+                           var app_specific_actions = {
+                               CCNUM: function() {
                                    if ( $scope.modification ) { return; }
-                                   $scope.tree = Utils.pad_tiles_tree( [ go_to_root_tile ]
-                                                                       .concat( CCN.query()
-                                                                                .map( function( ccn, index ) {
-                                                                                    ccn.taxonomy = 'ccn';
-                                                                                    ccn.index = index + 1;
+                                   $scope.tree = { configurable: false,
+                                                   laius: $sce.trustAsHtml( '<p class="laius">Des collégiens qui jouent sur le web et sur scène avec des auteurs de théâtre et des écrivains, qui découvrent que design et développement durable peuvent s\'allier contre le gaspillage alimentaire, qui cartographient leur territoire grâce à la Big Data en compagnie d\'un philosophe, ou encore qui réalisent une enquête-expo sur la grande guerre avec les archives du Rhône, tout cela ce sont les Classes Culturelles Numériques de laclasse.com. 50 classes, du cm2 à la 3ème engagées dans 5 projets collaboratifs et innovants sur l\'ENT, à suivre en ligne toute l\'année, et lors des rencontres finales.</p><p class="laius">En partenariat avec <a href="http://www.ia69.ac-lyon.fr/" target="_blank">l\'Inspection Académique</a> et la DANE de <a href="http://www.ac-lyon.fr/" target="_blank">l\'Académie de Lyon</a>.</p><p class="laius">Inscriptions en mai : <a href="mailto:info@laclasse.com">info@laclasse.com</a></p>' ),
+                                                   tiles: Utils.pad_tiles_tree( [ go_to_root_tile ]
+                                                                                .concat( CCN.query()
+                                                                                         .map( function( ccn, index ) {
+                                                                                             ccn.taxonomy = 'ccn';
+                                                                                             ccn.index = index + 1;
 
-                                                                                    if ( _(ccn).has('leaves') ) {
-                                                                                        // ccn.laius = $sce.trustAsHtml( '<p class="laius">Au fil des années, des projets pédagogiques, des résidences d\'artistes, de scientifiques, et d\'écrivains se sont déroulés dans tout le département du rhône, et parfois au delà, amenant plusieurs classes de différents établissements à travailler ensemble autour de l\'outil numérique.<br/>\
-                                                                                        //                Retrouver et revisitez les travaux des classes sur ces projets, ici.<br/><br/>\
-                                                                                        //                </p>' );
-                                                                                        ccn.action = function() {
-                                                                                            $scope.tree = [ go_to_parent_tile( app ) ].concat( ccn.leaves.map( function( ccn, index ) {
-                                                                                                ccn.taxonomy = 'ccn';
-                                                                                                ccn.index = index + 1;
+                                                                                             if ( _(ccn).has('leaves') ) {
+                                                                                                 ccn.action = function() {
+                                                                                                     $scope.tree = { configurable: false,
+                                                                                                                     laius: $sce.trustAsHtml( '<p class="laius">Au fil des années, des projets pédagogiques, des résidences d\'artistes, de scientifiques, et d\'écrivains se sont déroulés dans tout le département du rhône, et parfois au delà, amenant plusieurs classes de différents établissements à travailler ensemble autour de l\'outil numérique.<br/>Retrouver et revisitez les travaux des classes sur ces projets, ici.<br/><br/></p>' ),
+                                                                                                                     tiles: [ go_to_parent_tile( node ) ].concat( ccn.leaves.map( function( ccn, index ) {
+                                                                                                                         ccn.taxonomy = 'ccn';
+                                                                                                                         ccn.index = index + 1;
 
-                                                                                                return ccn;
-                                                                                            } ) );
-                                                                                            $scope.parent = ccn;
-                                                                                        };
-                                                                                    }
-                                                                                    return ccn;
-                                                                                } ) ) );
-                                   $scope.parent = app;
-                               };
-                               break;
-                           case 'GAR':
-                               // app.laius = $sce.trustAsHtml( '<p class="laius">Retrouvez ici les ressources numériques que votre établissement a sélectionné pour vous. Ces ressources peuvent être des manuels scolaires en ligne, des dictionnaires, des sites proposant des ressources pour s\'entraîner, etc...</p><p class="laius"> Si rien n\'est affiché dans cette page, c\'est que votre établissement n\'a ps encore activé les ressources numériques. Vous pouvez contacter un de vos administrateur de l\'ENT pour lui demander l\'activation de celles-ci.</p>' );
-                               app.action = function() {
+                                                                                                                         return ccn;
+                                                                                                                     } ) ) };
+                                                                                                     $scope.parent = ccn;
+                                                                                                 };
+                                                                                             }
+                                                                                             return ccn;
+                                                                                         } ) ) ) };
+                                   $scope.parent = node;
+                               },
+                               GAR: function() {
                                    if ( $scope.modification ) { return; }
                                    currentUser.ressources().then( function ( response ) {
-                                       $scope.tree = Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( rn, index ) {
-                                           rn.taxonomy = 'rn';
-                                           rn.index = index + 1;
-                                           rn.icon = '/app/node_modules/laclasse-common-client/images/' + rn.icon;
-                                           rn.couleur = CASES[ index % 16 ].couleur;
-                                           rn.action = function() { Utils.log_and_open_link( 'GAR', rn.url ); };
+                                       $scope.tree = { configurable: false,
+                                                       laius: $sce.trustAsHtml( '<p class="laius">Retrouvez ici les ressources numériques que votre établissement a sélectionné pour vous. Ces ressources peuvent être des manuels scolaires en ligne, des dictionnaires, des sites proposant des ressources pour s\'entraîner, etc...</p><p class="laius">Si rien n\'est affiché dans cette page, c\'est que votre établissement n\'a ps encore activé les ressources numériques. Vous pouvez contacter un de vos administrateur de l\'ENT pour lui demander l\'activation de celles-ci.</p>' ),
+                                                       tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( rn, index ) {
+                                                           rn.taxonomy = 'rn';
+                                                           rn.index = index + 1;
+                                                           rn.icon = '/app/node_modules/laclasse-common-client/images/' + rn.icon;
+                                                           rn.couleur = CASES[ index % 16 ].couleur;
+                                                           rn.action = function() { Utils.log_and_open_link( 'GAR', rn.url ); };
 
-                                           return rn;
-                                       } ) ) );
-                                       $scope.parent = app;
+                                                           return rn;
+                                                       } ) ) ) };
+                                       $scope.parent = node;
                                    } );
-                               };
-                               break;
-                           case 'TROMBI':
-                               app.action = function() {
+                               },
+                               TROMBI: function() {
                                    if ( $scope.modification ) { return; }
                                    currentUser.regroupements().then( function ( response ) {
-                                       $scope.tree = Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( regroupement, index ) {
-                                           regroupement.taxonomy = 'regroupement';
-                                           regroupement.index = index + 1;
-                                           regroupement.couleur = regroupement.type === 'classe' ? 'vert' : 'bleu';
-                                           regroupement.couleur += index % 2 == 0 ? '' : '-moins';
-                                           regroupement.action = function() {
-                                               currentUser.eleves_regroupement( regroupement.id )
-                                                   .then( function( response ) {
-                                                       $scope.tree = Utils.pad_tiles_tree( [ go_to_parent_tile( app ) ].concat( response.map( function( eleve, index ) {
-                                                           eleve.taxonomy = 'eleve';
-                                                           eleve.index = index + 1;
-                                                           eleve.couleur = 'jaune';
-                                                           eleve.couleur += index % 2 == 0 ? '' : '-moins';
+                                       $scope.tree = { configurable: false,
+                                                       tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( regroupement, index ) {
+                                                           regroupement.taxonomy = 'regroupement';
+                                                           regroupement.index = index + 1;
+                                                           regroupement.couleur = regroupement.type === 'classe' ? 'vert' : 'bleu';
+                                                           regroupement.couleur += index % 2 == 0 ? '' : '-moins';
+                                                           regroupement.action = function() {
+                                                               currentUser.eleves_regroupement( regroupement.id )
+                                                                   .then( function( response ) {
+                                                                       $scope.tree = Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.map( function( eleve, index ) {
+                                                                           eleve.taxonomy = 'eleve';
+                                                                           eleve.index = index + 1;
+                                                                           eleve.couleur = 'jaune';
+                                                                           eleve.couleur += index % 2 == 0 ? '' : '-moins';
 
-                                                           return eleve;
-                                                       } ) ) );
-                                                       $scope.parent = app;
-                                                   } );
-                                           };
+                                                                           return eleve;
+                                                                       } ) ) );
+                                                                       $scope.parent = node;
+                                                                   } );
+                                                           };
 
-                                           return regroupement;
-                                       } ) ) );
-                                       $scope.parent = app;
+                                                           return regroupement;
+                                                       } ) ) ) };
+                                       $scope.parent = node;
                                    } );
-                               };
-                               break;
-                           default:
-                               app.action = function() {
+                               }
+                           };
+
+                           node.configure = false;
+                           node.toggle_configure = function() {
+                               $scope.tree.forEach( function( tile ) {
+                                   tile.configure = tile.index === node.index;
+                               } );
+                           };
+
+                           node.dirty = {};
+                           node.is_dirty = function( field ) {
+                               node.dirty[ field ] = true;
+                           };
+
+                           node.to_delete = false;
+                           node.remove = function() {
+                               node.to_delete = !node.to_delete;
+                               node.dirty = node.dirty || node.to_delete;
+                               node.configure = false;
+                           };
+
+                           if ( _(app_specific_actions[node.application_id]).isUndefined() ) {
+                               node.action = function() {
                                    if ( $scope.modification ) { return; }
-                                   if ( !_(app.application_id).isNull() ) {
-                                       $state.go( 'app.external', { app: app.application_id } );
+                                   if ( !_(node.application_id).isNull() ) {
+                                       $state.go( 'app.external', { app: node.application_id } );
                                    } else {
-                                       Utils.log_and_open_link( app.application_id == 'PRONOTE' ? 'PRONOTE' : 'EXTERNAL', app.url );
+                                       Utils.log_and_open_link( node.application_id == 'PRONOTE' ? 'PRONOTE' : 'EXTERNAL', node.url );
                                    }
                                };
+                           } else {
+                               node.action = app_specific_actions[node.application_id];
                            }
 
-                           return app;
+                           return node;
                        };
 
                        var retrieve_tiles_tree = function() {
                            currentUser.apps().then( function( response ) {
+                               response.forEach( function( app ) { app.taxonomy = 'app'; } );
+
                                $scope.inactive_apps = _(response).where({ active: false });
 
-                               $scope.apps = _(response)
+                               var apps = _(response)
                                    .where({ active: true })
                                    .map( tool_tile );
-                               $scope.apps = fill_empty_tiles( $scope.apps );
-                               $scope.apps = _($scope.apps).sortBy( function( tile ) { return tile.index; } );
-                               $scope.apps = Utils.pad_tiles_tree( $scope.apps );
+                               apps = fill_empty_tiles( apps );
+                               apps = _(apps).sortBy( function( tile ) { return tile.index; } );
+                               apps = Utils.pad_tiles_tree( apps );
+
+                               $scope.apps = { configurable: true,
+                                               tiles: apps };
 
                                go_to_root_tile.action();
                            } );
@@ -256,7 +257,6 @@ angular.module( 'portailApp' )
                                $scope.tree = fill_empty_tiles( _($scope.tree).reject( function( tile ) { return tile.to_delete; } ) );
                            } );
 
-                           // $scope.exit_tiles_edition();
                            $scope.modification = false;
                            $scope.tree.forEach( function( tile ) {
                                if ( _(tile).has('configure') ) {
