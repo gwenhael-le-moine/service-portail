@@ -27,14 +27,15 @@ angular.module( 'portailApp' )
                        };
 
                        var go_to_root_tile = {
-                           action: function() {
-                               $scope.tree = $scope.apps;
-                               $scope.parent = null;
-                           },
+                           index: 0,
                            taxonomy: 'back',
                            libelle: '↰ Retour',
                            description: 'Retour',
-                           couleur: 'gris3'
+                           couleur: 'gris3',
+                           action: function() {
+                               $scope.tree = $scope.apps;
+                               $scope.parent = null;
+                           }
                        };
 
                        var tool_tile = function( app ) {
@@ -73,23 +74,28 @@ angular.module( 'portailApp' )
                                //      <p class="laius">Inscriptions en mai : <a href="mailto:info@laclasse.com">info@laclasse.com</a></p>' );
                                app.action = function() {
                                    if ( $scope.modification ) { return; }
-                                   $scope.tree = Utils.pad_tiles_tree( [ go_to_root_tile ].concat( CCN.query().map( function( ccn ) {
-                                       ccn.taxonomy = 'ccn';
+                                   $scope.tree = Utils.pad_tiles_tree( [ go_to_root_tile ]
+                                                                       .concat( CCN.query()
+                                                                                .map( function( ccn, index ) {
+                                                                                    ccn.taxonomy = 'ccn';
+                                                                                    ccn.index = index + 1;
 
-                                       if ( _(ccn).has('leaves') ) {
-                                           // ccn.laius = $sce.trustAsHtml( '<p class="laius">Au fil des années, des projets pédagogiques, des résidences d\'artistes, de scientifiques, et d\'écrivains se sont déroulés dans tout le département du rhône, et parfois au delà, amenant plusieurs classes de différents établissements à travailler ensemble autour de l\'outil numérique.<br/>\
-                                           //                Retrouver et revisitez les travaux des classes sur ces projets, ici.<br/><br/>\
-                                           //                </p>' );
-                                           ccn.action = function() {
-                                               $scope.tree = [ go_to_parent_tile( app ) ].concat( ccn.leaves.map( function( ccn ) {
-                                                   ccn.taxonomy = 'ccn';
-                                                   return ccn;
-                                               } ) );
-                                               $scope.parent = ccn;
-                                           };
-                                       }
-                                       return ccn;
-                                   } ) ) );
+                                                                                    if ( _(ccn).has('leaves') ) {
+                                                                                        // ccn.laius = $sce.trustAsHtml( '<p class="laius">Au fil des années, des projets pédagogiques, des résidences d\'artistes, de scientifiques, et d\'écrivains se sont déroulés dans tout le département du rhône, et parfois au delà, amenant plusieurs classes de différents établissements à travailler ensemble autour de l\'outil numérique.<br/>\
+                                                                                        //                Retrouver et revisitez les travaux des classes sur ces projets, ici.<br/><br/>\
+                                                                                        //                </p>' );
+                                                                                        ccn.action = function() {
+                                                                                            $scope.tree = [ go_to_parent_tile( app ) ].concat( ccn.leaves.map( function( ccn, index ) {
+                                                                                                ccn.taxonomy = 'ccn';
+                                                                                                ccn.index = index + 1;
+
+                                                                                                return ccn;
+                                                                                            } ) );
+                                                                                            $scope.parent = ccn;
+                                                                                        };
+                                                                                    }
+                                                                                    return ccn;
+                                                                                } ) ) );
                                    $scope.parent = app;
                                };
                                break;
@@ -98,10 +104,11 @@ angular.module( 'portailApp' )
                                app.action = function() {
                                    if ( $scope.modification ) { return; }
                                    currentUser.ressources().then( function ( response ) {
-                                       $scope.tree = Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( rn, i ) {
+                                       $scope.tree = Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( rn, index ) {
                                            rn.taxonomy = 'rn';
+                                           rn.index = index + 1;
                                            rn.icon = '/app/node_modules/laclasse-common-client/images/' + rn.icon;
-                                           rn.couleur = CASES[ i % 16 ].couleur;
+                                           rn.couleur = CASES[ index % 16 ].couleur;
                                            rn.action = function() { Utils.log_and_open_link( 'GAR', rn.url ); };
 
                                            return rn;
@@ -114,17 +121,19 @@ angular.module( 'portailApp' )
                                app.action = function() {
                                    if ( $scope.modification ) { return; }
                                    currentUser.regroupements().then( function ( response ) {
-                                       $scope.tree = Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( regroupement, i ) {
+                                       $scope.tree = Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( regroupement, index ) {
                                            regroupement.taxonomy = 'regroupement';
+                                           regroupement.index = index + 1;
                                            regroupement.couleur = regroupement.type === 'classe' ? 'vert' : 'bleu';
-                                           regroupement.couleur += i % 2 == 0 ? '' : '-moins';
+                                           regroupement.couleur += index % 2 == 0 ? '' : '-moins';
                                            regroupement.action = function() {
                                                currentUser.eleves_regroupement( regroupement.id )
                                                    .then( function( response ) {
-                                                       $scope.tree = Utils.pad_tiles_tree( [ go_to_parent_tile( app ) ].concat( response.map( function( eleve ) {
+                                                       $scope.tree = Utils.pad_tiles_tree( [ go_to_parent_tile( app ) ].concat( response.map( function( eleve, index ) {
                                                            eleve.taxonomy = 'eleve';
+                                                           eleve.index = index + 1;
                                                            eleve.couleur = 'jaune';
-                                                           eleve.couleur += i % 2 == 0 ? '' : '-moins';
+                                                           eleve.couleur += index % 2 == 0 ? '' : '-moins';
 
                                                            return eleve;
                                                        } ) ) );
