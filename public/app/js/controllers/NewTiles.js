@@ -103,14 +103,15 @@ angular.module( 'portailApp' )
                                                            regroupement.action = function() {
                                                                currentUser.eleves_regroupement( regroupement.id )
                                                                    .then( function( response ) {
-                                                                       $scope.tree = Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.map( function( eleve, index ) {
-                                                                           eleve.taxonomy = 'eleve';
-                                                                           eleve.index = index + 1;
-                                                                           eleve.couleur = 'jaune';
-                                                                           eleve.couleur += index % 2 == 0 ? '' : '-moins';
+                                                                       $scope.tree = { configurable: false,
+                                                                                       tiles: Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.map( function( eleve, index ) {
+                                                                                           eleve.taxonomy = 'eleve';
+                                                                                           eleve.index = index + 1;
+                                                                                           eleve.couleur = 'jaune';
+                                                                                           eleve.couleur += index % 2 == 0 ? '' : '-moins';
 
-                                                                           return eleve;
-                                                                       } ) ) );
+                                                                                           return eleve;
+                                                                                       } ) ) ) };
                                                                        $scope.parent = node;
                                                                    } );
                                                            };
