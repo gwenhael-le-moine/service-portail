@@ -142,7 +142,7 @@ angular.module( 'portailApp' )
                                                                                                    || !_(tile).has('libelle')
                                                                                                    || _($scope.filter_criteria.text).isEmpty()
                                                                                                    || tile.nom.includes( $scope.filter_criteria.text )
-                                                                                                   || tile.prennom.includes( $scope.filter_criteria.text );
+                                                                                                   || tile.prenom.includes( $scope.filter_criteria.text );
                                                                                            };
                                                                                        },
                                                                                        laius_template: 'views/laius_TROMBI_people.html',
