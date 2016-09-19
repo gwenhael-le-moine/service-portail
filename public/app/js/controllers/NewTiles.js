@@ -113,12 +113,8 @@ angular.module( 'portailApp' )
                                        $scope.tree = { configurable: false,
                                                        filter: function() {
                                                            return function( tile ) {
-                                                               if ( _(tile).has('type') ){
-                                                                   console.log($scope.filter_criteria)
-                                                                   console.log(tile)
-                                                               }
                                                                return tile.taxonomy === 'back'
-                                                                   || ( !_(tile).has('type')
+                                                                   || ( tile.taxonomy !== 'regroupement'
                                                                         || ( _($scope.filter_criteria).has('show_classes') && $scope.filter_criteria.show_classes && tile.type === 'classe' )
                                                                         || ( _($scope.filter_criteria).has('show_groupes_eleves') && $scope.filter_criteria.show_groupes_eleves && tile.type === 'groupe_eleves' ) )
                                                                    && ( !_(tile).has('libelle')
@@ -133,28 +129,35 @@ angular.module( 'portailApp' )
                                                            regroupement.couleur = regroupement.type === 'classe' ? 'vert' : 'bleu';
                                                            regroupement.couleur += index % 2 == 0 ? '' : '-moins';
                                                            regroupement.action = function() {
+                                                               $scope.filter_criteria.text = '';
+
                                                                currentUser.eleves_regroupement( regroupement.id )
                                                                    .then( function( response ) {
                                                                        $scope.tree = { configurable: false,
                                                                                        filter: function() {
                                                                                            return function( tile ) {
-                                                                                               return tile.taxonomy === 'back'
-                                                                                                   || !_(tile).has('libelle')
+                                                                                               if ( tile.taxonomy !== 'back'
+                                                                                                    && _(tile).has('libelle')
+                                                                                                    && !_($scope.filter_criteria.text).isEmpty() ){
+                                                                                                   console.log($scope.filter_criteria.text.toUpperCase())
+                                                                                                   console.log(tile.nom.toUpperCase() + ' ' + tile.prenom.toUpperCase())
+                                                                                               }
+                                                                                               return tile.taxonomy !== 'eleves'
                                                                                                    || _($scope.filter_criteria.text).isEmpty()
                                                                                                    || tile.nom.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() )
                                                                                                    || tile.prenom.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() );
                                                                                            };
                                                                                        },
                                                                                        laius_template: 'views/laius_TROMBI_people.html',
-                                                                       tiles: Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.map( function( eleve, index ) {
-                                                                           eleve.taxonomy = 'eleve';
-                                                                           eleve.index = index + 1;
-                                                                           eleve.couleur = 'jaune';
-                                                                           eleve.couleur += index % 2 == 0 ? '' : '-moins';
+                                                                                       tiles: Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.map( function( eleve, index ) {
+                                                                                           eleve.taxonomy = 'eleve';
+                                                                                           eleve.index = index + 1;
+                                                                                           eleve.couleur = 'jaune';
+                                                                                           eleve.couleur += index % 2 == 0 ? '' : '-moins';
 
-                                                                           return eleve;
-                                                                       } ) ) ) };
-                                                                          $scope.parent = node;
+                                                                                           return eleve;
+                                                                                       } ) ) ) };
+                                                                       $scope.parent = node;
                                                                    } );
                                                            };
 
