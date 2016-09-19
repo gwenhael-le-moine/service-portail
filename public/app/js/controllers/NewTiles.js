@@ -230,7 +230,7 @@ angular.module( 'portailApp' )
                        };
 
                        $scope.save_tiles_edition = function( should_save ) {
-                           _.chain($scope.tree)
+                           _.chain($scope.tree.tiles)
                                .select( function( tile ) {
                                    return _(tile).has('dirty') && !_(tile.dirty).isEmpty() && !_(tile).has('to_create');
                                } )
@@ -244,22 +244,22 @@ angular.module( 'portailApp' )
                                    Apps.update( updated_fields );
                                } );
 
-                           var promises = _.chain($scope.tree)
+                           var promises = _.chain($scope.tree.tiles)
                                .where({ to_delete: true })
                                .map( function( tile ) {
                                    return Apps.delete({ id: tile.id }).$promise;
                                } );
-                           promises.concat( _.chain($scope.tree)
+                           promises.concat( _.chain($scope.tree.tiles)
                                             .where({ to_create: true })
                                             .map( function( tile ) {
                                                 return Apps.save( tile ).$promise;
                                             } ) );
                            $q.all( promises ).then( function( response ) {
-                               $scope.tree = fill_empty_tiles( _($scope.tree).reject( function( tile ) { return tile.to_delete; } ) );
+                               $scope.tree.tiles = fill_empty_tiles( _($scope.tree.tiles).reject( function( tile ) { return tile.to_delete; } ) );
                            } );
 
                            $scope.modification = false;
-                           $scope.tree.forEach( function( tile ) {
+                           $scope.tree.tiles.forEach( function( tile ) {
                                if ( _(tile).has('configure') ) {
                                    tile.configure = false;
                                }
