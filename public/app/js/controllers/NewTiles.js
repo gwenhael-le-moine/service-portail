@@ -116,7 +116,7 @@ angular.module( 'portailApp' )
                                                                return tile.taxonomy === 'back'
                                                                    || ( tile.taxonomy !== 'regroupement'
                                                                         || ( _($scope.filter_criteria).has('show_classes') && $scope.filter_criteria.show_classes && tile.type === 'classe' )
-                                                                        || ( _($scope.filter_criteria).has('show_groupes_eleves') && $scope.filter_criteria.show_groupes_eleves && tile.type === 'groupe_eleves' ) )
+                                                                        || ( _($scope.filter_criteria).has('show_groupes_eleves') && $scope.filter_criteria.show_groupes_eleves && tile.type === 'groupe_eleve' ) )
                                                                    && ( !_(tile).has('libelle')
                                                                         || _($scope.filter_criteria.text).isEmpty()
                                                                         || tile.libelle.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() ) );

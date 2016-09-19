@@ -1,16 +1,27 @@
-<div class="blanc">
-    <p>
-        <label>Filtre :
-            <input class="gris1"
+<div class="blanc form-horizontal"
+     style="height: auto;">
+    <div class="col-md-12 form-group">
+        <label for="text"
+               class="col-md-3 control-label">Filtre :</label>
+        <div class="col-md-8">
+            <input id="text"
+                   class="form-control gris1"
                    ng:model="filter_criteria.text" />
-        </label>
-    </p>
-    <p>
-        <label ng:if="!eleves">
-            <checkbox class="checkbox" ng:model="filter_criteria.show_classes"></checkbox> Classes
-        </label>
-        <label ng:if="!eleves">
-            <checkbox class="checkbox" ng:model="filter_criteria.show_groupes_eleves"></checkbox> Groupes
-        </label>
-    </p>
+        </div>
+    </div>
+
+    <div class="col-md-12 form-group">
+        <label for="showclasses"
+               class="col-md-3 control-label">Classes </label>
+        <checkbox id="showclasses"
+                  class="form-control checkbox"
+                  ng:model="filter_criteria.show_classes"></checkbox>
+    </div>
+    <div class="col-md-12 form-group">
+        <label for="showgroupesdeleves"
+               class="col-md-3 control-label">Groupes d'élèves </label>
+        <checkbox id="showgroupesdeleves"
+                  class="form-control checkbox"
+                  ng:model="filter_criteria.show_groupes_eleves"></checkbox>
+    </div>
 </div>
