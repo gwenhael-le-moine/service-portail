@@ -123,7 +123,7 @@ angular.module( 'portailApp' )
                                                                         || ( _($scope.filter_criteria).has('show_groupes_eleves') && $scope.filter_criteria.show_groupes_eleves && tile.type === 'groupe_eleves' ) )
                                                                    && ( !_(tile).has('libelle')
                                                                         || _($scope.filter_criteria.text).isEmpty()
-                                                                        || tile.libelle.includes( $scope.filter_criteria.text ) );
+                                                                        || tile.libelle.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() ) );
                                                            };
                                                        },
                                                        laius_template: 'views/laius_TROMBI_regroupements.html',
@@ -141,8 +141,8 @@ angular.module( 'portailApp' )
                                                                                                return tile.taxonomy === 'back'
                                                                                                    || !_(tile).has('libelle')
                                                                                                    || _($scope.filter_criteria.text).isEmpty()
-                                                                                                   || tile.nom.includes( $scope.filter_criteria.text )
-                                                                                                   || tile.prenom.includes( $scope.filter_criteria.text );
+                                                                                                   || tile.nom.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() )
+                                                                                                   || tile.prenom.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() );
                                                                                            };
                                                                                        },
                                                                                        laius_template: 'views/laius_TROMBI_people.html',
