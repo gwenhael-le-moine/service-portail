@@ -199,22 +199,22 @@ angular.module( 'portailApp' )
                        $scope.add_tile = function() {
                            $uibModal.open( { templateUrl: 'views/popup_ajout_app.html',
                                              controller: 'PopupAjoutAppCtrl',
-                                             resolve: { current_tiles: function () { return $scope.tree; },
+                                             resolve: { current_tiles: function () { return $scope.tree.tiles; },
                                                         inactive_tiles: function () { return $scope.inactive_apps; } } } )
                                .result.then( function( new_tiles ) {
                                    $q.all( _(new_tiles).map( function( new_tile ) {
                                        var recipient_index = _($scope.tree).findIndex( function( tile ) { return !_(tile).has('taxonomy'); } );
 
                                        if ( recipient_index === -1 ) {
-                                           recipient_index = $scope.tree.length;
-                                           $scope.tree.push( { index: recipient_index } );
+                                           recipient_index = $scope.tree.tiles.length;
+                                           $scope.tree.tiles.push( { index: recipient_index } );
                                        }
 
-                                       $scope.tree[ recipient_index ] = tool_tile( new_tile );
-                                       $scope.tree[ recipient_index ].index = recipient_index;
-                                       $scope.tree[ recipient_index ].active = true;
+                                       $scope.tree.tiles[ recipient_index ] = tool_tile( new_tile );
+                                       $scope.tree.tiles[ recipient_index ].index = recipient_index;
+                                       $scope.tree.tiles[ recipient_index ].active = true;
                                        if ( !_(new_tile).has('id') ) {
-                                           $scope.tree[ recipient_index ].to_create = true;
+                                           $scope.tree.tiles[ recipient_index ].to_create = true;
                                        }
                                    } ) );
                                } );
