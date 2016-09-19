@@ -8,8 +8,9 @@
                 top: 25%;
                 left: -50%;
                 background-color: #fff;"
-         ng:bind-html="tree.laius"
-         ng:if="tree.laius">
+         ng:include="tree.laius_template"
+         ng:if="tree.laius_template">
+        {{tree.laius_template}}
     </div>
 
     <ul data-as-sortable="sortable_options"
@@ -19,7 +20,7 @@
         <li class="col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case animate scale-fade-in {{tile.couleur}}"
             data-as-sortable-item
             ng:class="{ 'empty hidden-xs': !tile.taxonomy }"
-            ng:repeat="tile in tree.tiles | orderBy:'index'">
+            ng:repeat="tile in tree.tiles | filter:tree.filter() | orderBy:'index'">
             <div ng:include="tiles_templates[ tile.taxonomy ]"></div>
         </li>
     </ul>

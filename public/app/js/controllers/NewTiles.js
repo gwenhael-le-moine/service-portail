@@ -11,6 +11,7 @@ angular.module( 'portailApp' )
                                                   eleve: 'views/new_tile_eleve.html',
                                                   rn: 'views/new_tile_rn.html',
                                                   ccn: 'views/new_tile_ccn.html' };
+                       $scope.filter_criteria = {};
 
                        var fill_empty_tiles = function( tiles_tree ) {
                            var indexes = tiles_tree.map( function( tile ) { return tile.index; } );
@@ -46,11 +47,18 @@ angular.module( 'portailApp' )
                                return back_to_parent;
                            };
 
-                           var app_specific_actions = {
-                               CCNUM: function() {
+                           var default_filter = function() {
+                               return function( tile ) {
+                                   return true;
+                               };
+                           };
+
+                           var app_specific = {
+                               CCNUM: { action: function() {
                                    if ( $scope.modification ) { return; }
                                    $scope.tree = { configurable: false,
-                                                   laius: $sce.trustAsHtml( '<p class="laius">Des collégiens qui jouent sur le web et sur scène avec des auteurs de théâtre et des écrivains, qui découvrent que design et développement durable peuvent s\'allier contre le gaspillage alimentaire, qui cartographient leur territoire grâce à la Big Data en compagnie d\'un philosophe, ou encore qui réalisent une enquête-expo sur la grande guerre avec les archives du Rhône, tout cela ce sont les Classes Culturelles Numériques de laclasse.com. 50 classes, du cm2 à la 3ème engagées dans 5 projets collaboratifs et innovants sur l\'ENT, à suivre en ligne toute l\'année, et lors des rencontres finales.</p><p class="laius">En partenariat avec <a href="http://www.ia69.ac-lyon.fr/" target="_blank">l\'Inspection Académique</a> et la DANE de <a href="http://www.ac-lyon.fr/" target="_blank">l\'Académie de Lyon</a>.</p><p class="laius">Inscriptions en mai : <a href="mailto:info@laclasse.com">info@laclasse.com</a></p>' ),
+                                                   filter: default_filter,
+                                                   laius_template: 'views/laius_CCNUM.html',
                                                    tiles: Utils.pad_tiles_tree( [ go_to_root_tile ]
                                                                                 .concat( CCN.query()
                                                                                          .map( function( ccn, index ) {
@@ -60,7 +68,8 @@ angular.module( 'portailApp' )
                                                                                              if ( _(ccn).has('leaves') ) {
                                                                                                  ccn.action = function() {
                                                                                                      $scope.tree = { configurable: false,
-                                                                                                                     laius: $sce.trustAsHtml( '<p class="laius">Au fil des années, des projets pédagogiques, des résidences d\'artistes, de scientifiques, et d\'écrivains se sont déroulés dans tout le département du rhône, et parfois au delà, amenant plusieurs classes de différents établissements à travailler ensemble autour de l\'outil numérique.<br/>Retrouver et revisitez les travaux des classes sur ces projets, ici.<br/><br/></p>' ),
+                                                                                                                     filter: default_filter,
+                                                                                                                     laius_template: 'views/laius_CCNUM_archives.html',
                                                                                                                      tiles: [ go_to_parent_tile( node ) ].concat( ccn.leaves.map( function( ccn, index ) {
                                                                                                                          ccn.taxonomy = 'ccn';
                                                                                                                          ccn.index = index + 1;
@@ -73,12 +82,14 @@ angular.module( 'portailApp' )
                                                                                              return ccn;
                                                                                          } ) ) ) };
                                    $scope.parent = node;
-                               },
-                               GAR: function() {
+                               }
+                                      },
+                               GAR: { action: function() {
                                    if ( $scope.modification ) { return; }
                                    currentUser.ressources().then( function ( response ) {
                                        $scope.tree = { configurable: false,
-                                                       laius: $sce.trustAsHtml( '<p class="laius">Retrouvez ici les ressources numériques que votre établissement a sélectionné pour vous. Ces ressources peuvent être des manuels scolaires en ligne, des dictionnaires, des sites proposant des ressources pour s\'entraîner, etc...</p><p class="laius">Si rien n\'est affiché dans cette page, c\'est que votre établissement n\'a ps encore activé les ressources numériques. Vous pouvez contacter un de vos administrateur de l\'ENT pour lui demander l\'activation de celles-ci.</p>' ),
+                                                       filter: default_filter,
+                                                       laius_template: 'views/laius_RN.html',
                                                        tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( rn, index ) {
                                                            rn.taxonomy = 'rn';
                                                            rn.index = index + 1;
@@ -90,11 +101,32 @@ angular.module( 'portailApp' )
                                                        } ) ) ) };
                                        $scope.parent = node;
                                    } );
-                               },
-                               TROMBI: function() {
+                               }
+                                    },
+                               TROMBI: { action: function() {
                                    if ( $scope.modification ) { return; }
+                                   $scope.filter_criteria = { show_classes: true,
+                                                              show_groupes_eleves: true,
+                                                              text: '' };
+
                                    currentUser.regroupements().then( function ( response ) {
                                        $scope.tree = { configurable: false,
+                                                       filter: function() {
+                                                           return function( tile ) {
+                                                               if ( _(tile).has('type') ){
+                                                                   console.log($scope.filter_criteria)
+                                                                   console.log(tile)
+                                                               }
+                                                               return tile.taxonomy === 'back'
+                                                                   || ( !_(tile).has('type')
+                                                                        || ( _($scope.filter_criteria).has('show_classes') && $scope.filter_criteria.show_classes && tile.type === 'classe' )
+                                                                        || ( _($scope.filter_criteria).has('show_groupes_eleves') && $scope.filter_criteria.show_groupes_eleves && tile.type === 'groupe_eleves' ) )
+                                                                   && ( !_(tile).has('libelle')
+                                                                        || _($scope.filter_criteria.text).isEmpty()
+                                                                        || tile.libelle.includes( $scope.filter_criteria.text ) );
+                                                           };
+                                                       },
+                                                       laius_template: 'views/laius_TROMBI_regroupements.html',
                                                        tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( regroupement, index ) {
                                                            regroupement.taxonomy = 'regroupement';
                                                            regroupement.index = index + 1;
@@ -104,15 +136,25 @@ angular.module( 'portailApp' )
                                                                currentUser.eleves_regroupement( regroupement.id )
                                                                    .then( function( response ) {
                                                                        $scope.tree = { configurable: false,
-                                                                                       tiles: Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.map( function( eleve, index ) {
-                                                                                           eleve.taxonomy = 'eleve';
-                                                                                           eleve.index = index + 1;
-                                                                                           eleve.couleur = 'jaune';
-                                                                                           eleve.couleur += index % 2 == 0 ? '' : '-moins';
+                                                                                       filter: function() {
+                                                                                           return function( tile ) {
+                                                                                               return tile.taxonomy === 'back'
+                                                                                                   || !_(tile).has('libelle')
+                                                                                                   || _($scope.filter_criteria.text).isEmpty()
+                                                                                                   || tile.nom.includes( $scope.filter_criteria.text )
+                                                                                                   || tile.prennom.includes( $scope.filter_criteria.text );
+                                                                                           };
+                                                                                       },
+                                                                                       laius_template: 'views/laius_TROMBI_people.html',
+                                                                       tiles: Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.map( function( eleve, index ) {
+                                                                           eleve.taxonomy = 'eleve';
+                                                                           eleve.index = index + 1;
+                                                                           eleve.couleur = 'jaune';
+                                                                           eleve.couleur += index % 2 == 0 ? '' : '-moins';
 
-                                                                                           return eleve;
-                                                                                       } ) ) ) };
-                                                                       $scope.parent = node;
+                                                                           return eleve;
+                                                                       } ) ) ) };
+                                                                          $scope.parent = node;
                                                                    } );
                                                            };
 
@@ -121,6 +163,7 @@ angular.module( 'portailApp' )
                                        $scope.parent = node;
                                    } );
                                }
+                                       }
                            };
 
                            node.configure = false;
@@ -142,7 +185,9 @@ angular.module( 'portailApp' )
                                node.configure = false;
                            };
 
-                           if ( _(app_specific_actions[node.application_id]).isUndefined() ) {
+                           if ( !_(app_specific[node.application_id]).isUndefined() && _(app_specific[ node.application_id ]).has('action') ) {
+                               node.action = app_specific[ node.application_id ].action;
+                           } else {
                                node.action = function() {
                                    if ( $scope.modification ) { return; }
                                    if ( !_(node.application_id).isNull() ) {
@@ -151,8 +196,6 @@ angular.module( 'portailApp' )
                                        Utils.log_and_open_link( node.application_id == 'PRONOTE' ? 'PRONOTE' : 'EXTERNAL', node.url );
                                    }
                                };
-                           } else {
-                               node.action = app_specific_actions[node.application_id];
                            }
 
                            return node;

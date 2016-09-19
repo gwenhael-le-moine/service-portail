@@ -1,0 +1,16 @@
+<div class="blanc">
+    <p>
+        <label>Filtre :
+            <input class="gris1"
+                   ng:model="filter_criteria.text" />
+        </label>
+    </p>
+    <p>
+        <label ng:if="!eleves">
+            <checkbox class="checkbox" ng:model="filter_criteria.show_classes"></checkbox> Classes
+        </label>
+        <label ng:if="!eleves">
+            <checkbox class="checkbox" ng:model="filter_criteria.show_groupes_eleves"></checkbox> Groupes
+        </label>
+    </p>
+</div>
