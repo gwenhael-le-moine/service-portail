@@ -203,7 +203,7 @@ angular.module( 'portailApp' )
                                                         inactive_tiles: function () { return $scope.inactive_apps; } } } )
                                .result.then( function( new_tiles ) {
                                    $q.all( _(new_tiles).map( function( new_tile ) {
-                                       var recipient_index = _($scope.tree).findIndex( function( tile ) { return !_(tile).has('taxonomy'); } );
+                                       var recipient_index = _($scope.tree.tiles).findIndex( function( tile ) { return !_(tile).has('taxonomy'); } );
 
                                        if ( recipient_index === -1 ) {
                                            recipient_index = $scope.tree.tiles.length;
