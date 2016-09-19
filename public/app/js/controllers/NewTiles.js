@@ -136,13 +136,7 @@ angular.module( 'portailApp' )
                                                                        $scope.tree = { configurable: false,
                                                                                        filter: function() {
                                                                                            return function( tile ) {
-                                                                                               if ( tile.taxonomy !== 'back'
-                                                                                                    && _(tile).has('libelle')
-                                                                                                    && !_($scope.filter_criteria.text).isEmpty() ){
-                                                                                                   console.log($scope.filter_criteria.text.toUpperCase())
-                                                                                                   console.log(tile.nom.toUpperCase() + ' ' + tile.prenom.toUpperCase())
-                                                                                               }
-                                                                                               return tile.taxonomy !== 'eleves'
+                                                                                               return tile.taxonomy !== 'eleve'
                                                                                                    || _($scope.filter_criteria.text).isEmpty()
                                                                                                    || tile.nom.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() )
                                                                                                    || tile.prenom.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() );
