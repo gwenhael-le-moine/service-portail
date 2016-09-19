@@ -2,19 +2,20 @@
 
 angular.module( 'portailApp' )
     .controller( 'ModificationUserCtrl',
-                 [ '$scope', '$rootScope', '$state', 'toastr', 'current_user', 'currentUser', 'APP_PATH', 'Utils',
-                   function( $scope, $rootScope, $state, toastr, current_user, currentUser, APP_PATH, Utils ) {
-                       var dirty = false;
+                 [ '$scope', '$rootScope', '$state', 'toastr', 'current_user', 'currentUser', 'APP_PATH', 'Utils', 'User',
+                   function( $scope, $rootScope, $state, toastr, current_user, currentUser, APP_PATH, Utils, User ) {
+                       var dirty = {};
 
                        $scope.prefix = APP_PATH;
                        $scope.groups = [ { ouvert: true,
                                            enabled: true },
                                          { ouvert: true,
-                                           enabled: true },
-                                         { ouvert: false,
-                                           enabled: false },
-                                         { ouvert: false,
-                                           enabled: false } ];
+                                           enabled: true }// ,
+                                         // { ouvert: false,
+                                         //   enabled: false },
+                                         // { ouvert: false,
+                                         //   enabled: false }
+                                       ];
 
                        $scope.open_datepicker = function( $event ) {
                            $event.preventDefault();
@@ -27,8 +28,8 @@ angular.module( 'portailApp' )
                                            new1: '',
                                            new2: '' };
 
-                       $scope.mark_as_dirty = function() {
-                           dirty = true;
+                       $scope.mark_as_dirty = function( key ) {
+                           dirty[ key ] = true;
                        };
 
                        $scope.filter_emails = function() {
@@ -40,9 +41,7 @@ angular.module( 'portailApp' )
                        $scope.uploaded_avatar = null;
                        $scope.apply_reset_avatar = false;
 
-                       // FIXME: modification disabled due to bug #163
-                       // $rootScope.current_user.editable = _($rootScope.current_user.id_jointure_aaf).isNull();
-                       $rootScope.current_user.editable = false;
+                       $rootScope.current_user.editable = _($rootScope.current_user.id_jointure_aaf).isNull();
 
                        $rootScope.current_user.date_naissance = new Date( $rootScope.current_user.date_naissance );
                        $scope.progress_percentage = 0;
@@ -67,7 +66,7 @@ angular.module( 'portailApp' )
                                               $scope.apply_reset_avatar = false;
                                               $rootScope.current_user.new_avatar = file;
                                               $scope.uploaded_avatar = file;
-                                              $scope.mark_as_dirty();
+                                              $scope.mark_as_dirty( 'avatar' );
 
                                               var img = new Image();
 
@@ -147,12 +146,13 @@ angular.module( 'portailApp' )
                        };
 
                        $scope.fermer = function( sauvegarder ) {
-                           if ( sauvegarder && dirty ) {
+                           if ( sauvegarder && !_(dirty).isEmpty() ) {
+                               var mod_user = {};
                                var password_confirmed = true;
                                if ( !_($scope.password.old).isEmpty() && !_($scope.password.new1).isEmpty() ) {
                                    if ( $scope.password.new1 == $scope.password.new2 ) {
-                                       $rootScope.current_user.previous_password = $scope.password.old;
-                                       $rootScope.current_user.new_password = $scope.password.new1;
+                                       mod_user.previous_password = $scope.password.old;
+                                       mod_user.new_password = $scope.password.new1;
                                    } else {
                                        password_confirmed = false;
                                        toastr.error( 'Confirmation de mot de passe incorrecte.',
@@ -163,20 +163,25 @@ angular.module( 'portailApp' )
 
                                if ( password_confirmed ) {
                                    toastr.info( 'Mise à jour du profil.');
-                                   $rootScope.current_user.$update().then( function() {
-                                       currentUser.force_refresh();
 
-                                       if ( !_($scope.uploaded_avatar).isNull() &&
-                                            $scope.uploaded_avatar.type != "" &&
-                                            !_($scope.uploaded_avatar.type.match( "image/.*" )).isNull() ) {
-                                           $scope.upload_avatar();
-                                       } else if ( $scope.apply_reset_avatar ) {
-                                           $scope.delete_avatar();
-                                       } else {
-                                           currentUser.force_refresh();
-                                           Utils.go_home();
-                                       }
+                                   _(dirty).keys().forEach( function( key ) {
+                                       mod_user[ key ] = $rootScope.current_user[ key ];
                                    } );
+                                   User.update( mod_user ).$promise
+                                       .then( function() {
+                                           currentUser.force_refresh();
+
+                                           if ( !_($scope.uploaded_avatar).isNull() &&
+                                                $scope.uploaded_avatar.type != "" &&
+                                                !_($scope.uploaded_avatar.type.match( "image/.*" )).isNull() ) {
+                                               $scope.upload_avatar();
+                                           } else if ( $scope.apply_reset_avatar ) {
+                                               $scope.delete_avatar();
+                                           } else {
+                                               currentUser.force_refresh();
+                                               Utils.go_home();
+                                           }
+                                       } );
                                }
                            } else {
                                Utils.go_home();
