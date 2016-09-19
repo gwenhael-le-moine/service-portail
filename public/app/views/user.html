@@ -57,19 +57,29 @@
                                disabled
                                value="{{current_user.date_naissance | amDateFormat: 'LL'}}"
                                ng:if="!current_user.editable" />
-                        <span uib-dropdown
-                              id="datenaissance"
-                              class="uib-dropdown form-control date-naissance"
-                              ng:if="current_user.editable">
-                            <a uib-dropdown-toggle class="uib-dropdown-toggle" role="button" data-toggle="uib-dropdown" data-target="#" href="" ng:cloak>{{current_user.date_naissance | amDateFormat: 'LL'}}</a>
-                            <div uib-dropdown-menu class="uib-dropdown-menu" role="menu" ng:click="$event.stopImmediatePropagation()">
-                                <datepicker datepicker-options="datepicker_options"
-                                            ng:disabled="!current_user.editable"
-                                            ng:change="mark_as_dirty( 'date_naissance' )"
-                                            ng:model="current_user.date_naissance"
-                                            ng:required="true"></datepicker>
+                        <div uib-dropdown
+                             id="datenaissance"
+                             class="dropdown form-control date-naissance"
+                             ng:if="current_user.editable">
+                            <a uib-dropdown-toggle
+                               class="dropdown-toggle"
+                               role="button"
+                               data-toggle="uib-dropdown"
+                               data-target="#"
+                               href>{{current_user.date_naissance | amDateFormat: 'LL'}}</a>
+                            <div uib-dropdown-menu
+                                 class="dropdown-menu"
+                                 role="menu"
+                                 ng:click="$event.stopImmediatePropagation()">
+                                <div uib-datepicker
+                                     datepicker-options="datepicker_options"
+                                     ng:disabled="!current_user.editable"
+                                     ng:change="mark_as_dirty( 'date_naissance' )"
+                                     ng:model="current_user.date_naissance"
+                                     ng:required="true">
+                                </div>
                             </div>
-                        </span>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="adresse">Adresse :</label>
