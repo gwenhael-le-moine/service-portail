@@ -34,17 +34,15 @@ module Portail
             param :adresse,        String,  required: false
             param :code_postal,    Integer, required: false, within: 0..999_999
             param :ville,          String,  required: false
-            # param :login,          String,  required: false
             param :previous_password,       String, required: false
             param :new_password, String, required: false
+            # param :login,          String,  required: false
             # param :bloque,         TrueClass, required: false
 
-            good_password = false
-            if params[:previous_password]
-              if AnnuaireWrapper::User.check_password( user[:login], params[:previous_password] )
-                good_password = true
-                params['password'] = params[:new_password]
-              end
+            good_password = !( params.key?( :previous_password ) && params.key?( :new_password ) )
+            if !good_password && AnnuaireWrapper::User.check_password( user[:login], params[:previous_password] )
+              good_password = true
+              params['password'] = params[:new_password]
             end
 
             if good_password
@@ -54,7 +52,6 @@ module Portail
             end
 
             utilisateur = user_verbose
-
             utilisateur[:wrong_password] = !good_password
 
             json utilisateur
