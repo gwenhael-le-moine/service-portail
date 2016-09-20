@@ -24,8 +24,7 @@ angular.module( 'portailApp' )
                            $scope.opened = true;
                        };
 
-                       $scope.password = { old: '',
-                                           new1: '',
+                       $scope.password = { new1: '',
                                            new2: '' };
 
                        $scope.mark_as_dirty = function( key ) {
@@ -147,21 +146,12 @@ angular.module( 'portailApp' )
 
                        $scope.fermer = function( sauvegarder ) {
                            if ( sauvegarder && !_(dirty).isEmpty() ) {
-                               var mod_user = {};
-                               var password_confirmed = true;
-                               if ( !_($scope.password.old).isEmpty() && !_($scope.password.new1).isEmpty() ) {
-                                   if ( $scope.password.new1 == $scope.password.new2 ) {
-                                       mod_user.previous_password = $scope.password.old;
-                                       mod_user.new_password = $scope.password.new1;
-                                   } else {
-                                       password_confirmed = false;
-                                       toastr.error( 'Confirmation de mot de passe incorrecte.',
-                                                     'Erreur',
-                                                     { timeout: 100000 } );
-                                   }
-                               }
+                               if ( _($scope.password.new1).isEmpty() || ( !_($scope.password.new1).isEmpty() && ( $scope.password.new1 == $scope.password.new2 ) ) ) {
+                                   var mod_user = {};
 
-                               if ( password_confirmed ) {
+                                   if ( !_($scope.password.new1).isEmpty() ) {
+                                       mod_user.password = $scope.password.new1;
+                                   }
                                    toastr.info( 'Mise à jour du profil.');
 
                                    _(dirty).keys().forEach( function( key ) {
@@ -182,6 +172,10 @@ angular.module( 'portailApp' )
                                                Utils.go_home();
                                            }
                                        } );
+                               } else {
+                                   toastr.error( 'Confirmation de mot de passe incorrecte.',
+                                                 'Erreur',
+                                                 { timeout: 100000 } );
                                }
                            } else {
                                Utils.go_home();
