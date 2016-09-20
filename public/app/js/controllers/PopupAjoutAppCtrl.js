@@ -2,58 +2,85 @@
 
 angular.module( 'portailApp' )
     .controller( 'PopupAjoutAppCtrl',
-                 [ '$scope', '$uibModalInstance', 'APP_PATH', 'Apps', 'current_tiles', 'inactive_tiles',
-                   function( $scope, $uibModalInstance, APP_PATH, Apps, current_tiles, inactive_tiles ) {
+                 [ '$scope', '$uibModalInstance', 'APP_PATH', 'Apps', 'RessourceNumerique', 'currentUser',
+                   'current_tiles', 'inactive_tiles',
+                   function( $scope, $uibModalInstance, APP_PATH, Apps, RessourceNumerique, currentUser,
+                             current_tiles, inactive_tiles ) {
                        $scope.prefix = APP_PATH;
-                       $scope.apps_selected = false;
+
+                       $scope.available_tiles = [];
+                       $scope.tiles_selected = false;
 
                        $scope.add_empty_link_tile = function() {
-                           $scope.apps.push( new Apps( { creation: true,
-                                                         present: false,
-                                                         type: 'EXTERNAL',
-                                                         libelle: '',
-                                                         description: '',
-                                                         url: 'http://',
-                                                         color: '',
-                                                         active: true,
-                                                         selected: true } ) );
+                           $scope.available_tiles.push( new Apps( { creation: true,
+                                                                    present: false,
+                                                                    type: 'EXTERNAL',
+                                                                    libelle: '',
+                                                                    description: '',
+                                                                    url: 'http://',
+                                                                    color: '',
+                                                                    active: true,
+                                                                    selected: true } ) );
                        };
 
-                       $scope.keep_app_selected = function( event, app ) {
+                       $scope.keep_tile_selected = function( event, app ) {
                            app.selected = false; // opposite of what we want
                            $scope.selected( app );
                            event.stopImmediatePropagation();
                        };
 
-                       $scope.selected = function( app ) {
-                           app.selected = !app.selected;
-                           $scope.apps_selected = _($scope.apps).select( { selected: true } ).length > 0;
+                       $scope.selected = function( tile ) {
+                           tile.selected = !tile.selected;
+                           $scope.tiles_selected = _($scope.available_tiles).select( { selected: true } ).length > 0;
                        };
 
                        $scope.ok = function () {
-                           $uibModalInstance.close( _($scope.apps).select( { selected: true } ) );
+                           $uibModalInstance.close( _($scope.available_tiles).select( { selected: true } ) );
                        };
 
                        $scope.cancel = function () {
                            $uibModalInstance.dismiss();
                        };
 
+                       // RessourceNumerique.query().$promise
+                       //     .then( function( response ) {
+                       //         currentUser.ressources().then( function ( active_ressources ) {
+                       //             var active_ressources_descriptions = active_ressources.map( function( rn ) {
+                       //                 return rn.description;
+                       //             } );
+                       //             $scope.available_tiles = $scope.available_tiles.concat( _(response)
+                       //                                                                     .reject( function( rn ) {
+                       //                                                                         return active_ressources_descriptions.indexOf( rn.nom_court ) !== -1;
+                       //                                                                     } )
+                       //                                                                     .map( function( rn ) {
+                       //                                                                         rn.taxonomy = 'rn';
+                       //                                                                         rn.description = rn.lib;
+                       //                                                                         rn.libelle = rn.nom_court;
+                       //                                                                         rn.url = rn.url_access_get;
+                       //                                                                         rn.color = 'orange-brillant';
+                       //                                                                         rn.available = function() { return true; };
+
+                       //                                                                         return rn;
+                       //                                                                     } ) );
+                       //         } );
+                       //     } );
+
                        Apps.query_default().$promise
                            .then( function( response ) {
-                               $scope.apps = _.chain( inactive_tiles.concat( _(response).where({ active: true }) ) )
-                                   .uniq( function( app ) { return app.application_id; } )
-                                   .each( function( app ) {
-                                       app.taxonomy = 'app';
-                                       app.available = function() {
-                                           return !_.chain(current_tiles)
-                                               .reject( function( a ) {
-                                                   return a.to_delete;
-                                               } )
-                                               .pluck( 'application_id' )
-                                               .contains( app.application_id )
-                                               .value();
-                                       };
-                                   } )
-                                   .value();
+                               $scope.available_tiles = $scope.available_tiles.concat( _.chain( inactive_tiles.concat( _(response).where({ active: true }) ) )
+                                                                                       .uniq( function( app ) { return app.application_id; } )
+                                                                                       .each( function( app ) {
+                                                                                           app.taxonomy = 'app';
+                                                                                           app.available = function() {
+                                                                                               return !_.chain(current_tiles)
+                                                                                                   .reject( function( a ) {
+                                                                                                       return a.to_delete;
+                                                                                                   } )
+                                                                                                   .pluck( 'application_id' )
+                                                                                                   .contains( app.application_id )
+                                                                                                   .value();
+                                                                                           };
+                                                                                       } )
+                                                                                       .value() );
                            } );
                    } ] );

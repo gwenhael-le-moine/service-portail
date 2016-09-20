@@ -236,25 +236,25 @@ angular.module( 'portailApp' )
                                                    clone: false,
                                                    allowDuplicates: false };
 
-                       $scope.add_tile = function() {
+                       $scope.add_tile = function( parent, tiles, inactive_tiles ) {
                            $uibModal.open( { templateUrl: 'views/popup_ajout_app.html',
                                              controller: 'PopupAjoutAppCtrl',
-                                             resolve: { current_tiles: function () { return $scope.tree.tiles; },
-                                                        inactive_tiles: function () { return $scope.inactive_apps; } } } )
+                                             resolve: { current_tiles: function() { return tiles; },
+                                                        inactive_tiles: function() { return inactive_tiles; } } } )
                                .result.then( function( new_tiles ) {
                                    $q.all( _(new_tiles).map( function( new_tile ) {
-                                       var recipient_index = _($scope.tree.tiles).findIndex( function( tile ) { return !_(tile).has('taxonomy'); } );
+                                       var recipient_index = _(tiles).findIndex( function( tile ) { return !_(tile).has('taxonomy'); } );
 
                                        if ( recipient_index === -1 ) {
-                                           recipient_index = $scope.tree.tiles.length;
-                                           $scope.tree.tiles.push( { index: recipient_index } );
+                                           recipient_index = tiles.length;
+                                           tiles.push( { index: recipient_index } );
                                        }
 
-                                       $scope.tree.tiles[ recipient_index ] = tool_tile( new_tile );
-                                       $scope.tree.tiles[ recipient_index ].index = recipient_index;
-                                       $scope.tree.tiles[ recipient_index ].active = true;
+                                       tiles[ recipient_index ] = tool_tile( new_tile );
+                                       tiles[ recipient_index ].index = recipient_index;
+                                       tiles[ recipient_index ].active = true;
                                        if ( !_(new_tile).has('id') ) {
-                                           $scope.tree.tiles[ recipient_index ].to_create = true;
+                                           tiles[ recipient_index ].to_create = true;
                                        }
                                    } ) );
                                } );
@@ -289,11 +289,13 @@ angular.module( 'portailApp' )
                                .map( function( tile ) {
                                    return Apps.delete({ id: tile.id }).$promise;
                                } );
+
                            promises.concat( _.chain($scope.tree.tiles)
                                             .where({ to_create: true })
                                             .map( function( tile ) {
                                                 return Apps.save( tile ).$promise;
                                             } ) );
+
                            $q.all( promises ).then( function( response ) {
                                $scope.tree.tiles = fill_empty_tiles( _($scope.tree.tiles).reject( function( tile ) { return tile.to_delete; } ) );
                            } );

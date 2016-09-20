@@ -92,6 +92,7 @@
             <script src="app/js/services/user.js?v=<%=APP_VERSION%>"></script>
             <script src="app/js/services/apps.js?v=<%=APP_VERSION%>"></script>
             <script src="app/js/services/flux.js?v=<%=APP_VERSION%>"></script>
+            <script src="app/js/services/ressources_numeriques.js?v=<%=APP_VERSION%>"></script>
             <script src="app/js/services/news.js?v=<%=APP_VERSION%>"></script>
             <script src="app/js/services/utils.js?v=<%=APP_VERSION%>"></script>
             <script src="app/js/services/CCN.js?v=<%=APP_VERSION%>"></script>
@@ -135,6 +136,7 @@
          angular.module( 'portailApp' )
                 .constant( 'APP_VERSION', '<%=APP_VERSION%>' )
                 .constant( 'APP_PATH', '<%=APP_PATH%>' )
+                .constant( 'URL_ENT', '<%=URL_ENT%>' )
                 .config( [ '$compileProvider',
                            function( $compileProvider ) {
                                $compileProvider.debugInfoEnabled( <%= ENV['RACK_ENV'] == 'development' %> );
