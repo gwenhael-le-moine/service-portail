@@ -174,6 +174,6 @@ module Portail
           end
         end
       end
+    end
   end
-end
 end
