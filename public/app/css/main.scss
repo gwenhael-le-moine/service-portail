@@ -244,8 +244,11 @@ body {
         width: 50%;
         top: 25%;
         left: -50%;
-        padding: 15px 0;
+        padding: 15px;
         background-color: #fff;
+        p {
+            margin: 15px 0;
+        }
         .form-group {
             margin-bottom: 15px;
             .control-label {
