@@ -166,7 +166,7 @@ angular.module( 'portailApp' )
                            node.configure = false;
                            node.toggle_configure = function() {
                                $scope.tree.tiles.forEach( function( tile ) {
-                                   tile.configure = tile.index === node.index;
+                                   tile.configure = tile.index === node.index ? !tile.configure : false;
                                } );
                            };
 
@@ -221,8 +221,11 @@ angular.module( 'portailApp' )
                        // Edition
                        $scope.modification = false;
                        var sortable_callback = function( event ) {
-                           _($scope.tree).each( function( tile, i ) {
+                           _($scope.tree.tiles).each( function( tile, i ) {
                                tile.index = i;
+                               if ( !_(tile).has('dirty') ) {
+                                   tile.dirty = {};
+                               }
                                tile.dirty.index = true;
                            } );
                        };
