@@ -1,125 +1,115 @@
-	 'use strict';
+         'use strict';
 
 // Declare app level module which depends on filters, and services
 angular.module( 'statsApp',
-		[ 'ui.bootstrap',
-		  'nvd3',
-		  'angularMoment',
-		  'angular-loading-bar',
-		  'ngAnimate' ] )
+                [ 'ui.bootstrap',
+                  'nvd3',
+                  'angularMoment',
+                  'angular-loading-bar' ] )
     .run( [ 'amMoment', function( amMoment ) { amMoment.changeLocale( 'fr' ); } ] )
-    .service( 'log',
-	      [ '$http', 'APP_PATH',
-		function( $http, APP_PATH ) {
-		    this.query = function( params ) {
-			return $http.get( APP_PATH + '/api/log' );
-		    };
-
-		    this.stats = function( params ) {
-			return $http.get( APP_PATH + '/api/log/stats', { params: params } );
-		    };
-		}
-	      ] )
+    .service( 'Logs',
+              [ '$http', 'APP_PATH',
+                function( $http, APP_PATH ) {
+                    this.stats = function( params ) {
+                        return $http.get( APP_PATH + '/api/log/stats', { params: params } );
+                    };
+                }
+              ] )
     .controller( 'StatsCtrl',
-		 [ '$scope', '$http', 'moment', 'APP_PATH', 'log',
-		   function ( $scope, $http, moment, APP_PATH, log ) {
-		       $scope.period_types = { list: [ { label: 'jour', value: 'day' },
-						       { label: 'semaine', value: 'week' },
-						       { label: 'mois', value: 'month' },
-						       { label: 'année', value: 'year' } ],
-					       selected: 'week' };
+                 [ '$scope', '$http', 'moment', 'APP_PATH', 'Logs',
+                   function ( $scope, $http, moment, APP_PATH, Logs ) {
+                       $scope.types_labels = { global: 'Statistiques globales',
+                                               uai: 'Établissements',
+                                               app: 'Tuiles',
+                                               user_type: 'Profils utilisateurs' };
+                       $scope.period_types = { list: [ { label: 'jour', value: 'day' },
+                                                       { label: 'semaine', value: 'week' },
+                                                       { label: 'mois', value: 'month' },
+                                                       { label: 'année', value: 'year' } ],
+                                               selected: 'week' };
+                       $scope.multibarchart_options = { chart: { type: 'multiBarChart',
+                                                                 height: 256,
+                                                                 width: 550,
+                                                                 margin: { left: 50,
+                                                                           top: 20,
+                                                                           bottom: 100,
+                                                                           right: 20 },
+                                                                 showControls: false,
+                                                                 showValues: true,
+                                                                 showLegend: true,
+                                                                 stacked: false,
+                                                                 duration: 500,
+                                                                 labelThreshold: 0.01,
+                                                                 labelSunbeamLayout: true
+                                                               }
+                                                      };
+                       $scope.multibarhorizontalchart_options = angular.copy( $scope.multibarchart_options );
+                       $scope.multibarhorizontalchart_options.chart.type = 'multiBarHorizontalChart';
+                       $scope.multibarhorizontalchart_options.chart.margin = { left: 150,
+                                                                               top: 20,
+                                                                               bottom: 20,
+                                                                               right: 50 };
 
-		       $scope.multibarchart_options = { chart: { type: 'multiBarChart',
-								 height: 256,
-								 width: 550,
-								 margin: { left: 50,
-									   top: 20,
-									   bottom: 100,
-									   right: 20 },
-								 showControls: false,
-								 showValues: true,
-								 showLegend: true,
-								 stacked: false,
-								 duration: 500,
-								 labelThreshold: 0.01,
-								 labelSunbeamLayout: true
-							       }
-						      };
-		       $scope.multibarhorizontalchart_options = angular.copy( $scope.multibarchart_options );
-		       $scope.multibarhorizontalchart_options.chart.type = 'multiBarHorizontalChart';
-		       $scope.multibarhorizontalchart_options.chart.margin = { left: 150,
-									       top: 20,
-									       bottom: 20,
-									       right: 50 };
+                       $scope.retrieve_data = function( from ) {
+                           $scope.fin = $scope.debut.clone().endOf( $scope.period_types.selected );
 
-		       $scope.retrieve_data = function( from ) {
-			   $scope.fin = $scope.debut.clone().endOf( $scope.period_types.selected );
+                           var params = { from: $scope.debut.clone().toDate(),
+                                          until: $scope.fin.clone().toDate() };
 
-			   var params = { from: $scope.debut.clone().toDate(),
-					  until: $scope.fin.clone().toDate() };
+                           Logs.stats( params )
+                               .then( function ( response ) {
+                                   var ignored_uai = _([ '0699990Z', '069BACAS', '069DANE' ]);
+                                   var keys = [ 'uai', 'app', 'user_type' ];
 
-			   log.stats( params )
-			       .then( function ( response ) {
-				   $scope.stats = response.data;
-				   $scope.filters = {};
-				   _.chain($scope.stats.general).keys()
-				       .select( function( key ) { return key == 'uai'; } )
-				       .each ( function( key ) {
-					   $scope.filters[ key ] = _($scope.stats.general[ key ]).pluck( key );
-				       } );
+                                   var stats_to_nvd3_data = function( key, values ) {
+                                       return [ { key: key,
+                                                  values: _(values).keys().map( function( key ) {
+                                                      return { key: key,
+                                                               x: key,
+                                                               y: values[ key ] };
+                                                  } ) } ];
+                                   };
 
-				   _.chain($scope.stats.general)
-				       .keys()
-				       .each( function( key ) {
-					   $scope.stats.general[ key ].bar_graph_data = [ { "key": key,
-											    "values": _($scope.stats.general[ key ])
-											    .map( function( item ) {
-												return { key: key,
-													 x: (key == 'uai') ? _($scope.stats.info.noms_uais).find({ uai: item[ key ] }).nom : item[ key ],
-													 y: item.count };
-											    } )
-											  } ];
-				       } );
+                                   var extract_stats = function( logs, keys ) {
+                                       return _.chain(keys)
+                                           .map( function( key ) {
+                                               return [ key, stats_to_nvd3_data( key, _(logs).countBy( key ) ) ];
+                                           } )
+                                           .object()
+                                           .value();
+                                   };
 
-				   _([ 'uai', 'user_type' ]).each( function( key ) {
-				       var first = _.chain($scope.stats[ key ]).keys().first().value();
-				       _($scope.stats[ key ]).each( function( stats, clef ) {
-					   stats[ key ] = (key == 'uai') ? _($scope.stats.info.noms_uais).find({ uai: clef }).nom : clef;
-					   stats.active_tab = clef == first;
+                                   $scope.logs = _(response.data).reject( function( logline ) { return ignored_uai.contains( logline.uai ); });
+                                   $scope.filters = {};
 
-					   _.chain(stats)
-					       .keys()
-					       .each( function( _key ) {
-						   stats[ _key ].bar_graph_data = [ { "key": _key,
-										      "values": _(stats[ _key ])
-										      .map( function( item ) {
-											  return { key: _key,
-												   x: item[ _key ],
-												   y: item.count };
-										      } )
+                                   $scope.stats = {};
+                                   $scope.stats.global = extract_stats( $scope.logs, keys );
+                                   keys.forEach( function( key ) {
+                                       $scope.stats[ key ] = _.chain($scope.stats.global[ key ][0].values)
+                                           .pluck( 'x' )
+                                           .map( function( value ) {
+                                               return [ value, extract_stats( _($scope.logs).select( function( logline ) { return logline[ key ] === value; } ),
+                                                                              _(keys).difference( [ key ] ) ) ];
+                                           } )
+                                           .object()
+                                           .value();
+                                   } );
+                               } );
+                       };
 
-										    } ];
-					       } );
-				       } );
+                       $scope.decr_period = function() {
+                           $scope.debut.subtract( 1, $scope.period_types.selected + 's' );
+                           $scope.retrieve_data( $scope.debut );
+                       };
+                       $scope.incr_period = function() {
+                           $scope.debut.add( 1, $scope.period_types.selected + 's' );
+                           $scope.retrieve_data( $scope.debut );
+                       };
+                       $scope.reset_period = function() {
+                           $scope.debut = moment().startOf( $scope.period_types.selected );
+                           $scope.retrieve_data( $scope.debut );
+                       };
 
-				       $scope.stats[ key ] = _($scope.stats[ key ]).toArray();
-				   } );
-			       } );
-		       };
-
-		       $scope.decr_period = function() {
-			   $scope.debut.subtract( 1, $scope.period_types.selected + 's' );
-			   $scope.retrieve_data( $scope.debut );
-		       };
-		       $scope.incr_period = function() {
-			   $scope.debut.add( 1, $scope.period_types.selected + 's' );
-			   $scope.retrieve_data( $scope.debut );
-		       };
-		       $scope.reset_period = function() {
-			   $scope.debut = moment().startOf( $scope.period_types.selected );
-			   $scope.retrieve_data( $scope.debut );
-		       };
-
-		       $scope.reset_period();
-		   }
-		 ] );
+                       $scope.reset_period();
+                   }
+                 ] );

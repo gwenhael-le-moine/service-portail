@@ -47,8 +47,8 @@
             </style>
             <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
             <!--[if lt IE 9]>
-                <script src="<%=APP_PATH%>/app/https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-                <script src="<%=APP_PATH%>/app/https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+                <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+                <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
             <![endif]-->
     </head>
 
@@ -65,80 +65,78 @@
                 {{ debut | amDateFormat:'dddd Do MMMM YYYY' }} - {{ fin | amDateFormat:'dddd Do MMMM YYYY' }}
             </h2>
 
-            <div class="row">
-                <div class="col-md-6"
-                     ng:repeat="(metric, data) in stats.general"
-                     ng:if="data.bar_graph_data[0].values.length > 0">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">{{metric}}</div>
-                        <div class="panel-body">
-                            <nvd3 ng:if="metric == 'time_of_day' || metric == 'week_day'"
-                                  data="data.bar_graph_data"
-                                  options="multibarchart_options">
-                            </nvd3>
-                            <nvd3 ng:if="metric != 'time_of_day' && metric != 'week_day'"
-                                  data="data.bar_graph_data"
-                                  options="multibarhorizontalchart_options">
-                            </nvd3>
-                        </div>
+            <p>
+                {{logs.length}} lignes de log
+            </p>
+            <div class="col-md-12"
+                 ng:repeat="(type, values) in stats">
+                <div class="panel panel-default"
+                     ng:if="type === 'global'">
+                    <div class="panel-heading">{{types_labels[type]}}</div>
+                    <div class="panel-body">
+                        <uib-tabset>
+                            <uib-tab
+                                index="$index + 1"
+                                ng:repeat="(key, stat) in values"
+                                heading="{{types_labels[key]}}">
+                                <nvd3 data="stat"
+                                      options="multibarchart_options">
+                                </nvd3>
+                                <!-- <pre>
+                                     {{stat | json}}
+                                     </pre> -->
+                            </uib-tab>
+                        </uib-tabset>
+                    </div>
+                </div>
+
+                <div class="panel panel-default"
+                     ng:if="type !== 'global'">
+                    <div class="panel-heading">Statistiques par {{types_labels[type]}}</div>
+                    <div class="panel-body">
+                        <uib-tabset>
+                            <uib-tab
+                                index="$index + 1"
+                                ng:repeat="(key, value) in values"
+                                heading="{{key}}">
+                                <uib-tabset>
+                                    <uib-tab
+                                        index="$index + 1"
+                                        ng:repeat="(subkey, stat) in value"
+                                        heading="{{types_labels[subkey]}}">
+                                        <nvd3 data="stat"
+                                              options="multibarchart_options">
+                                        </nvd3>
+                                        <!-- <pre>
+                                             {{stat | json}}
+                                             </pre> -->
+                                    </uib-tab>
+                                </uib-tabset>
+                            </uib-tab>
+                        </uib-tabset>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <uib-tabset class="col-md-12">
-                    <uib-tab ng:repeat="etablissement in stats.uai"
-                             heading="{{etablissement.uai}}"
-                             active="etablissement.active_tab">
 
-                        <div class="col-md-6"
-                             ng:repeat="(metric, data) in etablissement"
-                             ng:if="data.bar_graph_data">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">{{metric}}</div>
-                                <div class="panel-body">
-                                    <nvd3 ng:if="metric == 'time_of_day' || metric == 'week_day'"
-                                          data="data.bar_graph_data"
-                                          options="multibarchart_options" >
-                                    </nvd3>
-                                    <nvd3 ng:if="metric != 'time_of_day' && metric != 'week_day'"
-                                          data="data.bar_graph_data"
-                                          options="multibarhorizontalchart_options" >
-                                    </nvd3>
-                                </div>
-                            </div>
-                        </div>
-
-                    </uib-tab>
-                </uib-tabset>
-            </div>
-
-            <div class="row">
-                <uib-tabset class="col-md-12">
-                    <uib-tab ng:repeat="item in stats.user_type"
-                             heading="{{item.user_type}}"
-                             active="item.active_tab">
-
-                        <div class="col-md-6"
-                             ng:repeat="(metric, data) in item"
-                             ng:if="data.bar_graph_data">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">{{metric}}</div>
-                                <div class="panel-body">
-                                    <nvd3 ng:if="metric == 'time_of_day'"
-                                          data="data.bar_graph_data"
-                                          options="multibarchart_options">
-                                    </nvd3>
-                                    <nvd3 ng:if="metric != 'time_of_day'"
-                                          data="data.bar_graph_data"
-                                          options="multibarhorizontalchart_options">
-                                    </nvd3>
-                                </div>
-                            </div>
-                        </div>
-
-                    </uib-tab>
-                </uib-tabset>
-            </div>
+            <!-- <pre>
+                 {{stats | json}}
+                 </pre> -->
+            <!--
+                 <div class="row">
+                 <div class="col-md-6"
+                 ng:repeat="(metric, data) in stats.general"
+                 ng:if="data.bar_graph.data[0].values.length > 0">
+                 <div class="panel panel-default">
+                 <div class="panel-heading">{{metric}}</div>
+                 <div class="panel-body"
+                 ng:style="{'height': ( data.bar_graph.options + 30 ) + 'px' }" >
+                 <nvd3 data="data.bar_graph.data"
+                 options="data.bar_graph.options">
+                 </nvd3>
+                 </div>
+                 </div>
+                 </div>
+                 </div> -->
 
         </div>
 
