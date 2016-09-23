@@ -164,6 +164,11 @@
           "title": "Formation de la DANE",
           "url": "https://dane.ac-lyon.fr/spip/IMG/scenari/v3_la_classe/co/000_formation_utilisateur_ent.html",
           "profils": [ "DIR", "ENS" ]
+      },
+      {
+          "title": "Problèmes connus",
+          "url": "http://ent-laclasse.blogs.laclasse.com/category/bugs/",
+          "profils": [ "DIR", "ENS" ]
       }
   ]
 }
