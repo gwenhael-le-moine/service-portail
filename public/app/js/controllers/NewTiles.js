@@ -236,7 +236,7 @@ angular.module( 'portailApp' )
                                                    clone: false,
                                                    allowDuplicates: false };
 
-                       $scope.add_tile = function( parent, tiles, inactive_tiles ) {
+                       $scope.add_tile = function( tiles, inactive_tiles ) {
                            $uibModal.open( { templateUrl: 'views/popup_ajout_app.html',
                                              controller: 'PopupAjoutAppCtrl',
                                              resolve: { current_tiles: function() { return tiles; },
