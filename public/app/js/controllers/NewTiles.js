@@ -2,8 +2,8 @@
 
 angular.module( 'portailApp' )
     .controller( 'NewTilesCtrl',
-                 [ '$scope', '$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Apps',
-                   function( $scope, $sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Apps ) {
+                 [ '$scope', '$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Apps', 'current_user',
+                   function( $scope, $sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Apps, current_user ) {
                        $scope.COULEURS = COULEURS;
                        $scope.tiles_templates = { app: 'views/new_tile_app.html',
                                                   back: 'views/new_tile_app.html',
@@ -205,7 +205,9 @@ angular.module( 'portailApp' )
                                $scope.inactive_apps = _(response).where({ active: false });
 
                                var apps = _(response)
-                                   .where({ active: true })
+                                   .select( function( app ) {
+                                       return app.active && !app.hidden.includes( current_user.profil_actif.profil_id );
+                                   } )
                                    .map( tool_tile );
                                apps = fill_empty_tiles( apps );
                                apps = _(apps).sortBy( function( tile ) { return tile.index; } );
