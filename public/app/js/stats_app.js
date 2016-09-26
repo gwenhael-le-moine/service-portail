@@ -7,17 +7,29 @@ angular.module( 'statsApp',
                   'angularMoment',
                   'angular-loading-bar' ] )
     .run( [ 'amMoment', function( amMoment ) { amMoment.changeLocale( 'fr' ); } ] )
-    .service( 'Logs',
+    .service( 'Annuaire',
               [ '$http', 'APP_PATH',
                 function( $http, APP_PATH ) {
-                    this.stats = function( params ) {
+                    this.get_stats = function( params ) {
                         return $http.get( APP_PATH + '/api/log/stats', { params: params } );
+                    };
+
+                    this.get_profils = function( params ) {
+                        return $http.get( '/api/app/profils', { params: params } );
+                    };
+
+                    this.get_etablissements = function( params ) {
+                        return $http.get( '/api/app/etablissements', { params: params } );
+                    };
+
+                    this.get_default_applications = function( params ) {
+                        return $http.get( '/api/portail/entree/applications', { params: params } );
                     };
                 }
               ] )
     .controller( 'StatsCtrl',
-                 [ '$scope', '$http', 'moment', 'APP_PATH', 'Logs',
-                   function ( $scope, $http, moment, APP_PATH, Logs ) {
+                 [ '$scope', '$http', 'moment', 'APP_PATH', 'Annuaire',
+                   function ( $scope, $http, moment, APP_PATH, Annuaire ) {
                        $scope.types_labels = { global: 'Statistiques globales',
                                                uai: 'Établissements',
                                                app: 'Tuiles',
@@ -56,7 +68,19 @@ angular.module( 'statsApp',
                            var params = { from: $scope.debut.clone().toDate(),
                                           until: $scope.fin.clone().toDate() };
 
-                           Logs.stats( params )
+                           Annuaire.get_etablissements({}).then( function( response ) {
+                               $scope.etablissements = response;
+                           } );
+
+                           Annuaire.get_profils({}).then( function( response ) {
+                               $scope.profils = response;
+                           } );
+
+                           Annuaire.get_default_applications({}).then( function( response ) {
+                               $scope.default_applications = response;
+                           } );
+
+                           Annuaire.get_stats( params )
                                .then( function ( response ) {
                                    var ignored_uai = _([ '0699990Z', '069BACAS', '069DANE' ]);
                                    var keys = [ 'uai', 'app', 'user_type' ];
