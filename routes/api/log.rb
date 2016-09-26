@@ -21,13 +21,7 @@ module Portail
 
             data['uid'] = user[:uid]
 
-            stats = AnnuaireWrapper::Log.stats( data )
-
-            # uai_erasme = '0699990Z'
-            # stats['uai'].delete( uai_erasme )
-            # stats['general']['uai'].reject! { |item| item['uai'] == uai_erasme }
-
-            stats.to_json
+            AnnuaireWrapper::Log.stats( data ).to_json
           end
 
           #
@@ -36,7 +30,6 @@ module Portail
           app.post "#{APP_PATH}/api/log/?" do
             # param :uid, String, required: true
             # param :uai, String, required: true
-            # param :timestamp, BigNum, required: true
             # param :action, String, required: true
             # param :url, String, required: true
             # param :comment, String
