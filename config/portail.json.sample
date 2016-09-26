@@ -169,6 +169,16 @@
           "title": "Problèmes connus",
           "url": "http://ent-laclasse.blogs.laclasse.com/category/bugs/",
           "profils": [ "DIR", "ENS" ]
+      },
+      {
+          "title": "Charte d'utilisation",
+          "url": "https://www.laclasse.com/portail/legalese/charte_d_utilisation.html",
+          "profils": [ "ACA", "COL", "DIR", "DOC", "ELV", "ENS", "ETA", "EVS", "TUT" ]
+      },
+      {
+          "title": "Mentions Légales",
+          "url": "https://www.laclasse.com/portail/legalese/mentions_legales.html",
+          "profils": [ "ACA", "COL", "DIR", "DOC", "ELV", "ENS", "ETA", "EVS", "TUT" ]
       }
   ]
 }
