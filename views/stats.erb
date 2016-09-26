@@ -79,9 +79,6 @@
                                 <nvd3 data="stat"
                                       options="multibarchart_options">
                                 </nvd3>
-                                <!-- <pre>
-                                     {{stat | json}}
-                                     </pre> -->
                             </uib-tab>
                         </uib-tabset>
                     </div>
@@ -104,9 +101,6 @@
                                         <nvd3 data="stat"
                                               options="multibarchart_options">
                                         </nvd3>
-                                        <!-- <pre>
-                                             {{stat | json}}
-                                             </pre> -->
                                     </uib-tab>
                                 </uib-tabset>
                             </uib-tab>
@@ -114,27 +108,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- <pre>
-                 {{stats | json}}
-                 </pre> -->
-            <!--
-                 <div class="row">
-                 <div class="col-md-6"
-                 ng:repeat="(metric, data) in stats.general"
-                 ng:if="data.bar_graph.data[0].values.length > 0">
-                 <div class="panel panel-default">
-                 <div class="panel-heading">{{metric}}</div>
-                 <div class="panel-body"
-                 ng:style="{'height': ( data.bar_graph.options + 30 ) + 'px' }" >
-                 <nvd3 data="data.bar_graph.data"
-                 options="data.bar_graph.options">
-                 </nvd3>
-                 </div>
-                 </div>
-                 </div>
-                 </div> -->
-
         </div>
 
 
