@@ -42,10 +42,7 @@ module Portail
 
             init_current_user( user[:uid] )
 
-            utilisateur = user_verbose
-            utilisateur[:wrong_password] = !good_password
-
-            json utilisateur
+            json user_verbose
           end
 
           app.post "#{APP_PATH}/api/user/avatar/?" do
