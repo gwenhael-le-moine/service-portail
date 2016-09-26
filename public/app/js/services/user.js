@@ -15,8 +15,7 @@ angular.module( 'portailApp' )
                                                             code_postal: '@code_postal',
                                                             ville: '@ville',
                                                             // login: '@login',
-                                                            previous_password: '@previous_password',
-                                                            new_password: '@new_password' //,
+                                                            password: '@password',
                                                             // bloque: '@bloque'
                                                           } },
                                         change_profil_actif: { method: 'PUT',

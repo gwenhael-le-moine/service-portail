@@ -149,16 +149,18 @@ angular.module( 'portailApp' )
                                if ( _($scope.password.new1).isEmpty() || ( !_($scope.password.new1).isEmpty() && ( $scope.password.new1 == $scope.password.new2 ) ) ) {
                                    var mod_user = {};
 
-                                   if ( !_($scope.password.new1).isEmpty() ) {
-                                       mod_user.password = $scope.password.new1;
-                                   }
-                                   toastr.info( 'Mise à jour du profil.');
-
                                    _(dirty).keys().forEach( function( key ) {
                                        mod_user[ key ] = $rootScope.current_user[ key ];
                                    } );
+
+                                   if ( !_($scope.password.new1).isEmpty() ) {
+                                       mod_user.password = $scope.password.new1;
+                                   }
+
+                                   toastr.info( 'Mise à jour du profil.');
+
                                    User.update( mod_user ).$promise
-                                       .then( function() {
+                                       .then( function( response ) {
                                            currentUser.force_refresh();
 
                                            if ( !_($scope.uploaded_avatar).isNull() &&
