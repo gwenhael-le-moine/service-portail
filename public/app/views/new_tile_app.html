@@ -1,6 +1,10 @@
 <div class="flippable"
-     data-as-sortable-item-handle
      ng:class="{ 'show-back': tile.configure }">
+    <div class="as-sortable-item-handle"
+         data-as-sortable-item-handle
+         ng:style="{'background-color': tile.color + '77' }"
+         ng:if="modification">
+    </div>
     <div class="front"
          ng:class="{'deleted': tile.to_delete}"
          ng:style="{'background-color': tile.color}">
@@ -47,25 +51,29 @@
         <button class="btn btn-xs btn-link remove glyphicon glyphicon-trash"
                 ng:click="tile.remove()"></button>
 
-        <label>nom : <input type="text" class="form-control"
-                            ng:model="tile.libelle"
-                            ng:change="tile.is_dirty( 'libelle' )" />
+        <label>
+            nom : <input type="text" class="form-control"
+                         ng:model="tile.libelle"
+                         ng:change="tile.is_dirty( 'libelle' )" />
         </label>
 
-        <label>description : <input type="text" class="form-control"
-                                    ng:model="tile.description"
-                                    ng:change="tile.is_dirty( 'description' )" />
+        <label>
+            description : <input type="text" class="form-control"
+                                 ng:model="tile.description"
+                                 ng:change="tile.is_dirty( 'description' )" />
         </label>
 
-        <label ng:if="tile.type === 'EXTERNAL' || tile.application_id == 'PRONOTE'">url : <input type="text" class="form-control"
-                                                                                                 ng:model="tile.url"
-                                                                                                 ng:change="tile.is_dirty( 'url' )" />
+        <label ng:if="tile.type === 'EXTERNAL' || tile.application_id == 'PRONOTE'">
+            url : <input type="text" class="form-control"
+                         ng:model="tile.url"
+                         ng:change="tile.is_dirty( 'url' )" />
         </label>
 
-        <label>activée : <checkbox class="btn-success"
-                                   style="padding: 1px 2px 2px;"
-                                   ng:model="tile.active"
-                                   ng:change="tile.is_dirty( 'active' )"></checkbox>
+        <label>
+            activée : <checkbox class="btn-success"
+                                style="padding: 1px 2px 2px;"
+                                ng:model="tile.active"
+                                ng:change="tile.is_dirty( 'active' )"></checkbox>
         </label>
     </div>
 </div>
