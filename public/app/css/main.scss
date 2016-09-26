@@ -262,18 +262,6 @@ body {
     ul {
         height: 100%;
     }
-    .as-sortable-placeholder {
-        border: 6px dotted #bad;
-    }
-    .as-sortable-drag {
-        .petite.case.as-sortable-item {
-            width: 100%;
-            height: 100%;
-        }
-    }
-    .as-sortable-item-handle {
-        cursor: auto;
-    }
     .case {
         float: left;
         position: relative;
@@ -382,6 +370,15 @@ body {
     }
 
     &.modification {
+        .as-sortable-placeholder {
+            border: 6px dotted #bad;
+        }
+        .as-sortable-drag {
+            .petite.case {
+                width: 100%;
+                height: 100%;
+            }
+        }
         .as-sortable-item-handle {
             cursor: move;
             cursor: -webkit-grab;
