@@ -207,8 +207,8 @@ angular.module( 'portailApp' )
                                var apps = _(response)
                                    .select( function( app ) {
                                        return app.active
-                                           && !app.hidden.includes( current_user.profil_actif.profil_id )
-                                           && ( app.application_id === 'MAIL' ? _(current_user.emails).pluck( 'type' ).includes( 'Ent' ) : true );
+                                           && !_(app.hidden).includes( current_user.profil_actif.profil_id )
+                                           && ( app.application_id === 'MAIL' ? _.chain(current_user.emails).pluck( 'type' ).includes( 'Ent' ).value() : true );
                                    } )
                                    .map( tool_tile );
                                apps = fill_empty_tiles( apps );
