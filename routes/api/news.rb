@@ -59,7 +59,7 @@ module Portail
 
                   { image: image,
                     link: URI.unescape( article.link.force_encoding( 'UTF-8' ).encode! ),
-                    pubDate: article.pubDate.iso8601,
+                    pubDate: article.pubDate.nil? ? Time.now : article.pubDate.iso8601,
                     title: URI.unescape( article.title.force_encoding( 'UTF-8' ).encode! ),
                     description: URI.unescape( description.force_encoding( 'UTF-8' ).encode! ) }
                 end
