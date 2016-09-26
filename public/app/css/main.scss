@@ -379,24 +379,6 @@ body {
                 height: 100%;
             }
         }
-        .as-sortable-item-handle {
-            cursor: move;
-            cursor: -webkit-grab;
-            cursor: -moz-grab;
-            height: 100%;
-            width: 10px;
-            position: absolute;
-            left: -10px;
-            border: 4px dotted #f4f4f4;
-        }
-        .exit-configure {
-            button {
-                font-size: 2em;
-                height: 20%;
-                margin-top: 15%;
-                width: 75%;
-            }
-        }
         .petite.case {
             position: relative;
             width: 24%;
@@ -405,6 +387,27 @@ body {
             animation-delay: 0.25s;
             animation-duration: 0.05s;
             animation-iteration-count: 5;
+            // &.empty {
+            //     width: 24.5%;
+            // }
+            .as-sortable-item-handle {
+                cursor: move;
+                cursor: -webkit-grab;
+                cursor: -moz-grab;
+                height: 100%;
+                width: 10px;
+                position: absolute;
+                left: -10px;
+                border: 4px dotted #f4f4f4;
+            }
+            .exit-configure {
+                button {
+                    font-size: 2em;
+                    height: 20%;
+                    margin-top: 15%;
+                    width: 75%;
+                }
+            }
             .inactive, .deleted {
                 opacity: 0.33;
             }
@@ -429,15 +432,10 @@ body {
                 animation-name: keyframes2;
                 animation-direction: alternate;
             }
-        }
-
-        .ui-sortable-helper {
-            box-shadow: 5px 5px 10px 0 #ececec;
-        }
-
-        ng-color-picker {
-            display: inline-block;
-            cursor: pointer;
+            ng-color-picker {
+                display: inline-block;
+                cursor: pointer;
+            }
         }
     }
 }
