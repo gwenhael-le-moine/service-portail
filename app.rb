@@ -30,6 +30,7 @@ require_relative './routes/api/apps'
 require_relative './routes/api/flux'
 require_relative './routes/api/news'
 require_relative './routes/api/log'
+require_relative './routes/api/annuaire'
 require_relative './routes/api/version'
 
 require_relative './routes/stats'
@@ -92,6 +93,7 @@ class SinatraApp < Sinatra::Base
   register Portail::Routes::Api::Flux
   register Portail::Routes::Api::News
   register Portail::Routes::Api::Log
+  register Portail::Routes::Api::Annuaire
   register Portail::Routes::Api::Version
 end
 

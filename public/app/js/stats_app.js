@@ -15,15 +15,15 @@ angular.module( 'statsApp',
                     };
 
                     this.get_profils = function( params ) {
-                        return $http.get( '/api/app/profils', { params: params } );
+                        return $http.get( APP_PATH + '/api/annuaire/profils', { params: params } );
                     };
 
                     this.get_etablissements = function( params ) {
-                        return $http.get( '/api/app/etablissements', { params: params } );
+                        return $http.get( APP_PATH + '/api/annuaire/etablissements', { params: params } );
                     };
 
                     this.get_default_applications = function( params ) {
-                        return $http.get( '/api/portail/entree/applications', { params: params } );
+                        return $http.get( APP_PATH + '/api/annuaire/applications', { params: params } );
                     };
                 }
               ] )
@@ -68,29 +68,47 @@ angular.module( 'statsApp',
                            var params = { from: $scope.debut.clone().toDate(),
                                           until: $scope.fin.clone().toDate() };
 
-                           Annuaire.get_etablissements({}).then( function( response ) {
-                               $scope.etablissements = response;
-                           } );
-
-                           Annuaire.get_profils({}).then( function( response ) {
-                               $scope.profils = response;
-                           } );
-
-                           Annuaire.get_default_applications({}).then( function( response ) {
-                               $scope.default_applications = response;
-                           } );
-
                            Annuaire.get_stats( params )
                                .then( function ( response ) {
+                                   $scope.labels = {};
+                                   Annuaire.get_etablissements({}).then( function( response ) {
+                                       $scope.labels.uai = _.chain(response.data)
+                                           .map( function( etab ) {
+                                               return [ etab.code_uai, etab.nom ];
+                                           } )
+                                           .object()
+                                           .value();
+                                   } );
+
+                                   Annuaire.get_profils({}).then( function( response ) {
+                                       $scope.labels.user_type = _.chain(response.data)
+                                           .map( function( profil ) {
+                                               return [ profil.id, profil.description ];
+                                           } )
+                                           .object()
+                                           .value();
+                                   } );
+
+                                   Annuaire.get_default_applications({}).then( function( response ) {
+                                       $scope.labels.app = _.chain(response.data)
+                                           .map( function( app ) {
+                                               return [ app.id, app.libelle ];
+                                           } )
+                                           .object()
+                                           .value();
+                                   } );
+
                                    var ignored_uai = _([ '0699990Z', '069BACAS', '069DANE' ]);
                                    var keys = [ 'uai', 'app', 'user_type' ];
 
                                    var stats_to_nvd3_data = function( key, values ) {
+                                       console.log(key)
+                                       console.log(values)
                                        return [ { key: key,
-                                                  values: _(values).keys().map( function( key ) {
+                                                  values: _(values).keys().map( function( subkey ) {
                                                       return { key: key,
-                                                               x: key,
-                                                               y: values[ key ] };
+                                                               x: subkey,
+                                                               y: values[ subkey ] };
                                                   } ) } ];
                                    };
 
