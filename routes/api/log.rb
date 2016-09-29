@@ -12,16 +12,9 @@ module Portail
           end
 
           app.get "#{APP_PATH}/api/log/stats/?" do
-            data = {}
+            params['uid'] = user[:uid]
 
-            if params.key?( 'from' )
-              data['from'] = params['from']
-              data['until'] = params['until']
-            end
-
-            data['uid'] = user[:uid]
-
-            AnnuaireWrapper::Log.stats( data ).to_json
+            AnnuaireWrapper::Log.stats( params ).to_json
           end
 
           #
