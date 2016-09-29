@@ -72,12 +72,11 @@
                     <div class="panel-heading">{{types_labels[type]}}</div>
                     <div class="panel-body">
                         <uib-tabset>
-                            <uib-tab
-                                index="$index + 1"
-                                ng:repeat="(key, stat) in values"
-                                heading="{{types_labels[key]}}">
+                            <uib-tab index="$index + 1"
+                                     ng:repeat="(key, stat) in values"
+                                     heading="{{types_labels[key]}}">
                                 <nvd3 data="stat"
-                                      options="multibarchart_options">
+                                      options="chart_options( key )">
                                 </nvd3>
                             </uib-tab>
                         </uib-tabset>
@@ -89,15 +88,13 @@
                     <div class="panel-heading">Statistiques par {{types_labels[type]}}</div>
                     <div class="panel-body">
                         <uib-tabset>
-                            <uib-tab
-                                index="$index + 1"
-                                ng:repeat="(key, value) in values"
-                                heading="{{labels[type][key]}}">
+                            <uib-tab index="$index + 1"
+                                     ng:repeat="(key, value) in values"
+                                     heading="{{type === 'uid' ? key : labels[type][key]}}">
                                 <uib-tabset>
-                                    <uib-tab
-                                        index="$index + 1"
-                                        ng:repeat="(subkey, stat) in value"
-                                        heading="{{types_labels[subkey]}}">
+                                    <uib-tab index="$index + 1"
+                                             ng:repeat="(subkey, stat) in value"
+                                             heading="{{types_labels[subkey]}}">
                                         <nvd3 data="stat"
                                               options="multibarchart_options">
                                         </nvd3>
@@ -109,7 +106,6 @@
                 </div>
             </div>
         </div>
-
 
         <!-- Bootstrap core JavaScript
              ================================================== -->

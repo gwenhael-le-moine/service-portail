@@ -33,12 +33,15 @@ angular.module( 'statsApp',
                        $scope.types_labels = { global: 'Statistiques globales',
                                                uai: 'Établissements',
                                                app: 'Tuiles',
-                                               user_type: 'Profils utilisateurs' };
+                                               user_type: 'Profils utilisateurs',
+                                               uid: 'Utilisateurs' };
+
                        $scope.period_types = { list: [ { label: 'jour', value: 'day' },
                                                        { label: 'semaine', value: 'week' },
                                                        { label: 'mois', value: 'month' },
                                                        { label: 'année', value: 'year' } ],
                                                selected: 'week' };
+
                        $scope.multibarchart_options = { chart: { type: 'multiBarChart',
                                                                  height: 256,
                                                                  width: 550,
@@ -61,82 +64,112 @@ angular.module( 'statsApp',
                                                                                top: 20,
                                                                                bottom: 20,
                                                                                right: 50 };
+                       $scope.chart_options = function( type ) {
+                           if ( type === 'uai' ) {
+                               return $scope.multibarhorizontalchart_options;
+                           } else {
+                               return $scope.multibarchart_options;
+                           }
+                       };
 
                        $scope.retrieve_data = function( from ) {
                            $scope.fin = $scope.debut.clone().endOf( $scope.period_types.selected );
 
-                           var params = { from: $scope.debut.clone().toDate(),
-                                          until: $scope.fin.clone().toDate() };
+                           $scope.labels = {};
 
-                           Annuaire.get_stats( params )
-                               .then( function ( response ) {
-                                   $scope.labels = {};
-                                   Annuaire.get_etablissements({}).then( function( response ) {
-                                       $scope.labels.uai = _.chain(response.data)
-                                           .map( function( etab ) {
-                                               return [ etab.code_uai, etab.nom ];
-                                           } )
-                                           .object()
-                                           .value();
+                           Annuaire.get_profils({}).then( function( response ) {
+                               $scope.labels.user_type = _.chain(response.data)
+                                   .map( function( profil ) {
+                                       return [ profil.id, profil.description ];
+                                   } )
+                                   .object()
+                                   .value();
+                           } );
+
+                           Annuaire.get_default_applications({}).then( function( response ) {
+                               $scope.labels.app = _.chain(response.data)
+                                   .map( function( app ) {
+                                       return [ app.id, app.libelle ];
+                                   } )
+                                   .object()
+                                   .value();
+                           } );
+
+
+                           Annuaire.get_etablissements({}).then( function( response ) {
+                               $scope.labels.uai = _.chain(response.data)
+                                   .map( function( etab ) {
+                                       return [ etab.code_uai, etab.nom ];
+                                   } )
+                                   .object()
+                                   .value();
+
+                               Annuaire.get_stats( { from: $scope.debut.clone().toDate(),
+                                                     until: $scope.fin.clone().toDate(),
+                                                     "uais[]": _.chain($scope.labels.uai)
+                                                     .keys()
+                                                     .reject( function( uai ) {
+                                                         var ignored_uai = _([ '0699990Z', '069BACAS', '069DANE' ]);
+                                                         return ignored_uai.contains( uai );
+                                                     } )
+                                                     .value()
+                                                   } )
+                                   .then( function ( response ) {
+                                       var keys = [ 'uai', 'app', 'user_type' ];
+
+                                       var stats_to_nvd3_data = function( key, values ) {
+                                           return [ { key: key,
+                                                      values: _(values).keys().map( function( subkey ) {
+                                                          return { key: key,
+                                                                   series: subkey,
+                                                                   x: subkey,
+                                                                   y: values[ subkey ] };
+                                                      } ) } ];
+                                       };
+
+                                       var extract_stats = function( logs, keys ) {
+                                           return _.chain(keys)
+                                               .map( function( key ) {
+                                                   return [ key, stats_to_nvd3_data( key, _(logs).countBy( key ) ) ];
+                                               } )
+                                               .object()
+                                               .value();
+                                       };
+
+                                       $scope.logs = response.data;
+                                       $scope.filters = {};
+
+                                       $scope.stats = {};
+                                       $scope.stats.global = extract_stats( $scope.logs, keys );
+
+                                       keys.forEach( function( key ) {
+                                           $scope.stats[ key ] = _.chain($scope.stats.global[ key ][0].values)
+                                               .pluck( 'x' )
+                                               .map( function( value ) {
+                                                   return [ value, extract_stats( _($scope.logs).select( function( logline ) { return logline[ key ] === value; } ),
+                                                                                  _(keys).difference( [ key ] ) ) ];
+                                               } )
+                                               .object()
+                                               .value();
+                                       } );
+
+                                       $scope.stats.global.uai.push( { key: 'utilisateurs uniques',
+                                                                       values: _.chain($scope.logs)
+                                                                       .groupBy( function( line ) { return line.uai; } )
+                                                                       .map( function( loglines, uai ) {
+                                                                           return { key: 'utilisateurs uniques', x: uai, y: _.chain(loglines).pluck('uid').uniq().value().length };
+                                                                       } ).value()
+                                                                     } );
+                                       $scope.stats.global.uai.push( { key: 'apps',
+                                                                       values: _.chain($scope.logs)
+                                                                       .groupBy( function( line ) { return line.uai; } )
+                                                                       .map( function( loglines, uai ) {
+                                                                           return { key: 'apps', x: uai, y: _.chain(loglines).pluck('app').uniq().value().length };
+                                                                       } ).value()
+                                                                     } );
                                    } );
+                           } );
 
-                                   Annuaire.get_profils({}).then( function( response ) {
-                                       $scope.labels.user_type = _.chain(response.data)
-                                           .map( function( profil ) {
-                                               return [ profil.id, profil.description ];
-                                           } )
-                                           .object()
-                                           .value();
-                                   } );
-
-                                   Annuaire.get_default_applications({}).then( function( response ) {
-                                       $scope.labels.app = _.chain(response.data)
-                                           .map( function( app ) {
-                                               return [ app.id, app.libelle ];
-                                           } )
-                                           .object()
-                                           .value();
-                                   } );
-
-                                   var ignored_uai = _([ '0699990Z', '069BACAS', '069DANE' ]);
-                                   var keys = [ 'uai', 'app', 'user_type' ];
-
-                                   var stats_to_nvd3_data = function( key, values ) {
-                                       console.log(key)
-                                       console.log(values)
-                                       return [ { key: key,
-                                                  values: _(values).keys().map( function( subkey ) {
-                                                      return { key: key,
-                                                               x: subkey,
-                                                               y: values[ subkey ] };
-                                                  } ) } ];
-                                   };
-
-                                   var extract_stats = function( logs, keys ) {
-                                       return _.chain(keys)
-                                           .map( function( key ) {
-                                               return [ key, stats_to_nvd3_data( key, _(logs).countBy( key ) ) ];
-                                           } )
-                                           .object()
-                                           .value();
-                                   };
-
-                                   $scope.logs = _(response.data).reject( function( logline ) { return ignored_uai.contains( logline.uai ); });
-                                   $scope.filters = {};
-
-                                   $scope.stats = {};
-                                   $scope.stats.global = extract_stats( $scope.logs, keys );
-                                   keys.forEach( function( key ) {
-                                       $scope.stats[ key ] = _.chain($scope.stats.global[ key ][0].values)
-                                           .pluck( 'x' )
-                                           .map( function( value ) {
-                                               return [ value, extract_stats( _($scope.logs).select( function( logline ) { return logline[ key ] === value; } ),
-                                                                              _(keys).difference( [ key ] ) ) ];
-                                           } )
-                                           .object()
-                                           .value();
-                                   } );
-                               } );
                        };
 
                        $scope.decr_period = function() {
