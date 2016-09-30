@@ -107,7 +107,7 @@ angular.module( 'statsApp',
                                                      "uais[]": _.chain($scope.labels.uai)
                                                      .keys()
                                                      .reject( function( uai ) {
-                                                         var ignored_uai = _([ '0699990Z', '069BACAS', '069DANE' ]);
+                                                         var ignored_uai = _([ '0699990Z', '069BACAS', '069DANEZ' ]);
                                                          return ignored_uai.contains( uai );
                                                      } )
                                                      .value()
