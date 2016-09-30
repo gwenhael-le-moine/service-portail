@@ -166,6 +166,7 @@ angular.module( 'statsApp',
                                                                            return { key: 'apps', x: uai, y: _.chain(loglines).pluck('app').uniq().value().length };
                                                                        } ).value()
                                                                      } );
+                                       console.log($scope.logs)
                                    } );
                            } );
 
