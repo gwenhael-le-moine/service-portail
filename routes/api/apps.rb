@@ -34,6 +34,8 @@ module Portail
 
             sleep 0.1 # FIXME, race condition
 
+            return [] if user[:user_detailed]['profil_actif'].nil?
+
             apps = AnnuaireWrapper::Etablissement::Apps.query_etablissement( user[:user_detailed]['profil_actif']['etablissement_code_uai'] )
 
             apps = provision_default_apps( user[:user_detailed]['profil_actif']['etablissement_code_uai'] ) if apps.empty?
