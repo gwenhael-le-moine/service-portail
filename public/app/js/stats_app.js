@@ -62,47 +62,41 @@ angular.module( 'statsApp',
                        $scope.multibarhorizontalchart_options = angular.copy( $scope.multibarchart_options );
                        $scope.multibarhorizontalchart_options.chart.type = 'multiBarHorizontalChart';
                        $scope.multibarhorizontalchart_options.chart.height = 512;
-                       $scope.multibarhorizontalchart_options.chart.margin = { left: 150,
+                       $scope.multibarhorizontalchart_options.chart.margin = { left: 250,
                                                                                top: 20,
                                                                                bottom: 20,
                                                                                right: 50 };
-                       $scope.chart_options = function( type ) {
-                           return ( type === 'uai' ) ? $scope.multibarhorizontalchart_options : $scope.multibarchart_options;
+
+                       $scope.chart_options = function( type, data ) {
+                           switch( type ) {
+                           case 'uai':
+                           case 'user_type':
+                               $scope.multibarhorizontalchart_options.chart.height = 36 * data.length * data[0].values.length + 40;
+                               $scope.multibarhorizontalchart_options.chart.margin.left = _.chain(data[0].values).pluck('x').map( function(label) { return label.length; } ).max().value() * 8;
+                               return $scope.multibarhorizontalchart_options;
+                           default:
+                               return $scope.multibarchart_options;
+                           }
                        };
 
                        $scope.retrieve_data = function( from ) {
                            $scope.fin = $scope.debut.clone().endOf( $scope.period_types.selected );
 
                            $scope.labels = {};
-                           $scope.labels.week_day = _($locale.DATETIME_FORMATS.DAY).indexBy( function( jour ) { return _($locale.DATETIME_FORMATS.DAY).indexOf( jour ); } );
+                           $scope.labels.week_day = angular.copy($locale.DATETIME_FORMATS.DAY);
+                           $scope.labels.week_day.push( $scope.labels.week_day.shift() );
 
                            Annuaire.get_profils({}).then( function( response ) {
-                               $scope.labels.user_type = _.chain(response.data)
-                                   .map( function( profil ) {
-                                       return [ profil.id, profil.description ];
-                                   } )
-                                   .object()
-                                   .value();
+                               $scope.labels.user_type = _.chain(response.data).map( function( profil ) { return [ profil.id, profil.description ]; } ).object().value();
                            } );
 
                            Annuaire.get_default_applications({}).then( function( response ) {
-                               $scope.labels.app = _.chain(response.data)
-                                   .map( function( app ) {
-                                       return [ app.id, app.libelle ];
-                                   } )
-                                   .object()
-                                   .value();
+                               $scope.labels.app = _.chain(response.data).map( function( app ) { return [ app.id, app.libelle ]; } ).object().value();
                            } );
 
 
                            Annuaire.get_etablissements({}).then( function( response ) {
-                               $scope.labels.uai = _.chain(response.data)
-                                   .map( function( etab ) {
-                                       return [ etab.code_uai, etab.nom ];
-                                   } )
-                                   .object()
-                                   .value();
-                               $scope.multibarhorizontalchart_options.chart.height = 12 * _($scope.labels.uai).keys().length;
+                               $scope.labels.uai = _.chain(response.data).map( function( etab ) { return [ etab.code_uai, etab.nom ]; } ).object().value();
 
                                Annuaire.get_stats( { from: $scope.debut.clone().toDate(),
                                                      until: $scope.fin.clone().toDate(),
@@ -143,14 +137,16 @@ angular.module( 'statsApp',
                                        $scope.stats.global = extract_stats( $scope.logs, keys );
 
                                        keys.forEach( function( key ) {
-                                           $scope.stats[ key ] = _.chain($scope.stats.global[ key ][0].values)
-                                               .pluck( 'value' )
-                                               .map( function( value ) {
-                                                   return [ value, extract_stats( _($scope.logs).select( function( logline ) { return logline[ key ] === value; } ),
-                                                                                  _(keys).difference( [ key ] ) ) ];
-                                               } )
-                                               .object()
-                                               .value();
+                                           if ( key !== 'week_day' ) {
+                                               $scope.stats[ key ] = _.chain($scope.stats.global[ key ][0].values)
+                                                   .pluck( 'value' )
+                                                   .map( function( value ) {
+                                                       return [ value, extract_stats( _($scope.logs).select( function( logline ) { return logline[ key ] === value; } ),
+                                                                                      _(keys).difference( [ key ] ) ) ];
+                                                   } )
+                                                   .object()
+                                                   .value();
+                                           }
                                        } );
 
                                        $scope.stats.global.uai.push( { key: 'utilisateurs uniques',

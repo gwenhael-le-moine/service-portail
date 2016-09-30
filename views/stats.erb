@@ -76,7 +76,7 @@
                                      ng:repeat="(key, stat) in values"
                                      heading="{{types_labels[key]}}">
                                 <nvd3 data="stat"
-                                      options="chart_options( key )">
+                                      options="chart_options( key, stat )">
                                 </nvd3>
                             </uib-tab>
                         </uib-tabset>
@@ -90,13 +90,13 @@
                         <uib-tabset>
                             <uib-tab index="$index + 1"
                                      ng:repeat="(key, value) in values"
-                                     heading="{{type === 'uid' ? key : labels[type][key]}}">
+                                     heading="{{labels[type][key]}}">
                                 <uib-tabset>
                                     <uib-tab index="$index + 1"
                                              ng:repeat="(subkey, stat) in value"
                                              heading="{{types_labels[subkey]}}">
                                         <nvd3 data="stat"
-                                              options="multibarchart_options">
+                                              options="chart_options( subkey, stat )">
                                         </nvd3>
                                     </uib-tab>
                                 </uib-tabset>
@@ -116,6 +116,7 @@
         <script src="<%=APP_PATH%>/app/node_modules/nvd3/build/nv.d3.min.js?v=<%=APP_VERSION%>"></script>
 
         <script src="<%=APP_PATH%>/app/node_modules/angular/angular.js?v=<%=APP_VERSION%>"></script>
+        <script src="<%=APP_PATH%>/app/node_modules/angular-i18n/angular-locale_fr-fr.js?v=<%=APP_VERSION%>"></script>
         <script src="<%=APP_PATH%>/app/node_modules/angular-animate/angular-animate.js?v=<%=APP_VERSION%>"></script>
         <script src="<%=APP_PATH%>/app/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js?v=<%=APP_VERSION%>"></script>
         <script src="<%=APP_PATH%>/app/node_modules/angular-nvd3/dist/angular-nvd3.min.js?v=<%=APP_VERSION%>"></script>
