@@ -44,7 +44,7 @@ angular.module( 'statsApp',
 
                        $scope.multibarchart_options = { chart: { type: 'multiBarChart',
                                                                  height: 256,
-                                                                 width: 550,
+                                                                 width: 1050,
                                                                  margin: { left: 50,
                                                                            top: 20,
                                                                            bottom: 100,
@@ -60,16 +60,13 @@ angular.module( 'statsApp',
                                                       };
                        $scope.multibarhorizontalchart_options = angular.copy( $scope.multibarchart_options );
                        $scope.multibarhorizontalchart_options.chart.type = 'multiBarHorizontalChart';
+                       $scope.multibarhorizontalchart_options.chart.height = 512;
                        $scope.multibarhorizontalchart_options.chart.margin = { left: 150,
                                                                                top: 20,
                                                                                bottom: 20,
                                                                                right: 50 };
                        $scope.chart_options = function( type ) {
-                           if ( type === 'uai' ) {
-                               return $scope.multibarhorizontalchart_options;
-                           } else {
-                               return $scope.multibarchart_options;
-                           }
+                           return ( type === 'uai' ) ? $scope.multibarhorizontalchart_options : $scope.multibarchart_options;
                        };
 
                        $scope.retrieve_data = function( from ) {
@@ -103,6 +100,7 @@ angular.module( 'statsApp',
                                    } )
                                    .object()
                                    .value();
+                               $scope.multibarhorizontalchart_options.chart.height = 12 * _($scope.labels.uai).keys().length;
 
                                Annuaire.get_stats( { from: $scope.debut.clone().toDate(),
                                                      until: $scope.fin.clone().toDate(),
