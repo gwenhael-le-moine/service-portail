@@ -28,8 +28,8 @@ angular.module( 'statsApp',
                 }
               ] )
     .controller( 'StatsCtrl',
-                 [ '$scope', '$http', 'moment', 'APP_PATH', 'Annuaire',
-                   function ( $scope, $http, moment, APP_PATH, Annuaire ) {
+                 [ '$scope', '$http', '$locale', 'moment', 'APP_PATH', 'Annuaire',
+                   function ( $scope, $http, $locale, moment, APP_PATH, Annuaire ) {
                        $scope.types_labels = { global: 'Statistiques globales',
                                                uai: 'Établissements',
                                                app: 'Tuiles',
@@ -74,6 +74,7 @@ angular.module( 'statsApp',
                            $scope.fin = $scope.debut.clone().endOf( $scope.period_types.selected );
 
                            $scope.labels = {};
+                           $scope.labels.week_day = _($locale.DATETIME_FORMATS.DAY).indexBy( function( jour ) { return _($locale.DATETIME_FORMATS.DAY).indexOf( jour ); } );
 
                            Annuaire.get_profils({}).then( function( response ) {
                                $scope.labels.user_type = _.chain(response.data)
@@ -120,8 +121,8 @@ angular.module( 'statsApp',
                                            return [ { key: key,
                                                       values: _(values).keys().map( function( subkey ) {
                                                           return { key: key,
-                                                                   series: subkey,
-                                                                   x: subkey,
+                                                                   value: subkey,
+                                                                   x: $scope.labels[key][subkey],
                                                                    y: values[ subkey ] };
                                                       } ) } ];
                                        };
@@ -143,7 +144,7 @@ angular.module( 'statsApp',
 
                                        keys.forEach( function( key ) {
                                            $scope.stats[ key ] = _.chain($scope.stats.global[ key ][0].values)
-                                               .pluck( 'x' )
+                                               .pluck( 'value' )
                                                .map( function( value ) {
                                                    return [ value, extract_stats( _($scope.logs).select( function( logline ) { return logline[ key ] === value; } ),
                                                                                   _(keys).difference( [ key ] ) ) ];
@@ -156,14 +157,18 @@ angular.module( 'statsApp',
                                                                        values: _.chain($scope.logs)
                                                                        .groupBy( function( line ) { return line.uai; } )
                                                                        .map( function( loglines, uai ) {
-                                                                           return { key: 'utilisateurs uniques', x: uai, y: _.chain(loglines).pluck('uid').uniq().value().length };
+                                                                           return { key: 'utilisateurs uniques',
+                                                                                    x: $scope.labels.uai[uai],
+                                                                                    y: _.chain(loglines).pluck('uid').uniq().value().length };
                                                                        } ).value()
                                                                      } );
                                        $scope.stats.global.uai.push( { key: 'apps',
                                                                        values: _.chain($scope.logs)
                                                                        .groupBy( function( line ) { return line.uai; } )
                                                                        .map( function( loglines, uai ) {
-                                                                           return { key: 'apps', x: uai, y: _.chain(loglines).pluck('app').uniq().value().length };
+                                                                           return { key: 'apps',
+                                                                                    x: $scope.labels.uai[uai],
+                                                                                    y: _.chain(loglines).pluck('app').uniq().value().length };
                                                                        } ).value()
                                                                      } );
                                    } );
