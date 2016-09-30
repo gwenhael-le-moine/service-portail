@@ -34,7 +34,8 @@ angular.module( 'statsApp',
                                                uai: 'Établissements',
                                                app: 'Tuiles',
                                                user_type: 'Profils utilisateurs',
-                                               uid: 'Utilisateurs' };
+                                               uid: 'Utilisateurs',
+                                               week_day: 'Jour de la semaine'};
 
                        $scope.period_types = { list: [ { label: 'jour', value: 'day' },
                                                        { label: 'semaine', value: 'week' },
@@ -113,7 +114,7 @@ angular.module( 'statsApp',
                                                      .value()
                                                    } )
                                    .then( function ( response ) {
-                                       var keys = [ 'uai', 'app', 'user_type' ];
+                                       var keys = [ 'uai', 'app', 'user_type', 'week_day' ];
 
                                        var stats_to_nvd3_data = function( key, values ) {
                                            return [ { key: key,
