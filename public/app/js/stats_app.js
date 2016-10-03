@@ -57,7 +57,8 @@ angular.module( 'statsApp',
                                                                  duration: 500,
                                                                  labelThreshold: 0.01,
                                                                  labelSunbeamLayout: true,
-                                                                 rotateLabels: -25
+                                                                 rotateLabels: -25,
+                                                                 reduceXTicks: false
                                                                }
                                                       };
                        $scope.multibarhorizontalchart_options = angular.copy( $scope.multibarchart_options );
