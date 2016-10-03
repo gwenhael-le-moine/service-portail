@@ -74,7 +74,7 @@
                         <uib-tabset>
                             <uib-tab index="$index + 1"
                                      ng:repeat="(key, stat) in values"
-                                     heading="{{types_labels[key]}}">
+                                     heading="{{stat[0].values.length}} {{types_labels[key]}}">
                                 <nvd3 data="stat"
                                       options="chart_options( key, stat )">
                                 </nvd3>
@@ -90,11 +90,11 @@
                         <uib-tabset>
                             <uib-tab index="$index + 1"
                                      ng:repeat="(key, value) in values"
-                                     heading="{{labels[type][key]}}">
+                                     heading="{{value[0].values.length}} {{labels[type][key]}}">
                                 <uib-tabset>
                                     <uib-tab index="$index + 1"
                                              ng:repeat="(subkey, stat) in value"
-                                             heading="{{types_labels[subkey]}}">
+                                             heading="{{stat[0].values.length}} {{types_labels[subkey]}}">
                                         <nvd3 data="stat"
                                               options="chart_options( subkey, stat )">
                                         </nvd3>
