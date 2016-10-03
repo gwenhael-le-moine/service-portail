@@ -192,9 +192,11 @@ angular.module( 'statsApp',
                                                                                           y: _.chain(loglines).pluck('uid').uniq().value().length };
                                                                              } ).value()
                                                                            } );
-                                       _($scope.stats.uai).each( function( etab ) {
+
+                                       _($scope.stats.uai).each( function( etab, uai ) {
                                            etab.user_type.push( { key: 'utilisateurs uniques',
                                                                   values: _.chain($scope.logs)
+                                                                  .where({ uai: uai })
                                                                   .groupBy( function( line ) { return line.user_type; } )
                                                                   .map( function( loglines, user_type ) {
                                                                       return { key: 'utilisateurs uniques',
