@@ -42,6 +42,25 @@ angular.module( 'portailApp' )
                            $uibModalInstance.dismiss();
                        };
 
+                       Apps.query_default().$promise
+                           .then( function( response ) {
+                               $scope.available_tiles = $scope.available_tiles.concat( _.chain( inactive_tiles.concat( _(response).where({ active: true }) ) )
+                                                                                       .uniq( function( app ) { return app.application_id; } )
+                                                                                       .each( function( app ) {
+                                                                                           app.taxonomy = 'app';
+                                                                                           app.available = function() {
+                                                                                               return !_.chain(current_tiles)
+                                                                                                   .reject( function( a ) {
+                                                                                                       return a.to_delete;
+                                                                                                   } )
+                                                                                                   .pluck( 'application_id' )
+                                                                                                   .contains( app.application_id )
+                                                                                                   .value();
+                                                                                           };
+                                                                                       } )
+                                                                                       .value() );
+                           } );
+
                        // RessourceNumerique.query().$promise
                        //     .then( function( response ) {
                        //         currentUser.ressources().then( function ( active_ressources ) {
@@ -64,23 +83,4 @@ angular.module( 'portailApp' )
                        //                                                                     } ) );
                        //         } );
                        //     } );
-
-                       Apps.query_default().$promise
-                           .then( function( response ) {
-                               $scope.available_tiles = $scope.available_tiles.concat( _.chain( inactive_tiles.concat( _(response).where({ active: true }) ) )
-                                                                                       .uniq( function( app ) { return app.application_id; } )
-                                                                                       .each( function( app ) {
-                                                                                           app.taxonomy = 'app';
-                                                                                           app.available = function() {
-                                                                                               return !_.chain(current_tiles)
-                                                                                                   .reject( function( a ) {
-                                                                                                       return a.to_delete;
-                                                                                                   } )
-                                                                                                   .pluck( 'application_id' )
-                                                                                                   .contains( app.application_id )
-                                                                                                   .value();
-                                                                                           };
-                                                                                       } )
-                                                                                       .value() );
-                           } );
                    } ] );
