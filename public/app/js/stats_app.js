@@ -56,7 +56,8 @@ angular.module( 'statsApp',
                                                                  stacked: false,
                                                                  duration: 500,
                                                                  labelThreshold: 0.01,
-                                                                 labelSunbeamLayout: true
+                                                                 labelSunbeamLayout: true,
+                                                                 rotateLabels: -25
                                                                }
                                                       };
                        $scope.multibarhorizontalchart_options = angular.copy( $scope.multibarchart_options );
@@ -71,7 +72,7 @@ angular.module( 'statsApp',
                            switch( type ) {
                            case 'uai':
                            case 'user_type':
-                               $scope.multibarhorizontalchart_options.chart.height = 36 * data.length * data[0].values.length + 40;
+                               $scope.multibarhorizontalchart_options.chart.height = 24 * data.length * data[0].values.length + 40;
                                $scope.multibarhorizontalchart_options.chart.margin.left = _.chain(data[0].values).pluck('x').map( function(label) { return label.length; } ).max().value() * 8;
                                return $scope.multibarhorizontalchart_options;
                            default:
