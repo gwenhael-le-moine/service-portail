@@ -168,6 +168,27 @@ angular.module( 'statsApp',
                                                                                     y: _.chain(loglines).pluck('app').uniq().value().length };
                                                                        } ).value()
                                                                      } );
+                                       $scope.stats.global.user_type.push( { key: 'utilisateurs uniques',
+                                                                             values: _.chain($scope.logs)
+                                                                             .groupBy( function( line ) { return line.user_type; } )
+                                                                             .map( function( loglines, user_type ) {
+                                                                                 return { key: 'utilisateurs uniques',
+                                                                                          x: $scope.labels.user_type[user_type],
+                                                                                          y: _.chain(loglines).pluck('uid').uniq().value().length };
+                                                                             } ).value()
+                                                                           } );
+                                       _($scope.stats.uai).each( function( etab ) {
+                                           etab.user_type.push( { key: 'utilisateurs uniques',
+                                                                  values: _.chain($scope.logs)
+                                                                  .groupBy( function( line ) { return line.user_type; } )
+                                                                  .map( function( loglines, user_type ) {
+                                                                      return { key: 'utilisateurs uniques',
+                                                                               x: $scope.labels.user_type[user_type],
+                                                                               y: _.chain(loglines).pluck('uid').uniq().value().length };
+                                                                  } ).value()
+                                                                } );
+
+                                       } );
                                    } );
                            } );
 
