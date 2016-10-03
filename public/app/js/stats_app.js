@@ -115,12 +115,26 @@ angular.module( 'statsApp',
 
                                        var stats_to_nvd3_data = function( key, values ) {
                                            return [ { key: key,
-                                                      values: _(values).keys().map( function( subkey ) {
+                                                      values: _.chain(values).keys().map( function( subkey ) {
                                                           return { key: key,
                                                                    value: subkey,
                                                                    x: $scope.labels[key][subkey],
                                                                    y: values[ subkey ] };
-                                                      } ) } ];
+                                                      } )
+                                                      .sortBy( function( record ) {
+                                                          switch( key ) {
+                                                          case 'uai':
+                                                          case 'user_type':
+                                                              return record.y * -1;
+                                                              break;
+                                                          case 'week_day':
+                                                              return true;
+                                                              break;
+                                                          default:
+                                                              return record.x;
+                                                          }
+                                                      } )
+                                                      .value() } ];
                                        };
 
                                        var extract_stats = function( logs, keys ) {
