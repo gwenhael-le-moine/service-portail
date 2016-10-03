@@ -82,6 +82,8 @@ angular.module( 'statsApp',
                        };
 
                        $scope.retrieve_data = function( from ) {
+                           var started_at = moment();
+
                            $scope.fin = $scope.debut.clone().endOf( $scope.period_types.selected );
 
                            $scope.labels = {};
@@ -114,27 +116,30 @@ angular.module( 'statsApp',
                                        var keys = [ 'uai', 'app', 'user_type', 'week_day' ];
 
                                        var stats_to_nvd3_data = function( key, values ) {
-                                           return [ { key: key,
-                                                      values: _.chain(values).keys().map( function( subkey ) {
-                                                          return { key: key,
-                                                                   value: subkey,
-                                                                   x: $scope.labels[key][subkey],
-                                                                   y: values[ subkey ] };
-                                                      } )
-                                                      .sortBy( function( record ) {
-                                                          switch( key ) {
-                                                          case 'uai':
-                                                          case 'user_type':
-                                                              return record.y * -1;
-                                                              break;
-                                                          case 'week_day':
-                                                              return true;
-                                                              break;
-                                                          default:
-                                                              return record.x;
-                                                          }
-                                                      } )
-                                                      .value() } ];
+                                           var data = [ { key: key,
+                                                          values: _.chain(values).keys().map( function( subkey ) {
+                                                              return { key: key,
+                                                                       value: subkey,
+                                                                       x: $scope.labels[key][subkey],
+                                                                       y: values[ subkey ] };
+                                                          } )
+                                                          .sortBy( function( record ) {
+                                                              switch( key ) {
+                                                              case 'uai':
+                                                              case 'user_type':
+                                                                  return record.y * -1;
+                                                                  break;
+                                                              case 'week_day':
+                                                                  return true;
+                                                                  break;
+                                                              default:
+                                                                  return record.x;
+                                                              }
+                                                          } )
+                                                          .value() } ];
+                                           console.log( ( ( moment() - started_at ) / 1000.0 ) + 's : extracted ' + key )
+
+                                           return data;
                                        };
 
                                        var extract_stats = function( logs, keys ) {
@@ -205,10 +210,10 @@ angular.module( 'statsApp',
                                                                   } ).value()
                                                                 } );
 
+                                           console.log( ( ( moment() - started_at ) / 1000.0 ) + 's : all data received and treated' )
                                        } );
                                    } );
                            } );
-
                        };
 
                        $scope.decr_period = function() {
