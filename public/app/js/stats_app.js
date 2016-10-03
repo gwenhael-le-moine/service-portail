@@ -209,9 +209,9 @@ angular.module( 'statsApp',
                                                                                y: _.chain(loglines).pluck('uid').uniq().value().length };
                                                                   } ).value()
                                                                 } );
-
-                                           console.log( ( ( moment() - started_at ) / 1000.0 ) + 's : all data received and treated' )
                                        } );
+
+                                       console.log( ( ( moment() - started_at ) / 1000.0 ) + 's : all data received and treated' )
                                    } );
                            } );
                        };
