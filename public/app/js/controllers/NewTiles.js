@@ -2,8 +2,8 @@
 
 angular.module( 'portailApp' )
     .controller( 'NewTilesCtrl',
-                 [ '$scope', '$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Apps', 'current_user',
-                   function( $scope, $sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Apps, current_user ) {
+                 [ '$scope', '$rootScope', '$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Apps', 'current_user',
+                   function( $scope, $rootScope, $sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Apps, current_user ) {
                        $scope.COULEURS = COULEURS;
                        $scope.tiles_templates = { app: 'views/new_tile_app.html',
                                                   back: 'views/new_tile_app.html',
@@ -55,7 +55,7 @@ angular.module( 'portailApp' )
 
                            var app_specific = {
                                CCNUM: { action: function() {
-                                   if ( $scope.modification ) { return; }
+                                   if ( $rootScope.modification ) { return; }
                                    $scope.tree = { configurable: false,
                                                    filter: default_filter,
                                                    laius_template: 'views/laius_CCNUM.html',
@@ -85,7 +85,7 @@ angular.module( 'portailApp' )
                                }
                                       },
                                GAR: { action: function() {
-                                   if ( $scope.modification ) { return; }
+                                   if ( $rootScope.modification ) { return; }
                                    currentUser.ressources().then( function ( response ) {
                                        $scope.tree = { configurable: false,
                                                        filter: default_filter,
@@ -104,7 +104,7 @@ angular.module( 'portailApp' )
                                }
                                     },
                                TROMBI: { action: function() {
-                                   if ( $scope.modification ) { return; }
+                                   if ( $rootScope.modification ) { return; }
                                    $scope.filter_criteria = { show_classes: true,
                                                               show_groupes_eleves: true,
                                                               text: '' };
@@ -186,7 +186,7 @@ angular.module( 'portailApp' )
                                node.action = app_specific[ node.application_id ].action;
                            } else {
                                node.action = function() {
-                                   if ( $scope.modification ) { return; }
+                                   if ( $rootScope.modification ) { return; }
                                    if ( !_(node.application_id).isNull() && node.application_id !== 'PRONOTE' ) {
                                        $state.go( 'app.external', { app: node.application_id } );
                                    } else {
@@ -223,7 +223,7 @@ angular.module( 'portailApp' )
                        };
 
                        // Edition
-                       $scope.modification = false;
+                       $rootScope.modification = false;
                        var sortable_callback = function( event ) {
                            _($scope.tree.tiles).each( function( tile, i ) {
                                tile.index = i;
@@ -268,11 +268,11 @@ angular.module( 'portailApp' )
                        };
 
                        $scope.edit_tiles = function() {
-                           $scope.modification = true;
+                           $rootScope.modification = true;
                        };
 
                        $scope.exit_tiles_edition = function() {
-                           $scope.modification = false;
+                           $rootScope.modification = false;
                            retrieve_tiles_tree();
                        };
 
@@ -307,7 +307,7 @@ angular.module( 'portailApp' )
                                $scope.tree.tiles = fill_empty_tiles( _($scope.tree.tiles).reject( function( tile ) { return tile.to_delete; } ) );
                            } );
 
-                           $scope.modification = false;
+                           $rootScope.modification = false;
                            $scope.tree.tiles.forEach( function( tile ) {
                                if ( _(tile).has('configure') ) {
                                    tile.configure = false;
