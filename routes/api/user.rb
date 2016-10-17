@@ -161,7 +161,7 @@ module Portail
                         '07_blogs.svg'
                       else
                         '08_ressources.svg'
-                end }
+                      end }
             end
 
             json ressources
