@@ -11,8 +11,9 @@ module Portail
           app.get "#{APP_PATH}/api/apps/default/?" do
             content_type :json
 
-            AnnuaireWrapper::Apps.query_defaults
-                                 .map do |appli|
+            Laclasse::CrossApp::Sender
+              .send_request_signed( :service_annuaire_portail_entree, '/applications', {} )
+              .map do |appli|
               next if %w(ANNUAIRE ANN_ENT PORTAIL SSO STARTBOX).include?( appli['id'] )
 
               default = config[:apps][:default][ appli['id'].to_sym ]
@@ -36,7 +37,7 @@ module Portail
 
             return [] if user[:user_detailed]['profil_actif'].nil?
 
-            apps = AnnuaireWrapper::Etablissement::Apps.query_etablissement( user[:user_detailed]['profil_actif']['etablissement_code_uai'] )
+            apps = Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_portail_entree, "/etablissement/#{user[:user_detailed]['profil_actif']['etablissement_code_uai']}", {} )
 
             apps = provision_default_apps( user[:user_detailed]['profil_actif']['etablissement_code_uai'] ) if apps.empty?
 
@@ -66,7 +67,9 @@ module Portail
 
               dup_app = Hash[ dup_app.map { |k, v| [k.to_sym, v] } ] # all keys to symbols
 
-              AnnuaireWrapper::Etablissement::Apps.update( dup_app[:id], dup_app )
+              dup_app.delete( 'splat' ) # WTF
+              dup_app.delete( 'captures' ) # WTF
+              Laclasse::CrossApp::Sender.put_request_signed( :service_annuaire_portail_entree, "/#{dup_app[:id]}", dup_app )
             end
 
             json apps
@@ -76,7 +79,7 @@ module Portail
             content_type :json
             param :id, Integer, required: true
 
-            json AnnuaireWrapper::Etablissement::Apps.app.get( params[:id] )
+            json Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_portail_entree, "/#{params[:id]}", {} )
           end
 
           app.post "#{APP_PATH}/api/apps/?" do
@@ -92,7 +95,8 @@ module Portail
             param :libelle, String, required: false
             param :url, String, required: false
 
-            json AnnuaireWrapper::Etablissement::Apps.create( user[:user_detailed]['profil_actif']['etablissement_code_uai'], params )
+            params['etab_code_uai'] = user[:user_detailed]['profil_actif']['etablissement_code_uai']
+            json Laclasse::CrossApp::Sender.post_request_signed( :service_annuaire_portail_entree, '', {}, params )
           end
 
           app.put "#{APP_PATH}/api/apps/:id" do
@@ -107,14 +111,14 @@ module Portail
             param :libelle, String, required: false
             param :url, String, required: false
 
-            json AnnuaireWrapper::Etablissement::Apps.update( params[:id], params )
+            json Laclasse::CrossApp::Sender.put_request_signed( :service_annuaire_portail_entree, "/#{params[:id]}", params )
           end
 
           app.delete "#{APP_PATH}/api/apps/:id" do
             content_type :json
             param :id, Integer, required: true
 
-            json AnnuaireWrapper::Etablissement::Apps.delete( params[:id] )
+            json Laclasse::CrossApp::Sender.delete_request_signed( :service_annuaire_portail_entree, "/#{params[:id]}", {} )
           end
         end
       end

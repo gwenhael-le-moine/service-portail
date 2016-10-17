@@ -13,7 +13,8 @@ module Portail
 
             return [] unless logged?
 
-            fluxes = AnnuaireWrapper::Etablissement::Flux.query_etablissement( user[:user_detailed]['profil_actif']['etablissement_code_uai'] )
+            fluxes = Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_portail_flux, "/etablissement/#{user[:user_detailed]['profil_actif']['etablissement_code_uai']}", {} )
+
             if fluxes.empty? || fluxes.nil?
               fluxes = config[:news_feed]
               fluxes.each do |flux|
@@ -30,7 +31,7 @@ module Portail
 
             return [] unless logged?
 
-            json AnnuaireWrapper::Etablissement::Flux.get( params[:id] )
+            json Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_portail_flux, "/#{params[:id]}", {} )
           end
 
           app.post "#{APP_PATH}/api/flux/?" do
@@ -40,7 +41,8 @@ module Portail
             param :flux, String, required: true
             param :title, String, required: true
 
-            json AnnuaireWrapper::Etablissement::Flux.create( user[:user_detailed]['profil_actif']['etablissement_code_uai'], params )
+            params['etab_code_uai'] = user[:user_detailed]['profil_actif']['etablissement_code_uai']
+            json Laclasse::CrossApp::Sender.post_request_signed( :service_annuaire_portail_flux, '', {}, params )
           end
 
           app.put "#{APP_PATH}/api/flux/:id" do
@@ -51,14 +53,14 @@ module Portail
             param :flux, String, required: true
             param :title, String, required: true
 
-            json AnnuaireWrapper::Etablissement::Flux.update( params[:id], params )
+            json Laclasse::CrossApp::Sender.put_request_signed( :service_annuaire_portail_flux, "/#{params[:id]}", params )
           end
 
           app.delete "#{APP_PATH}/api/flux/:id" do
             content_type :json
             param :id, Integer, required: true
 
-            json AnnuaireWrapper::Etablissement::Flux.delete( params[:id] )
+            json Laclasse::CrossApp::Sender.delete_request_signed( :service_annuaire_portail_flux, "/#{params[:id]}", {} )
           end
         end
       end

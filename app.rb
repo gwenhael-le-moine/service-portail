@@ -18,7 +18,6 @@ require 'laclasse/helpers/authentication'
 require 'laclasse/helpers/user'
 require 'laclasse/helpers/app_infos'
 
-require_relative './lib/annuaire_wrapper'
 require_relative './lib/helpers/config'
 require_relative './lib/helpers/provision'
 

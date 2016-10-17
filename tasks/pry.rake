@@ -9,12 +9,11 @@ task :load_config do
   require 'json'
   require 'yaml'
 
-  Bundler.require( :default, ENV['RACK_ENV'].to_sym )     # require tout les gems définis dans Gemfile
+  Bundler.require( :default, ENV['RACK_ENV'].to_sym ) # require tout les gems définis dans Gemfile
 
   require_relative '../config/options'
   require 'laclasse/helpers/authentication'
   require_relative '../lib/helpers/config'
-  require_relative '../lib/annuaire_wrapper'
 end
 
 desc 'Open pry with DB environment setup'

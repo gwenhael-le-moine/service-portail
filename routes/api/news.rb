@@ -22,13 +22,13 @@ module Portail
             # THINK : Comment mettre des priorités sur les différents flux ?
             news = []
 
-            fluxes = AnnuaireWrapper::Etablissement::Flux.query_etablissement( user[:user_detailed]['profil_actif']['etablissement_code_uai'] ) unless user[:user_detailed]['profil_actif'].nil?
+            fluxes = Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_portail_flux, "/etablissement/#{user[:user_detailed]['profil_actif']['etablissement_code_uai']}", {} ) unless user[:user_detailed]['profil_actif'].nil?
             fluxes = config[:news_feed] if fluxes.empty? || fluxes.nil?
 
             # Add user news
             fluxes << { nb: 5,
                         icon: '',
-                        flux: AnnuaireWrapper::User::News.query( user[:uid] ),
+                        flux: Laclasse::CrossApp::Sender.sign( :service_annuaire_portail_news, "/#{user[:uid]}", {} ),
                         title: 'News de l\'utilisateur' }
 
             fluxes.each do |feed|
