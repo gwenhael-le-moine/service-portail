@@ -1,0 +1,15 @@
+[Unit]
+Description=Laclasse portal service
+After=network.target local-fs.target
+
+[Service]
+WorkingDirectory=/home/erasme/laclasse-portail/
+ExecStart=/home/erasme/.rbenv/shims/bundle exec puma --log-request -Cconfig/puma.rb ./config.ru
+KillMode=control-group
+Restart=always
+User=erasme
+Group=erasme
+
+[Install]
+WantedBy=multi-user.target
+
