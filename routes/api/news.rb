@@ -37,6 +37,8 @@ module Portail
               begin
                 news << RSS::Parser.parse( open( feed[:flux] ), false )
                                    .items
+                                   .sort_by(&:pubDate)
+                                   .reverse
                                    .first( feed[:nb] )
                                    .map do |article|
                   # description = article.instance_variable_defined?( :@content_encoded ) && !article.content_encoded.nil? ? article.content_encoded : article.description
