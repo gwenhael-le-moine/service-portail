@@ -49,5 +49,7 @@ Metrics/PerceivedComplexity:
 Metrics/CyclomaticComplexity:
   Max: 20
 
+Metrics/BlockLength:
+  Enabled: false
 
 inherit_from: .rubocop_todo.yml
