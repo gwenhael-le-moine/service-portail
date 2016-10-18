@@ -38,7 +38,7 @@ module Portail
             # param :login,          String,  required: false
             # param :bloque,         TrueClass, required: false
 
-            Laclasse::CrossApp::Sender.put_request_signed(:service_annuaire_user, user[:uid].to_s, normalize( params ) )
+            Laclasse::CrossApp::Sender.put_request_signed(:service_annuaire_user, user[:uid].to_s, params )
 
             init_current_user( user[:uid] )
 
