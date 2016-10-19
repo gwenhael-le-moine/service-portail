@@ -133,42 +133,42 @@
       {
           "title": "Tutoriel pour préparer la rentrée sur l'ENT",
           "url": "http://ent-laclasse.blogs.laclasse.com/2016/06/28/principal-de-college-comment-preparer-la-rentree-sur-lent/",
-          "profils": [ "DIR", "ENS" ]
+          "profils": [ "DIR", "ENS", "DOC" ]
       },
       {
           "title": "Tutoriel tuile 'Panneau d'Administration'",
           "url": "http://ent-laclasse.blogs.laclasse.com/2016/07/08/administrer-son-etablissement/",
-          "profils": [ "DIR", "ENS" ]
+          "profils": [ "DIR", "ENS", "DOC" ]
       },
       {
           "title": "Tutoriel 'Administrer son blog'",
           "url": "http://ent-laclasse.blogs.laclasse.com/2016/08/29/pour-acceder-a-son-blog-et-ladministrer/",
-          "profils": [ "DIR", "ENS" ]
+          "profils": [ "DIR", "ENS", "DOC" ]
       },
       {
           "title": "Paramétrer sa messagerie sur un logiciel de messagerie",
           "url": "http://ent-laclasse.blogs.laclasse.com/2016/08/22/parametrer-son-adresse-mail-sur-un-logiciel-de-messagerie-thunderbird-outlooketc/",
-          "profils": [ "DIR", "ENS" ]
+          "profils": [ "DIR", "ENS", "DOC" ]
       },
       {
           "title": "Précisions concernant les changements d'adresses mails",
           "url": "http://ent-laclasse.blogs.laclasse.com/2016/06/16/ce-quil-faut-retenir-concernant-sa-boite-mail-laclasse-com-au-5072016/",
-          "profils": [ "DIR", "ENS" ]
+          "profils": [ "DIR", "ENS", "DOC" ]
       },
       {
           "title": "Communiquer les logins et mots de passes automatiques",
           "url": "http://ent-laclasse.blogs.laclasse.com/2016/09/12/communiquer-les-logins-et-mots-de-passes-automatiques/",
-          "profils": [ "DIR", "ENS" ]
+          "profils": [ "DIR", "ENS", "DOC" ]
       },
       {
           "title": "Formation de la DANE",
           "url": "https://dane.ac-lyon.fr/spip/IMG/scenari/v3_la_classe/co/000_formation_utilisateur_ent.html",
-          "profils": [ "DIR", "ENS" ]
+          "profils": [ "DIR", "ENS", "DOC" ]
       },
       {
           "title": "Problèmes connus",
           "url": "http://ent-laclasse.blogs.laclasse.com/category/bugs/",
-          "profils": [ "DIR", "ENS" ]
+          "profils": [ "DIR", "ENS", "DOC" ]
       },
       {
           "title": "Charte d'utilisation",
