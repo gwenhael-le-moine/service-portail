@@ -20,7 +20,8 @@ angular.module( 'portailApp' )
                                                                     url: 'http://',
                                                                     color: '',
                                                                     active: true,
-                                                                    selected: true } ) );
+                                                                    selected: true,
+                                                                    taxonomy: 'app'} ) );
                        };
 
                        $scope.keep_tile_selected = function( event, app ) {
