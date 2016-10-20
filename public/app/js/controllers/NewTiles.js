@@ -279,28 +279,55 @@ angular.module( 'portailApp' )
                        $scope.save_tiles_edition = function( should_save ) {
                            _.chain($scope.tree.tiles)
                                .select( function( tile ) {
-                                   return _(tile).has('dirty') && !_(tile.dirty).isEmpty() && !_(tile).has('to_create');
+                                   return _(tile).has('id') && _(tile).has('dirty') && !_(tile.dirty).isEmpty() && !_(tile).has('to_create');
                                } )
                                .each( function( tile ) {
-                                   var updated_fields = { id: tile.id };
-                                   _.chain(tile.dirty)
-                                       .keys()
-                                       .each( function( field ) {
-                                           updated_fields[ field ] = tile[ field ];
-                                       } );
-                                   Apps.update( updated_fields );
+                                   switch( tile.taxonomy ) {
+                                   case 'app':
+                                       var updated_fields = { id: tile.id };
+                                       _.chain(tile.dirty)
+                                           .keys()
+                                           .each( function( field ) {
+                                               updated_fields[ field ] = tile[ field ];
+                                           } );
+                                       Apps.update( updated_fields );
+                                       break;
+                                   case 'rn':
+                                       console.log(tile)
+                                       break;
+                                   default:
+                                       console.log(tile)
+                                   }
                                } );
 
                            var promises = _.chain($scope.tree.tiles)
                                .where({ to_delete: true })
                                .map( function( tile ) {
-                                   return Apps.delete({ id: tile.id }).$promise;
+                                   switch( tile.taxonomy ) {
+                                   case 'app':
+                                       return Apps.delete({ id: tile.id }).$promise;
+                                   case 'rn':
+                                       console.log(tile)
+                                       return null;
+                                   default:
+                                       console.log(tile)
+                                       return null;
+                                   }
                                } );
 
                            promises.concat( _.chain($scope.tree.tiles)
                                             .where({ to_create: true })
                                             .map( function( tile ) {
-                                                return Apps.save( tile ).$promise;
+                                                switch( tile.taxonomy ) {
+                                                case 'app':
+                                                    return Apps.save( tile ).$promise;
+                                                case 'rn':
+                                                    console.log(tile)
+                                                    return null;
+                                                default:
+                                                    console.log(tile)
+                                                    return null;
+                                                }
                                             } ) );
 
                            $q.all( promises ).then( function( response ) {
