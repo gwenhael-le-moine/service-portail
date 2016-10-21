@@ -14,12 +14,9 @@ module Portail
           app.get "#{APP_PATH}/api/news/?" do
             content_type :json, charset: 'utf-8'
 
-            # rubocop:disable Style/RegexpLiteral
-            all_images_url_regexp = /(https?:\/\/[a-z\-_0-9\/\:\.]*\.(jpg|jpeg|png|gif))/i
-            only_image_url_regexp = /^https?:\/\/[a-z\-_0-9\/\:\.]*\.(jpg|jpeg|png|gif)$/i
-            # rubocop:enable Style/RegexpLiteral
+            all_images_url_regexp = %r{/(https?:\/\/[a-z\-_0-9\/\:\.]*\.(jpg|jpeg|png|gif))/i}
+            only_image_url_regexp = %r{/^https?:\/\/[a-z\-_0-9\/\:\.]*\.(jpg|jpeg|png|gif)$/i}
 
-            # THINK : Comment mettre des priorités sur les différents flux ?
             news = []
 
             fluxes = Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_portail_flux, "/etablissement/#{user[:user_detailed]['profil_actif']['etablissement_code_uai']}", {} ) unless user[:user_detailed]['profil_actif'].nil?
