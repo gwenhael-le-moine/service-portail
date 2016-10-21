@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-require 'simple-rss'
+require 'rss'
 require 'open-uri'
 
 module Portail
@@ -13,9 +13,13 @@ module Portail
           #
           app.get "#{APP_PATH}/api/news/?" do
             content_type :json, charset: 'utf-8'
-            all_images_url_regexp = %r{/(https?:\/\/[a-z\-_0-9\/\:\.]*\.(jpg|jpeg|png|gif))/i}
-            only_image_url_regexp = %r{ /^https?:\/\/[a-z\-_0-9\/\:\.]*\.(jpg|jpeg|png|gif)$/i }
 
+            # rubocop:disable Style/RegexpLiteral
+            all_images_url_regexp = /(https?:\/\/[a-z\-_0-9\/\:\.]*\.(jpg|jpeg|png|gif))/i
+            only_image_url_regexp = /^https?:\/\/[a-z\-_0-9\/\:\.]*\.(jpg|jpeg|png|gif)$/i
+            # rubocop:enable Style/RegexpLiteral
+
+            # THINK : Comment mettre des priorités sur les différents flux ?
             news = []
 
             fluxes = Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_portail_flux, "/etablissement/#{user[:user_detailed]['profil_actif']['etablissement_code_uai']}", {} ) unless user[:user_detailed]['profil_actif'].nil?
@@ -25,39 +29,41 @@ module Portail
             fluxes << { nb: 5,
                         icon: '',
                         flux: Laclasse::CrossApp::Sender.sign( :service_annuaire_portail_news, "/#{user[:uid]}", {} ),
-                        title: 'News de l\'utilisateur',
-                        type: 'publipostage' }
+                        title: 'News de l\'utilisateur' }
 
             fluxes.each do |feed|
               feed = Hash[ feed.map { |k, v| [k.to_sym, v] } ]
+
               begin
-                news << SimpleRSS.parse( open( feed[:flux] ) )
-                                 .items
-                                 .sort_by(&:updated)
-                                 .reverse
-                                 .first( feed[:nb] )
-                                 .map do |article|
+                news << RSS::Parser.parse( open( feed[:flux] ), false )
+                                   .items
+                                   .sort_by(&:pubDate)
+                                   .reverse
+                                   .first( feed[:nb] )
+                                   .map do |article|
+                  # description = article.instance_variable_defined?( :@content_encoded ) && !article.content_encoded.nil? ? article.content_encoded : article.description
+                  description = article.description
+
                   if article.instance_variable_defined?( :@image )
                     image = article.image
-                  elsif article.instance_variable_defined?( :@content ) && !article.content.nil? && article.content.content.match( only_image_url_regexp )
+                  elsif image.nil? && article.instance_variable_defined?( :@content ) && !article.content.nil? && article.content.match( only_image_url_regexp )
                     image = article.content
                   else
-                    images = article.content.match( all_images_url_regexp ) unless article.content.nil?
+                    images = ( article.instance_variable_defined?( :@content_encoded ) && !article.content_encoded.nil? ? article.content_encoded : description ).match( all_images_url_regexp )
 
                     if images.nil?
                       image = nil
                     else
-                      image = images.first
-                      article.content.sub!( all_images_url_regexp, '' )
+                      image = images[0]
+                      description.sub!( all_images_url_regexp, '' )
                     end
                   end
 
                   { image: image,
-                    link: URI.unescape( article.link.to_s.force_encoding( 'UTF-8' ).encode! ),
-                    pubDate: article.updated,
-                    title: URI.unescape( article.title.to_s.force_encoding( 'UTF-8' ).encode! ),
-                    description: URI.unescape( article.content.to_s.force_encoding( 'UTF-8' ).encode! ),
-                    type: feed.key?(:type) ? feed[:type] : 'unknown' }
+                    link: URI.unescape( article.link.force_encoding( 'UTF-8' ).encode! ),
+                    pubDate: article.pubDate.nil? ? Time.now : article.pubDate.iso8601,
+                    title: URI.unescape( article.title.force_encoding( 'UTF-8' ).encode! ),
+                    description: URI.unescape( description.force_encoding( 'UTF-8' ).encode! ) }
                 end
               rescue => e
                 LOGGER.debug e.message
