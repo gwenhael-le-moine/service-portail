@@ -22,7 +22,7 @@ angular.module( 'portailApp' )
                                .then( function( response ) {
                                    $scope.newsfeed = _(response.data).map( function( item, index ) {
                                        item.id = index;
-                                       item.trusted_description = $sce.trustAsHtml( item.description );
+                                       item.trusted_content = $sce.trustAsHtml( item.content );
                                        item.no_image = _(item.image).isNull();
                                        item.pubDate = moment( item.pubDate ).toDate();
 

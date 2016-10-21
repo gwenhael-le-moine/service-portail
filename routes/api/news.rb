@@ -63,7 +63,7 @@ module Portail
                     link: URI.unescape( article.link.force_encoding( 'UTF-8' ).encode! ),
                     pubDate: article.pubDate.nil? ? Time.now : article.pubDate.iso8601,
                     title: URI.unescape( article.title.force_encoding( 'UTF-8' ).encode! ),
-                    description: URI.unescape( description.force_encoding( 'UTF-8' ).encode! ) }
+                    content: URI.unescape( description.force_encoding( 'UTF-8' ).encode! ) }
                 end
               rescue => e
                 LOGGER.debug e.message
@@ -74,7 +74,7 @@ module Portail
 
             json news
                    .flatten
-                   .uniq { |article| article[:description] }
+                   .uniq { |article| article[:content] }
           end
         end
       end
