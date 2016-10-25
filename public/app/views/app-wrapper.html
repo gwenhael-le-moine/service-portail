@@ -35,13 +35,8 @@
             </ul>
         </div>
 
-        <select class="gris4 profil-select-wrapper"
-                ng:if="current_user.is_logged"
-                ng:controller="ProfilActifCtrl"
-                ng:model="current_user.profil_actif"
-                ng:change="reload()"
-                ng:options="profil as profil.etablissement_nom + ' : ' + profil.profil_nom group by profil.etablissement_nom for profil in current_user.profils track by profil.index" >
-        </select>
+        <profilactif class="gris4 profil-select-wrapper"
+                     user="current_user"></profilactif>
     </div>
 
     <div data-ui-view="app" id="app"></div>

@@ -78,11 +78,15 @@ body {
         height: 0;
         width: 0;
         z-index: 1;
-        h2 {
-            margin-top: -1.65em;
-            margin-left: 0.15em;
-            font-weight: bold;
-            color: #fff;
+        a {
+            cursor: pointer;
+            text-decoration: none;
+            h2 {
+                margin-top: -1.65em;
+                margin-left: 0.15em;
+                font-weight: bold;
+                color: #fff;
+            }
         }
     }
     .bouton-config-news {
@@ -144,7 +148,7 @@ body {
     .avatar {
         background-color: #aff;
     }
-    .news {
+    .news ul {
         height: 75%;
         min-height: 400px;
         li { text-align: center; }
@@ -553,7 +557,7 @@ body {
         .dropdown-toggle {
             font-size: 14px;
             font-weight: bolder;
-			padding: 0px 10px 0px 10px;
+            padding: 0px 10px 0px 10px;
         }
         a {
             color: #fff;

@@ -2,8 +2,10 @@
 
 angular.module( 'portailApp' )
     .controller( 'NewTilesCtrl',
-                 [ '$scope', '$rootScope', '$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Apps', 'current_user',
-                   function( $scope, $rootScope, $sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Apps, current_user ) {
+                 [ '$scope', '$rootScope', '$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Apps', 'current_user', 'APP_PATH',
+                   function( $scope, $rootScope, $sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Apps, current_user, APP_PATH ) {
+                       $scope.prefix = APP_PATH;
+
                        $scope.COULEURS = COULEURS;
                        $scope.tiles_templates = { app: 'views/new_tile_app.html',
                                                   back: 'views/new_tile_app.html',
