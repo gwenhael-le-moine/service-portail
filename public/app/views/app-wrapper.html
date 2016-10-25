@@ -1,39 +1,10 @@
 <div id="app-wrapper">
-
     <div class="en-tete container gris4" role="navigation">
-        <a class="laclasse-com gris1 pull-left" ng:click="go_home()">
-            <div class="petit-logo gris4" ng:style="{'background-image': 'url(' + prefix + '/app/node_modules/laclasse-common-client/images/logolaclasse.svg)' }" >
-            </div>
-            <span class="hidden-xs hidden-sm">laclasse.com</span>
-        </a>
+        <logo class="petit logolaclasse gris4 pull-left"></logo>
 
         <span class="hidden-xs hidden-sm titre" ng:cloak>{{app.nom}}</span>
 
-        <div class="dropdown hidden-xs hidden-sm hidden-md pull-right user-menu" uib-dropdown>
-            <a class="dropdown-toggle" id="dropdownMenu1" uib-dropdown-toggle>
-                {{current_user.prenom}} {{current_user.nom}}
-            </a>
-            <ul class="gris3 dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" uib-dropdown-menu>
-                <li>
-                    <a ng:click="go_home()"
-                       ng:style="{'background-image': 'url(' + prefix +'/node_modules/laclasse-common-client/images/logolaclasse.svg)' }" >
-                        retour au portail
-                    </a>
-                </li>
-                <!-- <li>
-                     <a data-ui-sref="app.external({ app: 'aide' })"
-                     ng:style="{'background-image': 'url(' + prefix +'/node_modules/laclasse-common-client/images/12_aide.svg)' }" >
-                     aide
-                     </a>
-                     </li> -->
-                <li>
-                    <a ng:href="{{prefix}}/logout"
-                       ng:style="{'background-image': 'url(' + prefix +'/node_modules/laclasse-common-client/images/12_aide.svg)' }" >
-                        se déconnecter
-                    </a>
-                </li>
-            </ul>
-        </div>
+        <usermenu user="current_user"></usermenu>
 
         <profilactif class="gris4 profil-select-wrapper"
                      user="current_user"></profilactif>

@@ -28,8 +28,7 @@ angular.module( 'portailApp', [ 'ngResource',
                    $stateProvider
                        .state( 'portail',
                                { resolve: { current_user: get_current_user },
-                                 templateUrl: 'views/index.html',
-                                 controller: 'PortailCtrl' } )
+                                 templateUrl: 'views/index.html' } )
                        .state( 'portail.tiles',
                                { parent: 'portail',
                                  url: '/',
@@ -41,10 +40,11 @@ angular.module( 'portailApp', [ 'ngResource',
                                  views: { main: { templateUrl: 'views/user.html',
                                                   controller: 'ModificationUserCtrl' } } } )
                        .state( 'app',
-                               { resolve: { current_user: get_current_user },
+                               { resolve: { current_user: get_current_user,
+                                            iOS: function() { return ( navigator.userAgent.match( /iPad/i ) !== null ) || ( navigator.userAgent.match( /iPhone/i ) !== null ); },
+                                            prefix: function() { return APP_PATH; } },
                                  url: '/app',
-                                 templateUrl: 'views/app-wrapper.html',
-                                 controller: 'AppWrapperCtrl' } )
+                                 templateUrl: 'views/app-wrapper.html' } )
                        .state( 'app.external',
                                { parent: 'app',
                                  url: '/external/:app',

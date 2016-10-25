@@ -603,23 +603,23 @@ body {
     }
 }
 
-.laclasse-com {
-    float: left;
-    font-weight: bolder;
-    font-size: 14px;
-    text-align: center;
-    cursor: pointer;
-    a {
-        color: #fff;
-        text-decoration: none;
-    }
-    span {
-        display: inline-block;
-        float: left;
-        color: #fff;
-        min-width: 9em;
-    }
-}
+// .laclasse-com {
+//     float: left;
+//     font-weight: bolder;
+//     font-size: 14px;
+//     text-align: center;
+//     cursor: pointer;
+//     a {
+//         color: #fff;
+//         text-decoration: none;
+//     }
+//     span {
+//         display: inline-block;
+//         float: left;
+//         color: #fff;
+//         min-width: 9em;
+//     }
+// }
 
 .iframe {
     height: 100%;
@@ -974,4 +974,27 @@ svg {
 // fix #160
 .as-sortable-item {
     touch-action: auto;
+}
+
+
+.petit.logolaclasse {
+    height: 100%;
+    a {
+        height: auto;
+        img {
+            float: left;
+            display: inline-block;
+            height: 100%;
+            width: 40px;
+            margin: 0;
+        }
+        h3 {
+            float: left;
+            font-size: 1.3em;
+            font-weight: normal;
+            line-height: 2;
+            margin: 0 1em;
+            width: auto;
+        }
+    }
 }
