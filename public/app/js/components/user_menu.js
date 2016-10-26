@@ -15,7 +15,7 @@ angular.module( 'portailApp' )
                   '                    </a>' +
                   '                </li>' +
                   '                <!-- <li>' +
-                  '                     <a data-ui-sref="app.external({ app: \'aide\' })"' +
+                  '                     <a data-ui-sref="app({ appid: \'aide\' })"' +
                   '                     ng:style="{\'background-image\': \'url(\' + $ctrl.prefix + \'/node_modules/laclasse-common-client/images/12_aide.svg)\' }" >' +
                   '                     aide' +
                   '                     </a>' +

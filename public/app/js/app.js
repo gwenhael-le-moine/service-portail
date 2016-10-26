@@ -41,15 +41,13 @@ angular.module( 'portailApp', [ 'ngResource',
                                                   controller: 'ModificationUserCtrl' } } } )
                        .state( 'app',
                                { resolve: { current_user: get_current_user,
-                                            iOS: function() { return ( navigator.userAgent.match( /iPad/i ) !== null ) || ( navigator.userAgent.match( /iPhone/i ) !== null ); },
                                             prefix: function() { return APP_PATH; } },
-                                 url: '/app',
-                                 templateUrl: 'views/app-wrapper.html' } )
-                       .state( 'app.external',
-                               { parent: 'app',
-                                 url: '/external/:app',
-                                 views: { app: { templateUrl: 'views/iframe.html',
-                                                 controller: 'IframeCtrl' } } } );
+                                 url: '/app/:appid',
+                                 templateUrl: 'views/app-wrapper.html',
+                                 controller: [ '$scope', '$stateParams',
+                                               function( $scope, $stateParams ) {
+                                                   $scope.appid = $stateParams.appid;
+                                               } ] } );
 
                    $urlRouterProvider.otherwise( '/' );
                }
