@@ -37,8 +37,7 @@ angular.module( 'portailApp', [ 'ngResource',
                        .state( 'portail.user',
                                { parent: 'portail',
                                  url: '/user',
-                                 views: { main: { templateUrl: 'views/user.html',
-                                                  controller: 'ModificationUserCtrl' } } } )
+                                 views: { main: { templateUrl: 'views/user.html' } } } )
                        .state( 'app',
                                { resolve: { current_user: get_current_user,
                                             prefix: function() { return APP_PATH; } },
@@ -50,7 +49,7 @@ angular.module( 'portailApp', [ 'ngResource',
                                                } ] } );
 
                    $urlRouterProvider.otherwise( '/' );
-               }
+                             }
              ] )
     .config( [ '$httpProvider',
                function( $httpProvider ) {
