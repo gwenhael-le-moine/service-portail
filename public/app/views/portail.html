@@ -7,8 +7,14 @@
         <usertile user="current_user"></usertile>
 
         <news class="col-xs-12 col-sm-12 col-md-12 col-lg-12 hidden-xs hidden-sm news"
-              user="current_user"></news>
+              user="current_user"
+              ng:if="!tree.laius_template"></news>
 
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 hidden-xs hidden-sm laius"
+             ng:include="tree.laius_template"
+             ng:if="tree.laius_template">
+            {{tree.laius_template}}
+        </div>
     </div>
 
     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
@@ -20,12 +26,6 @@
         <div class="row damier gris4"
              ng:class="{'modification': modification}"
              ng:if="!current_user.edit_profile">
-
-            <div class="hidden-xs aside laius"
-                 ng:include="tree.laius_template"
-                 ng:if="tree.laius_template">
-                {{tree.laius_template}}
-            </div>
 
             <ul data-as-sortable="sortable_options"
                 data-is-disabled="!modification"

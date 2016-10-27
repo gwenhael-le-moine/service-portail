@@ -231,27 +231,7 @@ body {
     }
 
     .laius {
-        margin: 40px;
-        text-align: justify;
-    }
-}
-
-.logolaclasse .ent-name {
-    color: #fff;
-    font-weight: 700;
-    padding: 0;
-    text-decoration: none;
-}
-
-.damier {
-    overflow-y: auto;
-    overflow-x: hidden;
-    .laius {
-        position: absolute;
         height: 75%;
-        width: 50%;
-        top: 25%;
-        left: -50%;
         padding: 15px;
         background-color: #fff;
         p {
@@ -264,6 +244,19 @@ body {
             }
         }
     }
+
+}
+
+.logolaclasse .ent-name {
+    color: #fff;
+    font-weight: 700;
+    padding: 0;
+    text-decoration: none;
+}
+
+.damier {
+    overflow-y: auto;
+    overflow-x: hidden;
     .floating-button.off {
         background-image: url('../node_modules/laclasse-common-client/images/icon_admin-outils-gris.svg');
     }
