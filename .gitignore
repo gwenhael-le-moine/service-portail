@@ -40,3 +40,4 @@ vagrant/
 /config/thin.yaml
 
 /public/app/vendor/jquery/
+/vendor/

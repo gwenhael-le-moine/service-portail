@@ -2,12 +2,12 @@
 
 angular.module( 'portailApp' )
     .component( 'usertile',
-                { bindings: { user: '<' },
+                { bindings: { user: '=' },
                   template: '<div class="col-xs-11 col-sm-11 col-md-6 col-lg-6 user"' +
                   '             ng:style="{ \'background-image\': \'url(\' + $ctrl.user.avatar + \')\' }">' +
                   '            <div class="user-info-bg">' +
                   '                <span class="user-info">' +
-                  '                    <a data-ui-sref="portail.user">' +
+                  '                    <a ng:click="$ctrl.edit_profile()">' +
                   '                        <h4 class="hidden-xs hidden-sm full-name">{{$ctrl.user.prenom}} {{$ctrl.user.nom}}</h4>' +
                   '                        <h4 class="hidden-md hidden-lg initiales">{{$ctrl.user.prenom[0]}}{{$ctrl.user.nom[0]}}</h4>' +
                   '                    </a>' +
@@ -20,5 +20,9 @@ angular.module( 'portailApp' )
                   controller: [ 'APP_PATH',
                                 function( APP_PATH ) {
                                     this.prefix = APP_PATH;
+
+                                    this.edit_profile = function() {
+                                        this.user.edit_profile = true;
+                                    };
                                 } ]
                 } );

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module( 'portailApp' )
-    .controller( 'NewTilesCtrl',
+    .controller( 'PortailCtrl',
                  [ '$scope', '$rootScope', '$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Apps', 'current_user', 'APP_PATH',
                    function( $scope, $rootScope, $sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Apps, current_user, APP_PATH ) {
                        $scope.prefix = APP_PATH;

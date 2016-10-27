@@ -20,6 +20,7 @@ angular.module( 'portailApp', [ 'ngResource',
                                                 return currentUser.get( false )
                                                     .then( function( response ) {
                                                         $rootScope.current_user = response;
+                                                        $rootScope.current_user.edit_profile = false;
 
                                                         return $rootScope.current_user;
                                                     } );
@@ -27,17 +28,10 @@ angular.module( 'portailApp', [ 'ngResource',
 
                    $stateProvider
                        .state( 'portail',
-                               { resolve: { current_user: get_current_user },
-                                 templateUrl: 'views/index.html' } )
-                       .state( 'portail.tiles',
-                               { parent: 'portail',
-                                 url: '/',
-                                 views: { main: { templateUrl: 'views/new_tiles.html',
-                                                  controller: 'NewTilesCtrl' } } } )
-                       .state( 'portail.user',
-                               { parent: 'portail',
-                                 url: '/user',
-                                 views: { main: { templateUrl: 'views/user.html' } } } )
+                               { url: '/',
+                                 templateUrl: 'views/portail.html',
+                                 resolve: { current_user: get_current_user },
+                                 controller: 'PortailCtrl' } )
                        .state( 'app',
                                { resolve: { current_user: get_current_user,
                                             prefix: function() { return APP_PATH; } },

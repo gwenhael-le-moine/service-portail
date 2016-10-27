@@ -19,7 +19,7 @@ angular.module( 'portailApp' )
                     };
 
                     this.go_home = function() {
-                        $state.go( 'portail.tiles', {}, { reload: true, inherit: true, notify: true } );
+                        $state.go( 'portail', {}, { reload: true, inherit: true, notify: true } );
                     };
                 }
               ] );
