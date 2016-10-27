@@ -1,8 +1,8 @@
 <header>
     <h3>Profil utilisateur</h3>
-    <h1 ng:cloak>{{$ctrl.user.prenom}} {{$ctrl.user.nom}}</h1>
-    <h2 ng:cloak>{{$ctrl.user.profil_actif.etablissement}}</h2>
-    <h2 ng:cloak>{{$ctrl.user.profil_actif.nom}}</h2>
+    <h1>{{$ctrl.user.prenom}} {{$ctrl.user.nom}}</h1>
+    <h2>{{$ctrl.user.profil_actif.etablissement}}</h2>
+    <h2>{{$ctrl.user.profil_actif.nom}}</h2>
 </header>
 <div class="form">
     <accordion close-others="false">
@@ -19,12 +19,10 @@
                         <!-- FIXME: disabled due to bug #70 -->
                         <!-- <button class="delete-avatar" ng:click="delete_avatar()">x</button> -->
 
-                        <img draggable="false" class="svg"
-                             ng:src="{{$ctrl.avatar.image ? $ctrl.avatar.image : $ctrl.user.avatar}}" />
-                        <input type="file" ng-file-select="$ctrl.onFileSelect($files)" >
+                        <avatar user="$ctrl.user"></avatar>
 
                         <footer>
-                            <button ng:disabled="!$ctrl.avatar.image"
+                            <button ng:disabled="!$ctrl.user.new_avatar.blob"
                                     ng:click="$ctrl.upload_avatar()">Valider l'avatar</button>
                         </footer>
                     </div>
