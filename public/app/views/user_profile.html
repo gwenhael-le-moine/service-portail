@@ -5,7 +5,13 @@
     <h2>{{$ctrl.user.profil_actif.nom}}</h2>
 </header>
 <div class="form">
-    <accordion close-others="false">
+
+    <div class="avatar-container form-group col-md-4 col-xs-12 pull-right">
+        <label>Avatar :</label>
+        <avatar user="$ctrl.user"></avatar>
+    </div>
+
+    <accordion close-others="false" class="col-md-8 col-xs-12 pull-left">
 
         <accordion-group data-is-open="$ctrl.groups[ 0 ].ouvert" ng:if="$ctrl.groups[ 0 ].enabled">
             <accordion-heading>
@@ -13,22 +19,7 @@
             </accordion-heading>
             <div class="row">
 
-                <div class="avatar-container form-group">
-                    <label>Avatar :</label>
-                    <div class="avatar">
-                        <!-- FIXME: disabled due to bug #70 -->
-                        <!-- <button class="delete-avatar" ng:click="delete_avatar()">x</button> -->
-
-                        <avatar user="$ctrl.user"></avatar>
-
-                        <footer>
-                            <button ng:disabled="!$ctrl.user.new_avatar.blob"
-                                    ng:click="$ctrl.upload_avatar()">Valider l'avatar</button>
-                        </footer>
-                    </div>
-                </div>
-
-                <div class="form-group">
+                <div class="form-group col-md-6 col-xs-12">
                     <label for="nom">Nom :</label>
                     <input type="text"
                            id="nom"
@@ -37,7 +28,7 @@
                            ng:change="$ctrl.mark_as_dirty( 'nom' )"
                            ng:model="$ctrl.user.nom">
                 </div>
-                <div class="form-group">
+                <div class="form-group col-md-6 col-xs-12">
                     <label for="prenom">Prénom :</label>
                     <input type="text"
                            id="prenom"
@@ -46,7 +37,7 @@
                            ng:change="$ctrl.mark_as_dirty( 'prenom' )"
                            ng:model="$ctrl.user.prenom">
                 </div>
-                <div class="form-group">
+                <div class="form-group col-md-6 col-xs-12">
                     <label for="datenaissance">Date de naissance :</label>
                     <input type="text"
                            id="date_naissance"
@@ -78,7 +69,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group col-md-6 col-xs-12">
                     <label for="adresse">Adresse :</label>
                     <input type="text"
                            id="adresse"
@@ -87,7 +78,7 @@
                            ng:change="$ctrl.mark_as_dirty( 'adresse' )"
                            ng:model="$ctrl.user.adresse">
                 </div>
-                <div class="form-group">
+                <div class="form-group col-md-6 col-xs-12">
                     <label for="codepostal">Code postal :</label>
                     <input type="text"
                            id="codepostal"
@@ -96,7 +87,7 @@
                            ng:change="$ctrl.mark_as_dirty( 'code_postal' )"
                            ng:model="$ctrl.user.code_postal">
                 </div>
-                <div class="form-group">
+                <div class="form-group col-md-6 col-xs-12">
                     <label for="ville">Ville :</label>
                     <input type="text"
                            id="ville"
@@ -106,7 +97,7 @@
                            ng:model="$ctrl.user.ville">
                 </div>
 
-                <div class="form-group"
+                <div class="form-group col-md-6 col-xs-12"
                      ng:repeat="email in $ctrl.user.emails | orderBy:'principal':true | filter:filter_emails()">
                     <label for="courriel">Courriel <span ng:if="email.principal">principal</span> :</label>
                     <input type="text"
@@ -124,13 +115,13 @@
                 <span class="glyphicon" ng:class="{'glyphicon-chevron-down': $ctrl.groups[ 1 ].ouvert, 'glyphicon-chevron-right': !$ctrl.groups[ 1 ].ouvert}"></span> Mot de passe
             </accordion-heading>
             <div class="row">
-                <div class="form-group">
+                <div class="form-group col-md-6 col-xs-12">
                     <label for="newpasswd1">Nouveau mot de passe :</label>
                     <input type="password" class="form-control" id="newpasswd1"
                            ng:change="$ctrl.mark_as_dirty( 'password' )"
                            ng:model="$ctrl.password.new1">
                 </div>
-                <div class="form-group">
+                <div class="form-group col-md-6 col-xs-12">
                     <label for="newpasswd2">Confirmer le nouveau mot de passe :</label>
                     <input type="password" class="form-control" id="newpasswd2"
                            ng:change="$ctrl.mark_as_dirty( 'password' )"
@@ -139,10 +130,10 @@
             </div>
         </accordion-group>
 
+
+        <footer>
+            <button ng:click="$ctrl.fermer( false )">Annuler</button>
+            <button ng:click="$ctrl.fermer( true )">Enregistrer</button>
+        </footer>
     </accordion>
 </div>
-
-<footer>
-    <button ng:click="$ctrl.fermer( false )">Annuler</button>
-    <button ng:click="$ctrl.fermer( true )">Enregistrer</button>
-</footer>

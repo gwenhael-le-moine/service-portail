@@ -645,10 +645,7 @@ body {
     padding: 0 10px;
 
     .form-group {
-        display: inline-block;
-        width: 33%;
-        min-width: 200px;
-        padding: 12px 0;
+        padding: 12px;
     }
     .form-control{
         padding: 0 3px;
@@ -734,7 +731,7 @@ body {
         }
     }
     .avatar-container {
-        float: right;
+        margin-top: 20px;
         .avatar {
             position: relative;
             text-align: center;
