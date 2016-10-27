@@ -30,7 +30,7 @@ angular.module( 'portailApp' )
                                         var blobToDataURL = function( blob, callback ) {
                                             var a = new FileReader();
                                             a.onload = function( e ) { callback( e.target.result ); };
-                                            a.readAsDataURL(blob);
+                                            a.readAsDataURL( blob );
                                         };
 
                                         blobToDataURL( file,
@@ -74,6 +74,7 @@ angular.module( 'portailApp' )
 
                                                                ctrl.user.new_avatar.image = canvas.toDataURL();
                                                            };
+
                                                            img.src = ctrl.user.new_avatar.image;
                                                        } );
                                     };
@@ -96,16 +97,6 @@ angular.module( 'portailApp' )
                                                 reset_new_avatar();
                                             });
                                     };
-
-                                    // ctrl.delete_avatar = function() {
-                                    //     currentUser.avatar.delete()
-                                    //         .then( function( response ) {
-                                    //             ctrl.operation_on_avatar = false;
-                                    //             ctrl.uploaded_avatar = null;
-                                    //             currentUser.force_refresh();
-                                    //             reset_new_avatar();
-                                    //         } );
-                                    // };
 
                                     reset_new_avatar();
                                 } ]
