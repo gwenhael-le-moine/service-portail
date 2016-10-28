@@ -5,8 +5,8 @@ angular.module( 'portailApp' )
                  [ '$scope', '$rootScope', '$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Apps', 'current_user', 'APP_PATH',
                    function( $scope, $rootScope, $sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Apps, current_user, APP_PATH ) {
                        $scope.prefix = APP_PATH;
-
                        $scope.COULEURS = COULEURS;
+
                        $scope.tiles_templates = { app: 'views/new_tile_app.html',
                                                   back: 'views/new_tile_app.html',
                                                   regroupement: 'views/new_tile_regroupement.html',
@@ -14,20 +14,21 @@ angular.module( 'portailApp' )
                                                   rn: 'views/new_tile_rn.html',
                                                   ccn: 'views/new_tile_ccn.html' };
                        $scope.filter_criteria = {};
+                       $scope.modification = false;
 
                        var fill_empty_tiles = function( tiles_tree ) {
                            var indexes = tiles_tree.map( function( tile ) { return tile.index; } );
                            _.chain(indexes)
-                               .max()
-                               .range()
-                               .difference( indexes )
-                               .each( function( index ) {
-                                   tiles_tree.push( { index: index,
-                                                      couleur: CASES[ index % CASES.length ].couleur + '-moins' } );
-                               } );
+                                   .max()
+                                   .range()
+                                   .difference( indexes )
+                                   .each( function( index ) {
+                                       tiles_tree.push( { index: index,
+                                                          couleur: CASES[ index % CASES.length ].couleur + '-moins' } );
+                                   } );
 
-                           return tiles_tree;
-                       };
+                               return tiles_tree;
+                           };
 
                        var go_to_root_tile = {
                            index: 0,
@@ -57,7 +58,7 @@ angular.module( 'portailApp' )
 
                            var app_specific = {
                                CCNUM: { action: function() {
-                                   if ( $rootScope.modification ) { return; }
+                                   if ( $scope.modification ) { return; }
                                    $scope.tree = { configurable: false,
                                                    filter: default_filter,
                                                    laius_template: 'views/laius_CCNUM.html',
@@ -87,7 +88,7 @@ angular.module( 'portailApp' )
                                }
                                       },
                                GAR: { action: function() {
-                                   if ( $rootScope.modification ) { return; }
+                                   if ( $scope.modification ) { return; }
                                    currentUser.ressources().then( function ( response ) {
                                        $scope.tree = { configurable: false,
                                                        filter: default_filter,
@@ -106,7 +107,7 @@ angular.module( 'portailApp' )
                                }
                                     },
                                TROMBI: { action: function() {
-                                   if ( $rootScope.modification ) { return; }
+                                   if ( $scope.modification ) { return; }
                                    $scope.filter_criteria = { show_classes: true,
                                                               show_groupes_eleves: true,
                                                               text: '' };
@@ -188,7 +189,7 @@ angular.module( 'portailApp' )
                                node.action = app_specific[ node.application_id ].action;
                            } else {
                                node.action = function() {
-                                   if ( $rootScope.modification ) { return; }
+                                   if ( $scope.modification ) { return; }
                                    if ( !_(node.application_id).isNull() && node.application_id !== 'PRONOTE' ) {
                                        $state.go( 'app', { appid: node.application_id } );
                                    } else {
@@ -225,7 +226,7 @@ angular.module( 'portailApp' )
                        };
 
                        // Edition
-                       $rootScope.modification = false;
+                       $scope.modification = false;
                        var sortable_callback = function( event ) {
                            _($scope.tree.tiles).each( function( tile, i ) {
                                tile.index = i;
@@ -270,11 +271,11 @@ angular.module( 'portailApp' )
                        };
 
                        $scope.edit_tiles = function() {
-                           $rootScope.modification = true;
+                           $scope.modification = true;
                        };
 
                        $scope.exit_tiles_edition = function() {
-                           $rootScope.modification = false;
+                           $scope.modification = false;
                            retrieve_tiles_tree();
                        };
 
@@ -336,7 +337,7 @@ angular.module( 'portailApp' )
                                $scope.tree.tiles = fill_empty_tiles( _($scope.tree.tiles).reject( function( tile ) { return tile.to_delete; } ) );
                            } );
 
-                           $rootScope.modification = false;
+                           $scope.modification = false;
                            $scope.tree.tiles.forEach( function( tile ) {
                                if ( _(tile).has('configure') ) {
                                    tile.configure = false;

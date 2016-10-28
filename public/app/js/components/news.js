@@ -2,7 +2,8 @@
 
 angular.module( 'portailApp' )
     .component( 'news',
-                { bindings: { user: '<' },
+                { bindings: { user: '<',
+                              edition: '<' },
                   template: '<ul rn-carousel rn-carousel-buffered rn-carousel-auto-slide="6" rn-carousel-index="carouselIndex">' +
                   '  <li ng:repeat="slide in $ctrl.newsfeed | orderBy:\'pubDate\':true" active="slide.active"' +
                   '      ng:class="{\'publipostage\': slide.title == \'Publipostage\', \'no-image\': slide.no_image}">' +
@@ -23,7 +24,7 @@ angular.module( 'portailApp' )
                   '       rn-carousel-index="$ctrl.carouselIndex">' +
                   '  </div>' +
                   '  <span class="hidden-xs hidden-sm floating-button big toggle bouton-config-news blanc"' +
-                  '        ng:if="$ctrl.user.profil_actif.admin && modification"' +
+                  '        ng:if="$ctrl.user.profil_actif.admin && $ctrl.edition"' +
                   '        ng:click="$ctrl.config_news_fluxes()"></span>' +
                   '</ul>',
                   controller: [ '$sce', '$uibModal', 'news', 'APP_PATH', 'RANDOM_IMAGES',
