@@ -29,6 +29,8 @@ module Portail
 
             log_entry = JSON.parse( request.body.read )
             log_entry['ip'] = request.env[ 'HTTP_X_FORWARDED_FOR' ]
+            log_entry['ip'] |= 'unknown'
+
             Laclasse::CrossApp::Sender.post_request_signed( :service_annuaire_v2_logs, '', log_entry, {} )
           end
         end
