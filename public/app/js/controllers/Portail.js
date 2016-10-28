@@ -14,21 +14,20 @@ angular.module( 'portailApp' )
                                                   rn: 'views/new_tile_rn.html',
                                                   ccn: 'views/new_tile_ccn.html' };
                        $scope.filter_criteria = {};
-                       $scope.modification = false;
 
                        var fill_empty_tiles = function( tiles_tree ) {
                            var indexes = tiles_tree.map( function( tile ) { return tile.index; } );
                            _.chain(indexes)
-                                   .max()
-                                   .range()
-                                   .difference( indexes )
-                                   .each( function( index ) {
-                                       tiles_tree.push( { index: index,
-                                                          couleur: CASES[ index % CASES.length ].couleur + '-moins' } );
-                                   } );
+                               .max()
+                               .range()
+                               .difference( indexes )
+                               .each( function( index ) {
+                                   tiles_tree.push( { index: index,
+                                                      couleur: CASES[ index % CASES.length ].couleur + '-moins' } );
+                               } );
 
-                               return tiles_tree;
-                           };
+                           return tiles_tree;
+                       };
 
                        var go_to_root_tile = {
                            index: 0,
