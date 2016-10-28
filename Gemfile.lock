@@ -153,6 +153,7 @@ DEPENDENCIES
   poltergeist
   pry
   puma
+  rack
   rack-rewrite
   rake
   redis

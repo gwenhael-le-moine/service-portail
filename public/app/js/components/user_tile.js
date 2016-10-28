@@ -7,7 +7,7 @@ angular.module( 'portailApp' )
                   '             ng:style="{ \'background-image\': \'url(\' + $ctrl.user.avatar + \')\' }">' +
                   '            <div class="user-info-bg">' +
                   '                <span class="user-info">' +
-                  '                    <a ng:click="$ctrl.edit_profile()">' +
+                  '                    <a href ng:click="$ctrl.edit_profile()" style="text-decoration: none;">' +
                   '                        <h4 class="hidden-xs hidden-sm full-name">{{$ctrl.user.prenom}} {{$ctrl.user.nom}}</h4>' +
                   '                        <h4 class="hidden-md hidden-lg initiales">{{$ctrl.user.prenom[0]}}{{$ctrl.user.nom[0]}}</h4>' +
                   '                    </a>' +

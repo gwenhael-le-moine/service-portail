@@ -48,18 +48,18 @@ module Portail
           app.post "#{APP_PATH}/api/user/avatar/?" do
             content_type :json
 
-            if params[:image]
-              new_filename = "#{user[:uid]}.#{params[:image][:type].split('/').last}"
-              FileUtils.mv( params[:image][:tempfile], new_filename )
-
-              Laclasse::CrossApp::Sender.post_raw_request_signed( :service_annuaire_user, "#{user[:uid]}/upload/avatar",
-                                                                  {},
-                                                                  image: File.open( new_filename ) )
-
+            new_filename = "#{user[:uid]}.#{params[:image][:type].split('/').last}"
+            FileUtils.mv( params[:image][:tempfile], new_filename )
+            begin
+              File.open( new_filename ) do |file|
+                Laclasse::CrossApp::Sender.post_raw_request_signed( :service_annuaire_user, "#{user[:uid]}/upload/avatar",
+                                                                    {},
+                                                                    image: file )
+              end
+            ensure
               File.delete( new_filename )
-
-              init_current_user( user[:uid] )
             end
+            init_current_user( user[:uid] )
 
             json user_verbose
           end

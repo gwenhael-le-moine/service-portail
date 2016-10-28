@@ -51,8 +51,8 @@ angular.module( 'portailApp' )
 
 angular.module( 'portailApp' )
     .service( 'currentUser',
-              [ '$rootScope', '$http', '$resource', 'APP_PATH', 'User', 'UserRessources', 'UserRegroupements', 'UserHelpLinks', 'Apps',
-                function( $rootScope, $http, $resource, APP_PATH, User, UserRessources, UserRegroupements, UserHelpLinks, Apps ) {
+              [ '$rootScope', '$http', '$resource', 'APP_PATH', 'URL_ENT', 'User', 'UserRessources', 'UserRegroupements', 'UserHelpLinks', 'Apps',
+                function( $rootScope, $http, $resource, APP_PATH, URL_ENT, User, UserRessources, UserRegroupements, UserHelpLinks, Apps ) {
                     var user = null;
 
                     this.force_refresh = function( force_reload ) {
@@ -75,14 +75,14 @@ angular.module( 'portailApp' )
                     this.eleves_regroupement = function( id ) { return UserRegroupements.eleves( { id: id } ).$promise; };
 
                     this.avatar = { upload: function( file ) {
-                        var fd = new FormData();
-                        fd.append( 'image', file );
-                        fd.append( 'fileFormDataName', 'image' );
+                        var formdata = new FormData();
+                        formdata.append( 'image', file );
+                        formdata.append( 'fileFormDataName', 'image' );
 
-                        return $http.post( APP_PATH + '/api/user/avatar', fd, {
-                            transformRequest: angular.identity,
-                            headers: { 'Content-Type': undefined }
-                        } );
+                        return $http.post( APP_PATH + '/api/user/avatar',
+                                           formdata,
+                                           { transformRequest: angular.identity,
+                                             headers: { 'Content-Type': undefined } } );
                     },
                                     delete: function() {
                                         return $http.delete( APP_PATH + '/api/user/avatar' );

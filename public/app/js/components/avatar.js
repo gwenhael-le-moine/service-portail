@@ -35,9 +35,9 @@ angular.module( 'portailApp' )
 
                                         blobToDataURL( file,
                                                        function( dataURL ) {
-                                                           ctrl.user.new_avatar.image = dataURL;
-
                                                            var img = new Image();
+
+                                                           ctrl.user.new_avatar.image = dataURL;
 
                                                            img.onload = function() {
                                                                ctrl.user.new_avatar.height = img.height;
