@@ -210,7 +210,7 @@ angular.module( 'portailApp' )
                                var apps = _(response)
                                    .select( function( app ) {
                                        return app.active
-                                           && !_(app.hidden).includes( current_user.profil_actif.profil_id )
+                                           && ( current_user.profil_actif.admin || !_(app.hidden).includes( current_user.profil_actif.profil_id ) )
                                            && ( app.application_id === 'MAIL' ? _.chain(current_user.emails).pluck( 'type' ).includes( 'Ent' ).value() : true );
                                    } )
                                    .map( tool_tile );
