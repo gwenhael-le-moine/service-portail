@@ -15,20 +15,6 @@ angular.module( 'portailApp' )
                                                   ccn: 'views/new_tile_ccn.html' };
                        $scope.filter_criteria = {};
 
-                       var fill_empty_tiles = function( tiles_tree ) {
-                           var indexes = tiles_tree.map( function( tile ) { return tile.index; } );
-                           _.chain(indexes)
-                               .max()
-                               .range()
-                               .difference( indexes )
-                               .each( function( index ) {
-                                   tiles_tree.push( { index: index,
-                                                      couleur: CASES[ index % CASES.length ].couleur + '-moins' } );
-                               } );
-
-                           return tiles_tree;
-                       };
-
                        var go_to_root_tile = {
                            index: 0,
                            taxonomy: 'back',
@@ -60,7 +46,7 @@ angular.module( 'portailApp' )
                                    if ( $scope.modification ) { return; }
                                    $scope.tree = { configurable: false,
                                                    filter: default_filter,
-                                                   laius_template: 'views/laius_CCNUM.html',
+                                                   aside_template: 'views/aside_CCNUM.html',
                                                    tiles: Utils.pad_tiles_tree( [ go_to_root_tile ]
                                                                                 .concat( CCN.query()
                                                                                          .map( function( ccn, index ) {
@@ -71,7 +57,7 @@ angular.module( 'portailApp' )
                                                                                                  ccn.action = function() {
                                                                                                      $scope.tree = { configurable: false,
                                                                                                                      filter: default_filter,
-                                                                                                                     laius_template: 'views/laius_CCNUM_archives.html',
+                                                                                                                     aside_template: 'views/aside_CCNUM_archives.html',
                                                                                                                      tiles: [ go_to_parent_tile( node ) ].concat( ccn.leaves.map( function( ccn, index ) {
                                                                                                                          ccn.taxonomy = 'ccn';
                                                                                                                          ccn.index = index + 1;
@@ -91,7 +77,7 @@ angular.module( 'portailApp' )
                                    currentUser.ressources().then( function ( response ) {
                                        $scope.tree = { configurable: false,
                                                        filter: default_filter,
-                                                       laius_template: 'views/laius_RN.html',
+                                                       aside_template: 'views/aside_RN.html',
                                                        tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( rn, index ) {
                                                            rn.taxonomy = 'rn';
                                                            rn.index = index + 1;
@@ -124,7 +110,7 @@ angular.module( 'portailApp' )
                                                                         || tile.libelle.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() ) );
                                                            };
                                                        },
-                                                       laius_template: 'views/laius_TROMBI_regroupements.html',
+                                                       aside_template: 'views/aside_TROMBI_regroupements.html',
                                                        tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( regroupement, index ) {
                                                            regroupement.taxonomy = 'regroupement';
                                                            regroupement.index = index + 1;
@@ -144,7 +130,7 @@ angular.module( 'portailApp' )
                                                                                                    || tile.prenom.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() );
                                                                                            };
                                                                                        },
-                                                                                       laius_template: 'views/laius_TROMBI_people.html',
+                                                                                       aside_template: 'views/aside_TROMBI_people.html',
                                                                                        tiles: Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.map( function( eleve, index ) {
                                                                                            eleve.taxonomy = 'eleve';
                                                                                            eleve.index = index + 1;
@@ -213,11 +199,13 @@ angular.module( 'portailApp' )
                                            && ( app.application_id === 'MAIL' ? _.chain(current_user.emails).pluck( 'type' ).includes( 'Ent' ).value() : true );
                                    } )
                                    .map( tool_tile );
-                               apps = fill_empty_tiles( apps );
+
+                               apps = Utils.fill_empty_tiles( apps );
                                apps = _(apps).sortBy( function( tile ) { return tile.index; } );
                                apps = Utils.pad_tiles_tree( apps );
 
                                $scope.apps = { configurable: true,
+                                               aside_template: 'views/aside_apps.html',
                                                tiles: apps };
 
                                go_to_root_tile.action();
@@ -333,7 +321,7 @@ angular.module( 'portailApp' )
                                             } ) );
 
                            $q.all( promises ).then( function( response ) {
-                               $scope.tree.tiles = fill_empty_tiles( _($scope.tree.tiles).reject( function( tile ) { return tile.to_delete; } ) );
+                               $scope.tree.tiles = Utils.fill_empty_tiles( _($scope.tree.tiles).reject( function( tile ) { return tile.to_delete; } ) );
                            } );
 
                            $scope.modification = false;

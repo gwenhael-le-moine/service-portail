@@ -13,6 +13,20 @@ angular.module( 'portailApp' )
                                                   } ) );
                     };
 
+                    this.fill_empty_tiles = function( tiles_tree ) {
+                        var indexes = tiles_tree.map( function( tile ) { return tile.index; } );
+                        _.chain(indexes)
+                            .max()
+                            .range()
+                            .difference( indexes )
+                            .each( function( index ) {
+                                tiles_tree.push( { index: index,
+                                                   couleur: CASES[ index % CASES.length ].couleur + '-moins' } );
+                            } );
+
+                        return tiles_tree;
+                    };
+
                     this.log_and_open_link = function( context, url ) {
                         log.add( context, url, null );
                         $window.open( url, 'laclasseexterne' );

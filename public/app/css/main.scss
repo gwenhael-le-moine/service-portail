@@ -230,21 +230,22 @@ body {
         }
     }
 
-    .laius {
+    .aside {
         height: 75%;
-        padding: 15px;
-        background-color: #fff;
-        p {
-            margin: 15px 0;
-        }
-        .form-group {
-            margin-bottom: 15px;
-            .control-label {
-                margin-right: 15px;
+        .laius {
+            padding: 15px;
+            background-color: #fff;
+            p {
+                margin: 15px 0;
+            }
+            .form-group {
+                margin-bottom: 15px;
+                .control-label {
+                    margin-right: 15px;
+                }
             }
         }
     }
-
 }
 
 .logolaclasse .ent-name {
