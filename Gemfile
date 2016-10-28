@@ -10,7 +10,6 @@ gem 'omniauth'
 gem 'omniauth-cas'
 gem 'puma'
 gem 'rack'
-# gem 'rack-contrib'
 gem 'rack-rewrite'
 gem 'rake'
 gem 'redis'
@@ -21,7 +20,7 @@ gem 'sinatra-param'
 gem 'sinatra-contrib'
 
 # Gems spécifiques ENT
-gem 'laclasse-common', git: 'https://github.com/laclasse-com/laclasse-common' # , branch: 'develop'
+gem 'laclasse-common', git: 'https://github.com/laclasse-com/laclasse-common', tag: '0.2.33' # , branch: 'develop'
 
 group :development do
   gem 'rspec'
