@@ -2,17 +2,17 @@
 
 angular.module( 'portailApp' )
     .controller( 'PortailCtrl',
-                 [ '$scope', '$rootScope', '$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Apps', 'current_user', 'APP_PATH',
-                   function( $scope, $rootScope, $sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Apps, current_user, APP_PATH ) {
+                 [ '$scope', '$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Apps', 'current_user', 'APP_PATH',
+                   function( $scope, $sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Apps, current_user, APP_PATH ) {
                        $scope.prefix = APP_PATH;
                        $scope.COULEURS = COULEURS;
 
-                       $scope.tiles_templates = { app: 'views/new_tile_app.html',
-                                                  back: 'views/new_tile_app.html',
-                                                  regroupement: 'views/new_tile_regroupement.html',
-                                                  eleve: 'views/new_tile_eleve.html',
-                                                  rn: 'views/new_tile_rn.html',
-                                                  ccn: 'views/new_tile_ccn.html' };
+                       $scope.tiles_templates = { app: 'views/tile_app.html',
+                                                  back: 'views/tile_app.html',
+                                                  regroupement: 'views/tile_regroupement.html',
+                                                  eleve: 'views/tile_eleve.html',
+                                                  rn: 'views/tile_rn.html',
+                                                  ccn: 'views/tile_ccn.html' };
                        $scope.filter_criteria = {};
 
                        var go_to_root_tile = {

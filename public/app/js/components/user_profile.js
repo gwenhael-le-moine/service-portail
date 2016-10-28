@@ -3,7 +3,7 @@
 angular.module( 'portailApp' )
     .component( 'userprofile',
                 { bindings: { user: '=' },
-                  templateUrl: 'views/user_profile.html',
+                  templateUrl: 'views/component_user_profile.html',
                   controller: [ '$rootScope', '$state', 'currentUser', 'APP_PATH', 'Utils', 'User',
                                 function( $rootScope, $state, currentUser, APP_PATH, Utils, User ) {
                                     var ctrl = this;
