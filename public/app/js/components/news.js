@@ -4,7 +4,7 @@ angular.module( 'portailApp' )
     .component( 'news',
                 { bindings: { user: '<',
                               edition: '<' },
-                  template: '<ul rn-carousel rn-carousel-buffered rn-carousel-auto-slide="6" rn-carousel-index="carouselIndex">' +
+                  template: '<ul rn-carousel rn-carousel-buffered rn-carousel-auto-slide="6" rn-carousel-index="$ctrl.carouselIndex">' +
                   '  <li ng:repeat="slide in $ctrl.newsfeed | orderBy:\'pubDate\':true" active="slide.active"' +
                   '      ng:class="{\'publipostage\': slide.title == \'Publipostage\', \'no-image\': slide.no_image}">' +
                   '    <div class="carousel-image"' +
