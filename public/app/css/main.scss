@@ -619,6 +619,11 @@ body {
 //     }
 // }
 
+.appiframe {
+    display: block;
+    height: calc(100% - 3em);
+}
+
 .iframe {
     height: 100%;
     iframe {
