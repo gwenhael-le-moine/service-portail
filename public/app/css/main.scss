@@ -148,90 +148,92 @@ body {
     .avatar {
         background-color: #aff;
     }
-    .news {
-        height: 75%;
-        &:hover {
-            .news-image{
-                opacity: 0.9;
-            }
-            .rn-carousel-controls {
-                .rn-carousel-control {
-                    text-shadow: 0 0 1px #16161d;
-                }
-            }
-        }
-        ul {
-            height: 100%;
-            min-height: 400px;
-            li { text-align: center; }
-            .carousel-image {
-                -moz-user-select: none;
-                background-position: center bottom;
-                background-repeat: no-repeat;
-                background-size: contain;
-                height: 66.666%;
-                min-height: 244px;
-                margin: auto;
-                opacity: 0.6;
-                transition: all 0.4s ease-in-out 0s;
-            }
-            .carousel-caption {
-                background-color: rgba(255,255,255,0.1);
-                color: #fff;
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                height: 33.333%;
-                width: 100%;
-                padding: 1em;
-                font-size: 12px;
-                font-weight: normal;
-                text-align: left;
-                h6 {
-                    color: #fff;
-                    text-decoration: none;
-                    font-size: 16px;
-                    font-weight: bolder;
-                    text-transform: uppercase;
-                }
-                .lire-la-suite {
-                    color: #fff;
-                    text-decoration: underline;
-                    font-weight: bolder;
-                    float: right;
-                }
-                .pub-date {
-                    color: #ddd;
-                    font-size: 0.8em;
-                    float: right;
-                }
-            }
-            .publipostage {
-                .carousel-caption {
-                    background-color: rgba( 26, 161, 206, 0.25 );
-                }
-            }
-        }
-        .angular-carousel-indicators {
-            height: auto;
-            width: 100%;
-            position: absolute;
-            bottom: 33.333%;
-            text-align: center;
-            .rn-carousel-indicator {
-                span,
-                span.active {
-                    font-size: 24px;
-                    height: 12px;
-                    width: 12px;
-                    margin: 1px 6px;
-                }
-            }
-        }
-    }
 
-    .aside {
+    .aside-bottom {
         height: 75%;
+        background-color: #fff;
+
+        .news {
+            height: 100%;
+            &:hover {
+                .news-image{
+                    opacity: 0.9;
+                }
+                .rn-carousel-controls {
+                    .rn-carousel-control {
+                        text-shadow: 0 0 1px #16161d;
+                    }
+                }
+            }
+            ul {
+                height: 100%;
+                min-height: 400px;
+                li { text-align: center; }
+                .carousel-image {
+                    -moz-user-select: none;
+                    background-position: center bottom;
+                    background-repeat: no-repeat;
+                    background-size: contain;
+                    height: 66.666%;
+                    min-height: 244px;
+                    margin: auto;
+                    opacity: 0.6;
+                    transition: all 0.4s ease-in-out 0s;
+                }
+                .carousel-caption {
+                    background-color: rgba(255,255,255,0.1);
+                    color: #fff;
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    height: 33.333%;
+                    width: 100%;
+                    padding: 1em;
+                    font-size: 12px;
+                    font-weight: normal;
+                    text-align: left;
+                    h6 {
+                        color: #fff;
+                        text-decoration: none;
+                        font-size: 16px;
+                        font-weight: bolder;
+                        text-transform: uppercase;
+                    }
+                    .lire-la-suite {
+                        color: #fff;
+                        text-decoration: underline;
+                        font-weight: bolder;
+                        float: right;
+                    }
+                    .pub-date {
+                        color: #ddd;
+                        font-size: 0.8em;
+                        float: right;
+                    }
+                }
+                .publipostage {
+                    .carousel-caption {
+                        background-color: rgba( 26, 161, 206, 0.25 );
+                    }
+                }
+            }
+            .angular-carousel-indicators {
+                height: auto;
+                width: 100%;
+                position: absolute;
+                bottom: 33.333%;
+                text-align: center;
+                .rn-carousel-indicator {
+                    span,
+                    span.active {
+                        font-size: 24px;
+                            height: 12px;
+                            width: 12px;
+                            margin: 1px 6px;
+                        }
+                    }
+                }
+            }
     }
 }
 
