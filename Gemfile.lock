@@ -148,7 +148,6 @@ DEPENDENCIES
   htmlentities
   json
   laclasse-common!
-  nokogiri
   omniauth
   omniauth-cas
   poltergeist
