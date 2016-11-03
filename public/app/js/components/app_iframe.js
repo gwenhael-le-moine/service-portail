@@ -3,7 +3,7 @@
 angular.module( 'portailApp' )
     .component( 'appiframe',
                 { bindings: { appid: '<' },
-                  template: '<div class="row iframe" ng:class="{\'ios\': $ctrl.iOS}">' +
+                  template: '<div class="iframe" ng:class="{\'ios\': $ctrl.iOS}">' +
                   '    <iframe id="iframe"' +
                   '            frameBorder="0"' +
                   '            scrolling="{{$ctrl.iOS ? \'no\': \'yes\'}}"' +
