@@ -19,7 +19,7 @@ gem 'sinatra-param'
 gem 'sinatra-contrib'
 
 # Gems spécifiques ENT
-gem 'laclasse-common', git: 'https://github.com/laclasse-com/laclasse-common', tag: '0.2.33' # , branch: 'develop'
+gem 'laclasse-common', git: 'https://github.com/laclasse-com/laclasse-common'
 
 group :development do
   gem 'rspec'
