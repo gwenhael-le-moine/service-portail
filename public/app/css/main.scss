@@ -309,6 +309,8 @@ body {
                 background: transparent;
                 position: absolute;
                 cursor: pointer;
+                padding: 0;
+                margin: 0;
                 top: 0.5em;
                 height: 1em;
                 width: 1em;
@@ -410,9 +412,9 @@ body {
                 cursor: -webkit-grab;
                 cursor: -moz-grab;
                 height: 100%;
-                width: 10px;
+                width: 100%;
                 position: absolute;
-                left: -10px;
+                left: 0px;
                 border: 4px dotted #f4f4f4;
             }
             .exit-configure {
@@ -481,6 +483,7 @@ body {
     text-align: center;
 }
 .damier .petite.case a,
+.damier .petite.case .tile-icone,
 .damier .petite.case span,
 .logolaclasse a {
     color: #fff;

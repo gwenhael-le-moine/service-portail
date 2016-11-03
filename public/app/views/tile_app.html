@@ -2,9 +2,7 @@
      ng:class="{ 'show-back': tile.configure }">
     <div class="as-sortable-item-handle"
          data-as-sortable-item-handle
-         ng:style="{'background-color': tile.color + '77' }"
-         ng:if="modification">
-    </div>
+         ng:style="{'background-color': tile.color + '77' }">
     <div class="front"
          ng:class="{'deleted': tile.to_delete}"
          ng:style="{'background-color': tile.color}">
@@ -20,10 +18,10 @@
                          selected="tile.color"
                          colors="COULEURS"></ng-color-picker>
 
-        <a href
+        <div class="tile-icone"
            ng:click="tile.action()"
            title="{{tile.description}}"
-           target="_blank">
+           style="cursor: pointer">
             <div class="icone"
                  data-fittext
                  ng:if="!tile.icon">
@@ -38,7 +36,7 @@
                 <i class="glyphicon glyphicon-new-window"
                    ng:if="tile.type === 'EXTERNAL'"></i>
             </span>
-        </a>
+        </div>
     </div>
 
     <div class="configure back blanc"
@@ -75,5 +73,6 @@
                                 ng:model="tile.active"
                                 ng:change="tile.is_dirty( 'active' )"></checkbox>
         </label>
+    </div>
     </div>
 </div>
