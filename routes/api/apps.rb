@@ -95,6 +95,9 @@ module Portail
             param :libelle, String, required: false
             param :url, String, required: false
 
+            params.delete('splat')
+            params.delete('captures')
+
             params['etab_code_uai'] = user[:user_detailed]['profil_actif']['etablissement_code_uai']
             json Laclasse::CrossApp::Sender.post_request_signed( :service_annuaire_portail_entree, '', {}, params )
           end
@@ -111,12 +114,18 @@ module Portail
             param :libelle, String, required: false
             param :url, String, required: false
 
+            params.delete('splat')
+            params.delete('captures')
+
             json Laclasse::CrossApp::Sender.put_request_signed( :service_annuaire_portail_entree, "/#{params[:id]}", params )
           end
 
           app.delete "#{APP_PATH}/api/apps/:id" do
             content_type :json
             param :id, Integer, required: true
+
+            params.delete('splat')
+            params.delete('captures')
 
             json Laclasse::CrossApp::Sender.delete_request_signed( :service_annuaire_portail_entree, "/#{params[:id]}", {} )
           end
