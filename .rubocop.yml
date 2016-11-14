@@ -44,10 +44,10 @@ Metrics/AbcSize:
   Max: 200
 
 Metrics/PerceivedComplexity:
-  Max: 20
+  Max: 25
 
 Metrics/CyclomaticComplexity:
-  Max: 20
+  Max: 25
 
 Metrics/BlockLength:
   Enabled: false

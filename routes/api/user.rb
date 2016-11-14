@@ -25,7 +25,7 @@ module Portail
             end
 
             uv.to_json
-        end
+          end
 
           app.put "#{APP_PATH}/api/user" do
             content_type :json
