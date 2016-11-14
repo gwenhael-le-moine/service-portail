@@ -86,7 +86,6 @@ module Portail
             content_type :json
             param :index, Integer, required: true
             param :type, String, required: true, in: %w(INTERNAL EXTERNAL)
-
             param :active, TrueClass, required: false
             param :application_id, String, required: false
             param :color, String, required: false
@@ -105,7 +104,6 @@ module Portail
           app.put "#{APP_PATH}/api/apps/:id" do
             content_type :json
             param :id, Integer, required: true
-
             param :active, TrueClass, required: false
             param :color, String, required: false
             param :description, String, required: false
