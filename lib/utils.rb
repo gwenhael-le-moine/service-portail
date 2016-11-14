@@ -12,8 +12,6 @@ module Portail
         Time.now
       end
 
-      # rubocop:disable Metric/PerceivedComplexity
-      # rubocop:disable Metric/CyclomaticComplexity
       def rationalize( article )
         all_images_url_regexp = Regexp.new( 'https?:\\/\\/[a-z\\-_0-9\\/\\:\\.]*\\.(jpg|jpeg|png|gif)', Regexp::IGNORECASE )
         only_image_url_regexp = Regexp.new( '^https?:\/\/[a-z\-_0-9\/\:\.]*\.(jpg|jpeg|png|gif)$', Regexp::IGNORECASE )
@@ -47,8 +45,6 @@ module Portail
 
         entry
       end
-      # rubocop:enable Metric/PerceivedComplexity
-      # rubocop:enable Metric/CyclomaticComplexity
     end
   end
 end
