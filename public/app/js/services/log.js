@@ -10,8 +10,8 @@ angular.module( 'portailApp' )
                                 $http.post( APP_PATH + '/api/log',
                                             { app: app,
                                               uid: user.uid,
-                                              uai: user.profil_actif.etablissement_code_uai,
-                                              user_type: user.profil_actif.profil_id,
+                                              uai: user.has_profils ? user.profil_actif.etablissement_code_uai : 'none',
+                                              user_type: user.has_profils ? user.profil_actif.profil_id : 'none',
                                               timestamp: Date.now(),
                                               url: _(url).isNull() ? APP_PATH + $state.current.url: url,
                                               params: _(params).isNull() ? _($state.params).map( function( value, key ) { return key + '=' + value; } ).join( '&' ) : params } );

@@ -31,6 +31,25 @@ module Portail
           app.get "#{APP_PATH}/api/apps/?" do
             content_type :json
 
+            # FIXME: kludge
+            if user[:user_detailed]['profils'].nil? || user[:user_detailed]['profils'].empty?
+              return Laclasse::CrossApp::Sender
+                       .send_request_signed( :service_annuaire_portail_entree, '/applications', {} )
+                       .map do |appli|
+                next unless %w(MAIL DOC).include?( appli['id'] )
+
+                default = config[:apps][:default][ appli['id'].to_sym ]
+
+                appli.merge!( default ) unless default.nil?
+
+                appli[ 'application_id' ] = appli[ 'id' ]
+                appli.delete( 'id' )
+                appli[ 'type' ] = 'INTERNAL'
+
+                appli
+              end.compact.to_json
+            end
+
             is_it_summer_yet = !config.key?( :closed_for_summer ) || config[:closed_for_summer] ? 6 < Time.now.month && Time.now.month < 9 : false
 
             sleep 0.1 # FIXME, race condition

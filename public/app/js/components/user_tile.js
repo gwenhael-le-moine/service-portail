@@ -11,7 +11,7 @@ angular.module( 'portailApp' )
                   '                        <h4 class="hidden-xs hidden-sm full-name">{{$ctrl.user.prenom}} {{$ctrl.user.nom}}</h4>' +
                   '                        <h4 class="hidden-md hidden-lg initiales">{{$ctrl.user.prenom[0]}}{{$ctrl.user.nom[0]}}</h4>' +
                   '                    </a>' +
-                  '                    <profilactif class="gris4"' +
+                  '                    <profilactif class="gris4" ng:if="$ctrl.user.has_profils"' +
                   '                                 user="$ctrl.user"></profilactif>' +
                   '                    <a class="btn hidden-xs hidden-sm logout" ng:href="{{$ctrl.prefix}}/logout" title="Déconnexion de Laclasse.com">se déconnecter</a>' +
                   '                </span>' +
@@ -19,10 +19,12 @@ angular.module( 'portailApp' )
                   '        </div>',
                   controller: [ 'APP_PATH',
                                 function( APP_PATH ) {
-                                    this.prefix = APP_PATH;
+                                    var ctrl = this;
 
-                                    this.edit_profile = function() {
-                                        this.user.edit_profile = true;
+                                    ctrl.prefix = APP_PATH;
+
+                                    ctrl.edit_profile = function() {
+                                        ctrl.user.edit_profile = true;
                                     };
                                 } ]
                 } );

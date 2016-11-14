@@ -19,11 +19,13 @@ module Portail
             init_current_user( user[:uid] ) if params.key?( :force_refresh ) && params[:force_refresh]
 
             uv = user_verbose
-            uv['profil_actif']['etablissement_logo'] = Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_v2_etablissements, uv['profil_actif']['etablissement_code_uai'].to_s, 'expand' => 'true' )['logo']
-            uv['profil_actif']['etablissement_logo'] = "#{URL_ENT}#{URL_ENT.split('').last == '/' ? '' : '/'}api/logos/#{uv['profil_actif']['etablissement_logo']}" unless uv['profil_actif']['etablissement_logo'].nil?
+            if uv['has_profil']
+              uv['profil_actif']['etablissement_logo'] = Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_v2_etablissements, uv['profil_actif']['etablissement_code_uai'].to_s, 'expand' => 'true' )['logo']
+              uv['profil_actif']['etablissement_logo'] = "#{URL_ENT}#{URL_ENT.split('').last == '/' ? '' : '/'}api/logos/#{uv['profil_actif']['etablissement_logo']}" unless uv['profil_actif']['etablissement_logo'].nil?
+            end
 
             uv.to_json
-          end
+        end
 
           app.put "#{APP_PATH}/api/user" do
             content_type :json
