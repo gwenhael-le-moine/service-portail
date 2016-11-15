@@ -29,7 +29,7 @@ angular.module( 'portailApp' )
 
                     this.log_and_open_link = function( context, url ) {
                         log.add( context, url, null );
-                        $window.open( url, 'laclasseexterne' );
+                        $window.open( url );
                     };
 
                     this.go_home = function() {
