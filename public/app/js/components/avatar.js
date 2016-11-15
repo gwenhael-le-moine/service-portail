@@ -5,7 +5,7 @@ angular.module( 'portailApp' )
                 function() {
                     return { restrict: 'A',
                              link: function( scope, element, attrs ) {
-                                 element.bind('change', scope.$eval( attrs.fileChanged ) );
+                                 element.bind( 'change', scope.$eval( attrs.fileChanged ) );
                              } };
                 } )
     .component( 'avatar',
@@ -26,35 +26,35 @@ angular.module( 'portailApp' )
 
                                     ctrl.processing = false;
 
+                                    var blobToDataURL = function( blob, callback ) {
+                                        var a = new FileReader();
+                                        a.onload = function( e ) { callback( e.target.result ); };
+                                        a.readAsDataURL( blob );
+                                    };
+
+                                    var dataURItoBlob = function( dataURI ) {
+                                        // convert base64/URLEncoded data component to raw binary data held in a string
+                                        var byteString = ( dataURI.split(',')[0].indexOf('base64') >= 0 ) ? atob( dataURI.split(',')[1] ) : unescape( dataURI.split(',')[1] );
+
+                                        // separate out the mime component
+                                        var mimeString = dataURI.split(',')[0]
+                                            .split(':')[1]
+                                            .split(';')[0];
+
+                                        // write the bytes of the string to a typed array
+                                        var ia = new Uint8Array( byteString.length );
+                                        for ( var i = 0 ; i < byteString.length ; i++ ) {
+                                            ia[i] = byteString.charCodeAt(i);
+                                        }
+
+                                        return new Blob( [ia], { type: mimeString } );
+                                    };
+
                                     var processFile = function( file ) {
                                         ctrl.processing = true;
 
                                         var max_height = 256;
                                         var max_width = 256;
-
-                                        var blobToDataURL = function( blob, callback ) {
-                                            var a = new FileReader();
-                                            a.onload = function( e ) { callback( e.target.result ); };
-                                            a.readAsDataURL( blob );
-                                        };
-
-                                        var dataURItoBlob = function( dataURI ) {
-                                            // convert base64/URLEncoded data component to raw binary data held in a string
-                                            var byteString = ( dataURI.split(',')[0].indexOf('base64') >= 0 ) ? atob( dataURI.split(',')[1] ) : unescape( dataURI.split(',')[1] );
-
-                                            // separate out the mime component
-                                            var mimeString = dataURI.split(',')[0]
-                                                .split(':')[1]
-                                                .split(';')[0];
-
-                                            // write the bytes of the string to a typed array
-                                            var ia = new Uint8Array( byteString.length );
-                                            for ( var i = 0 ; i < byteString.length ; i++ ) {
-                                                ia[i] = byteString.charCodeAt(i);
-                                            }
-
-                                            return new Blob( [ia], { type: mimeString } );
-                                        };
 
                                         blobToDataURL( file,
                                                        function( dataURL ) {
