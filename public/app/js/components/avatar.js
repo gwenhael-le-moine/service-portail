@@ -5,7 +5,7 @@ angular.module( 'portailApp' )
                 function() {
                     return { restrict: 'A',
                              link: function( scope, element, attrs ) {
-                                 element.bind('change', scope.$eval( attrs.fileChanged ) );
+                                 element.bind( 'change', scope.$eval( attrs.fileChanged ) );
                              } };
                 } )
     .component( 'avatar',
@@ -13,25 +13,48 @@ angular.module( 'portailApp' )
                   template: '<div class="avatar">' +
                   '              <img draggable="false" class="svg" ' +
                   '               ng:src="{{$ctrl.user.new_avatar.image ? $ctrl.user.new_avatar.image : $ctrl.user.avatar}}" />' +
-                  '          <input type="file" file-changed="$ctrl.onChange"/>' +
-                  '          <footer>' +
-                  '              <button ng:disabled="!$ctrl.user.new_avatar.blob"' +
-                  '                      ng:click="$ctrl.upload_avatar()">Valider l\'avatar</button>' +
-                  '          </footer>' +
+                  '              <input type="file" file-changed="$ctrl.onChange" ng:if="!$ctrl.processing"/>' +
+                  '              <span ng:if="$ctrl.processing"><i class="fa fa-spinner fa-pulse"></i> traitement</span>' +
+                  '              <footer>' +
+                  '                  <button ng:disabled="!$ctrl.user.new_avatar.blob"' +
+                  '                          ng:click="$ctrl.upload_avatar()">Valider l\'avatar</button>' +
+                  '              </footer>' +
                   '</div>',
                   controller: [ 'currentUser',
                                 function( currentUser ) {
                                     var ctrl = this;
 
+                                    ctrl.processing = false;
+
+                                    var blobToDataURL = function( blob, callback ) {
+                                        var a = new FileReader();
+                                        a.onload = function( e ) { callback( e.target.result ); };
+                                        a.readAsDataURL( blob );
+                                    };
+
+                                    var dataURItoBlob = function( dataURI ) {
+                                        // convert base64/URLEncoded data component to raw binary data held in a string
+                                        var byteString = ( dataURI.split(',')[0].indexOf('base64') >= 0 ) ? atob( dataURI.split(',')[1] ) : unescape( dataURI.split(',')[1] );
+
+                                        // separate out the mime component
+                                        var mimeString = dataURI.split(',')[0]
+                                            .split(':')[1]
+                                            .split(';')[0];
+
+                                        // write the bytes of the string to a typed array
+                                        var ia = new Uint8Array( byteString.length );
+                                        for ( var i = 0 ; i < byteString.length ; i++ ) {
+                                            ia[i] = byteString.charCodeAt(i);
+                                        }
+
+                                        return new Blob( [ia], { type: mimeString } );
+                                    };
+
                                     var processFile = function( file ) {
+                                        ctrl.processing = true;
+
                                         var max_height = 256;
                                         var max_width = 256;
-
-                                        var blobToDataURL = function( blob, callback ) {
-                                            var a = new FileReader();
-                                            a.onload = function( e ) { callback( e.target.result ); };
-                                            a.readAsDataURL( blob );
-                                        };
 
                                         blobToDataURL( file,
                                                        function( dataURL ) {
@@ -66,16 +89,13 @@ angular.module( 'portailApp' )
                                                                var ctx = canvas.getContext( '2d' );
                                                                ctx.drawImage( img, 0, 0, ctrl.user.new_avatar.width, ctrl.user.new_avatar.height );
 
-                                                               canvas.toBlob( function( blob ) {
-                                                                   blob.name = file.name;
-                                                                   ctrl.user.new_avatar.blob = blob;
-                                                               },
-                                                                              'image/png' );
-
                                                                ctrl.user.new_avatar.image = canvas.toDataURL();
+                                                               ctrl.user.new_avatar.blob = dataURItoBlob( ctrl.user.new_avatar.image );
                                                            };
 
                                                            img.src = ctrl.user.new_avatar.image;
+
+                                                           ctrl.processing = false;
                                                        } );
                                     };
 
