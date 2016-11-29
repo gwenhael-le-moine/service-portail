@@ -7,29 +7,30 @@ angular.module( 'statsApp',
                   'angularMoment',
                   'angular-loading-bar' ] )
     .run( [ 'amMoment', function( amMoment ) { amMoment.changeLocale( 'fr' ); } ] )
+    .config( [ '$httpProvider', function( provider ) { provider.defaults.withCredentials = true; } ] )
     .service( 'Annuaire',
-              [ '$http', 'APP_PATH',
-                function( $http, APP_PATH ) {
+              [ '$http', 'URL_ENT',
+                function( $http, URL_ENT ) {
                     this.get_stats = function( params ) {
-                        return $http.get( APP_PATH + '/api/log/stats', { params: params } );
+                        return $http.get( URL_ENT + '/api/app/v2/log/stats', { params: params } );
                     };
 
                     this.get_profils = function( params ) {
-                        return $http.get( APP_PATH + '/api/annuaire/profils', { params: params } );
+                        return $http.get( URL_ENT + '/api/app/profils', { params: params } );
                     };
 
                     this.get_etablissements = function( params ) {
-                        return $http.get( APP_PATH + '/api/annuaire/etablissements', { params: params } );
+                        return $http.get( URL_ENT + '/api/app/etablissements', { params: params } );
                     };
 
                     this.get_default_applications = function( params ) {
-                        return $http.get( APP_PATH + '/api/annuaire/applications', { params: params } );
+                        return $http.get( URL_ENT + '/api/portail/entree/applications', { params: params } );
                     };
                 }
               ] )
     .controller( 'StatsCtrl',
-                 [ '$scope', '$http', '$locale', 'moment', 'APP_PATH', 'Annuaire',
-                   function ( $scope, $http, $locale, moment, APP_PATH, Annuaire ) {
+                 [ '$scope', '$http', '$locale', 'moment', 'Annuaire',
+                   function ( $scope, $http, $locale, moment, Annuaire ) {
                        $scope.types_labels = { global: 'Statistiques globales',
                                                uai: 'Établissements',
                                                app: 'Tuiles',
