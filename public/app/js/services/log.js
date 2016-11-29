@@ -7,7 +7,7 @@ angular.module( 'portailApp' )
                     this.add = function( app, url, params ) {
                         currentUser.get( false )
                             .then( function( user ) {
-                                $http.post( APP_PATH + '/api/log',
+                                $http.post( '/api/app/v2/log',
                                             { app: app,
                                               uid: user.uid,
                                               uai: user.has_profil ? user.profil_actif.etablissement_code_uai : 'none',
