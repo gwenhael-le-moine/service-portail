@@ -2,12 +2,12 @@
 
 angular.module( 'portailApp' )
     .service( 'log',
-              [ '$http', '$state', 'APP_PATH', 'currentUser',
-                function( $http, $state, APP_PATH, currentUser ) {
+              [ '$http', '$state', 'APP_PATH', 'URL_ENT', 'currentUser',
+                function( $http, $state, APP_PATH, URL_ENT, currentUser ) {
                     this.add = function( app, url, params ) {
                         currentUser.get( false )
                             .then( function( user ) {
-                                $http.post( '/api/app/v2/log',
+                                $http.post( URL_ENT + '/api/app/v2/log',
                                             { app: app,
                                               uid: user.uid,
                                               uai: user.has_profil ? user.profil_actif.etablissement_code_uai : 'none',
