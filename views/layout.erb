@@ -117,6 +117,7 @@
                 .constant( 'APP_VERSION', '<%=APP_VERSION%>' )
                 .constant( 'APP_PATH', '<%=APP_PATH%>' )
                 .constant( 'URL_ENT', '<%=URL_ENT%>' )
+                .constant( 'CONFIG', <%=config.to_json%> )
                 .config( [ '$compileProvider',
                            function( $compileProvider ) {
                                $compileProvider.debugInfoEnabled( <%= ENV['RACK_ENV'] == 'development' %> );
