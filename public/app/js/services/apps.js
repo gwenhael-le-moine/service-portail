@@ -20,24 +20,3 @@ angular.module( 'portailApp' )
                                                          url: APP_PATH + '/api/apps/default/',
                                                          isArray: true } } );
                 } ] );
-
-angular.module( 'portailApp' )
-    .service( 'apps',
-              [ 'Apps',
-                function( Apps ) {
-                    var _this = this;
-                    this.apps = null;
-
-                    this.query = function( force_reload ) {
-                        if ( _(_this.apps).isNull() || force_reload ) {
-                            _this.apps = Apps.query().$promise;
-                        }
-
-                        return _this.apps;
-                    };
-
-                    this.nullify = function() {
-                        _this.apps = null;
-                    };
-                }
-              ] );
