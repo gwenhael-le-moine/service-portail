@@ -51,8 +51,8 @@ angular.module( 'portailApp' )
 
 angular.module( 'portailApp' )
     .service( 'currentUser',
-              [ '$rootScope', '$http', '$resource', 'APP_PATH', 'URL_ENT', 'User', 'UserRessources', 'UserRegroupements', 'UserHelpLinks', 'Apps',
-                function( $rootScope, $http, $resource, APP_PATH, URL_ENT, User, UserRessources, UserRegroupements, UserHelpLinks, Apps ) {
+              [ '$rootScope', '$http', '$resource', '$q', 'APP_PATH', 'URL_ENT', 'User', 'UserRessources', 'UserRegroupements', 'UserHelpLinks', 'Apps',
+                function( $rootScope, $http, $resource, $q, APP_PATH, URL_ENT, User, UserRessources, UserRegroupements, UserHelpLinks, Apps ) {
                     var user = null;
 
                     this.force_refresh = function( force_reload ) {
@@ -70,7 +70,17 @@ angular.module( 'portailApp' )
 
                     this.help_links = function() { return UserHelpLinks.query().$promise; };
                     this.ressources = function() { return UserRessources.query().$promise; };
-                    this.apps = function() { return Apps.query( ).$promise; };
+                    this.apps = function() {
+                        return user.then( function( u ) {
+                            if ( u.has_profil && _(u).has('profil_actif') ) {
+                                return Apps.query().$promise;
+                            } else {
+                                return Apps.query_defaults().$promise.then( function( tiles ) {
+                                    return $q.resolve( [ _(tiles).findWhere( { application_id: 'MAIL' } ) ] );
+                                } );
+                            }
+                        } );
+                    };
                     this.regroupements = function() { return UserRegroupements.query().$promise; };
                     this.eleves_regroupement = function( id ) { return UserRegroupements.eleves( { id: id } ).$promise; };
 
