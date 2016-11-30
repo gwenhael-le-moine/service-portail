@@ -2,9 +2,9 @@
 
 angular.module( 'portailApp' )
     .controller( 'PopupAjoutAppCtrl',
-                 [ '$scope', '$uibModalInstance', 'APP_PATH', 'Apps', 'RessourceNumerique', 'currentUser',
+                 [ '$scope', '$uibModalInstance', 'APP_PATH', 'Apps', 'RessourceNumerique', 'currentUser', 'apps',
                    'current_tiles', 'inactive_tiles',
-                   function( $scope, $uibModalInstance, APP_PATH, Apps, RessourceNumerique, currentUser,
+                   function( $scope, $uibModalInstance, APP_PATH, Apps, RessourceNumerique, currentUser, apps,
                              current_tiles, inactive_tiles ) {
                        $scope.prefix = APP_PATH;
 
@@ -43,7 +43,7 @@ angular.module( 'portailApp' )
                            $uibModalInstance.dismiss();
                        };
 
-                       Apps.query_default().$promise
+                       apps.defaults()
                            .then( function( response ) {
                                $scope.available_tiles = $scope.available_tiles.concat( _.chain( inactive_tiles.concat( _(response).where({ active: true }) ) )
                                                                                        .uniq( function( app ) { return app.application_id; } )

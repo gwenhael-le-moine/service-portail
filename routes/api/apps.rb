@@ -14,15 +14,9 @@ module Portail
             Laclasse::CrossApp::Sender
               .send_request_signed( :service_annuaire_portail_entree, '/applications', {} )
               .map do |appli|
-              next if %w(ANNUAIRE ANN_ENT PORTAIL SSO STARTBOX).include?( appli['id'] )
-
               default = config[:apps][:default][ appli['id'].to_sym ]
 
               appli.merge!( default ) unless default.nil?
-
-              appli[ 'application_id' ] = appli[ 'id' ]
-              appli.delete( 'id' )
-              appli[ 'type' ] = 'INTERNAL'
 
               appli
             end.compact.to_json

@@ -10,12 +10,12 @@ angular.module( 'portailApp' )
                   '            ng:src="{{$ctrl.app.url}}">' +
                   '    </iframe>' +
                   '</div>',
-                  controller: [ '$sce', 'Apps', 'Utils',
-                                function ( $sce, Apps, Utils ) {
+                  controller: [ '$sce', 'apps', 'Utils',
+                                function ( $sce, apps, Utils ) {
                                     var ctrl = this;
                                     ctrl.iOS = ( navigator.userAgent.match( /iPad/i ) !== null ) || ( navigator.userAgent.match( /iPhone/i ) !== null );
 
-                                    Apps.query().$promise
+                                    apps.query()
                                         .then( function ( response ) {
                                             // Toutes les applications en iframe
                                             ctrl.app = _( response ).findWhere( { application_id: ctrl.appid } );
