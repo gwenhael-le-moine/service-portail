@@ -17,14 +17,14 @@ angular.module( 'portailApp' )
                                         color		: '@color' },
                                       { update: { method: 'PUT' },
                                         query_defaults: { methode: 'GET',
-                                                          url: APP_PATH + '/api/apps/default/',
+                                                          url: URL_ENT + '/api/portail/entree/applications',
                                                           isArray: true } } );
                 } ] );
 
 angular.module( 'portailApp' )
     .service( 'apps',
-              [ 'Apps',
-                function( Apps ) {
+              [ 'Apps', 'CONFIG',
+                function( Apps, CONFIG ) {
                     this.defaults = function() {
                         return Apps.query_defaults().$promise
                             .then( function( response ) {
@@ -35,12 +35,17 @@ angular.module( 'portailApp' )
                                         return _(apps_to_hide).includes( app.id );
                                     } )
                                     .map( function( app ) {
-                                        app.type = 'INTERNAL';
-                                        app.application_id = app.id;
-                                        delete app.id;
+                                        if ( _(CONFIG.apps.default[app.id]) ) {
+                                            app.type = 'INTERNAL';
+                                            app.application_id = app.id;
+                                            delete app.id;
 
-                                        return app;
+                                            return _(app).extend( CONFIG.apps.default[app.application_id] );
+                                        } else {
+                                            return null;
+                                        }
                                     } )
+                                    .compact()
                                     .value();
                             } );
                     };

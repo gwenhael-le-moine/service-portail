@@ -8,19 +8,6 @@ module Portail
           #
           # Service liste des applications
           #
-          app.get "#{APP_PATH}/api/apps/default/?" do
-            content_type :json
-
-            Laclasse::CrossApp::Sender
-              .send_request_signed( :service_annuaire_portail_entree, '/applications', {} )
-              .map do |appli|
-              default = config[:apps][:default][ appli['id'].to_sym ]
-
-              appli.merge!( default ) unless default.nil?
-
-              appli
-            end.compact.to_json
-          end
 
           app.get "#{APP_PATH}/api/apps/?" do
             content_type :json
