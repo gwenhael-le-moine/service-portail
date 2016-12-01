@@ -25,7 +25,6 @@ require_relative './routes/index'
 require_relative './routes/auth'
 require_relative './routes/status'
 require_relative './routes/api/user'
-require_relative './routes/api/apps'
 require_relative './routes/api/flux'
 require_relative './routes/api/news'
 require_relative './routes/api/version'
@@ -86,7 +85,6 @@ class SinatraApp < Sinatra::Base
   register Portail::Routes::Auth
 
   register Portail::Routes::Api::User
-  register Portail::Routes::Api::Apps
   register Portail::Routes::Api::Flux
   register Portail::Routes::Api::News
   register Portail::Routes::Api::Version
