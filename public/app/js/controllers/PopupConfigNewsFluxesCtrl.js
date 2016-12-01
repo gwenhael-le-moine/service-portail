@@ -2,8 +2,8 @@
 
 angular.module( 'portailApp' )
     .controller( 'PopupConfigNewsFluxesCtrl',
-                 [ '$scope', '$uibModalInstance', 'Flux',
-                   function( $scope, $uibModalInstance, Flux ) {
+                 [ '$scope', '$uibModalInstance', 'Flux', 'CONFIG',
+                   function( $scope, $uibModalInstance, Flux, CONFIG ) {
                        Flux.query().$promise.then( function( response ) {
                            $scope.current_flux = _(response).map( function( flux ) {
                                flux.dirty = false;
@@ -13,7 +13,7 @@ angular.module( 'portailApp' )
                                }
 
                                return flux;
-                           } );
+                               } );
                        } );
 
                        $scope.minutes = _.range( 1, 11 );
@@ -38,6 +38,12 @@ angular.module( 'portailApp' )
                                flux: '',
                                icon: ''
                            } ) );
+                       };
+
+                       $scope.add_default_flux = function() {
+                           _(CONFIG.news_feed).each( function( flux ) {
+                               $scope.current_flux.push( new Flux( flux ) );
+                           } );
                        };
 
                        $scope.close = function () {
