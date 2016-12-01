@@ -327,6 +327,8 @@ angular.module( 'portailApp' )
                                             .map( function( tile ) {
                                                 switch( tile.taxonomy ) {
                                                 case 'app':
+                                                    tile.etab_code_uai = current_user.profil_actif.etablissement_code_uai;
+
                                                     return Apps.save( tile ).$promise;
                                                 case 'rn':
                                                     console.log(tile)

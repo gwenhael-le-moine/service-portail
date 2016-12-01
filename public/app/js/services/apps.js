@@ -4,8 +4,9 @@ angular.module( 'portailApp' )
     .factory( 'Apps',
               [ '$resource', 'URL_ENT', 'APP_PATH', 'CONFIG',
                 function( $resource, URL_ENT, APP_PATH, CONFIG ) {
-                    return $resource( APP_PATH + '/api/apps/:id', //URL_ENT + '/api/portail/entree/applications/:id',
+                    return $resource( URL_ENT + '/api/portail/entree/applications/:id',
                                       { id              : '@id',
+                                        etab_code_uai   : '@etab_code_uai',
                                         application_id	: '@application_id',
                                         index		: '@index',
                                         type		: '@type',
@@ -21,7 +22,7 @@ angular.module( 'portailApp' )
                                                  params: { uai: '@uai' },
                                                  isArray: true,
                                                  transformResponse: function( response, _headers_getters ) {
-                                                     return _(angular.fromJson(response))
+                                                     return _(angular.fromJson( response ))
                                                          .map( function( app ) {
                                                              return _(app).extend( CONFIG.apps.default[app.application_id] );
                                                          } );
@@ -30,7 +31,7 @@ angular.module( 'portailApp' )
                                                           url: URL_ENT + '/api/portail/entree/applications',
                                                           isArray: true,
                                                           transformResponse: function( response, _headers_getters ) {
-                                                              return _.chain(angular.fromJson(response))
+                                                              return _.chain(angular.fromJson( response ))
                                                                   .reject( function( app ) {
                                                                       var apps_to_hide = [ 'ANNUAIRE', 'ANN_ENT', 'PORTAIL', 'SSO', 'STARTBOX' ];
 
