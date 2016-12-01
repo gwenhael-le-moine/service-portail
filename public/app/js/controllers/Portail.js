@@ -188,27 +188,44 @@ angular.module( 'portailApp' )
 
                        var retrieve_tiles_tree = function() {
                            currentUser.apps().then( function( response ) {
-                               response.forEach( function( app ) { app.taxonomy = 'app'; } );
+                               if ( _(response).isEmpty() ) {
+                                   Apps.query_defaults().$promise
+                                       .then( function( response ) {
+                                           $q.all( _.chain(response)
+                                                   .where( { default: true } )
+                                                   .map( function( tile ) {
+                                                       tile.etab_code_uai = current_user.profil_actif.etablissement_code_uai;
+                                                       return Apps.save( tile ).$promise;
+                                                   } ) )
+                                               .then( retrieve_tiles_tree );
+                                       } );
+                               } else {
+                                   response.forEach( function( app ) { app.taxonomy = 'app'; } );
 
-                               $scope.inactive_apps = _(response).where({ active: false });
+                                   $scope.inactive_apps = _(response).where({ active: false });
 
-                               var apps = _(response)
-                                   .select( function( app ) {
-                                       return app.active
-                                           && ( !current_user.has_profil || ( current_user.profil_actif.admin || !_(app.hidden).includes( current_user.profil_actif.profil_id ) ) )
-                                           && ( app.application_id === 'MAIL' ? _.chain(current_user.emails).pluck( 'type' ).includes( 'Ent' ).value() : true );
-                                   } )
-                                   .map( tool_tile );
+                                   var apps = _(response)
+                                       .select( function( app ) {
+                                           var now = moment();
+                                           var is_it_summer = now.month() > 7 && now.month() < 9;
 
-                               apps = Utils.fill_empty_tiles( apps );
-                               apps = _(apps).sortBy( function( tile ) { return tile.index; } );
-                               apps = Utils.pad_tiles_tree( apps );
+                                           return app.active
+                                               && ( !is_it_summer || app.summer )
+                                               && ( !current_user.has_profil || ( current_user.profil_actif.admin || !_(app.hidden).includes( current_user.profil_actif.profil_id ) ) )
+                                               && ( app.application_id === 'MAIL' ? _.chain(current_user.emails).pluck( 'type' ).includes( 'Ent' ).value() : true );
+                                       } )
+                                       .map( tool_tile );
 
-                               $scope.apps = { configurable: true,
-                                               aside_template: 'views/aside_apps.html',
-                                               tiles: apps };
+                                   apps = Utils.fill_empty_tiles( apps );
+                                   apps = _(apps).sortBy( function( tile ) { return tile.index; } );
+                                   apps = Utils.pad_tiles_tree( apps );
 
-                               go_to_root_tile.action();
+                                   $scope.apps = { configurable: true,
+                                                   aside_template: 'views/aside_apps.html',
+                                                   tiles: apps };
+
+                                   go_to_root_tile.action();
+                               }
                            } );
                        };
 

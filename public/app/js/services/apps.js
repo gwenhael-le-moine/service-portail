@@ -16,7 +16,17 @@ angular.module( 'portailApp' )
                                         icon		: '@icon',
                                         color		: '@color' },
                                       { update: { method: 'PUT' },
-                                        query_defaults: { methode: 'GET',
+                                        query: { method: 'GET',
+                                                 url: URL_ENT + '/api/portail/entree/etablissement/:uai',
+                                                 params: { uai: '@uai' },
+                                                 isArray: true,
+                                                 transformResponse: function( response, _headers_getters ) {
+                                                     return _(angular.fromJson(response))
+                                                         .map( function( app ) {
+                                                             return _(app).extend( CONFIG.apps.default[app.application_id] );
+                                                         } );
+                                                 } },
+                                        query_defaults: { method: 'GET',
                                                           url: URL_ENT + '/api/portail/entree/applications',
                                                           isArray: true,
                                                           transformResponse: function( response, _headers_getters ) {

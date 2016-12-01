@@ -72,12 +72,12 @@ angular.module( 'portailApp' )
                     this.ressources = function() { return UserRessources.query().$promise; };
                     this.apps = function() {
                         return user.then( function( u ) {
-                            if ( u.has_profil && _(u).has('profil_actif') ) {
-                                return Apps.query().$promise;
-                            } else {
+                            if ( !u.has_profil || !_(u).has('profil_actif') ) {
                                 return Apps.query_defaults().$promise.then( function( tiles ) {
-                                    return $q.resolve( [ _(tiles).findWhere( { application_id: 'MAIL' } ) ] );
+                                    return $q.resolve( _(tiles).where( { application_id: 'MAIL' } ) );
                                 } );
+                            } else {
+                                return Apps.query( { uai: u.profil_actif.etablissement_code_uai } ).$promise;
                             }
                         } );
                     };
