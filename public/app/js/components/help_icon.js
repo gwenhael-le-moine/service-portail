@@ -17,7 +17,7 @@ angular.module( 'portailApp' )
 
                                     ctrl.help_links = _(CONFIG.help_links)
                                         .select( function( link ) {
-                                            return _(link.profils).includes( ctrl.user.profil_actif.profil_id );
+                                            return !_(ctrl.user.profils).isEmpty() && _(link.profils).includes( ctrl.user.profil_actif.profil_id );
                                         } );
                                 } ]
                 } );
