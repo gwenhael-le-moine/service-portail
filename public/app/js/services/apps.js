@@ -2,8 +2,8 @@
 
 angular.module( 'portailApp' )
     .factory( 'Apps',
-              [ '$resource', 'URL_ENT', 'APP_PATH', 'CONFIG',
-                function( $resource, URL_ENT, APP_PATH, CONFIG ) {
+              [ '$resource', 'URL_ENT', 'CONFIG',
+                function( $resource, URL_ENT, CONFIG ) {
                     return $resource( URL_ENT + '/api/portail/entree/:id',
                                       { id              : '@id',
                                         etab_code_uai   : '@etab_code_uai',
