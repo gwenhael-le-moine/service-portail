@@ -10,7 +10,7 @@
             <label>url <input type="text"
                               ng:model="flux.flux"
                               ng:change="dirtify( flux )" /></label>
-            <label>nombre d'articles à inclure <select ng:options="minute for minute in minutes"
+            <label>nombre d'articles à inclure <select ng:options="nb for nb in nb_articles"
                                                        ng:model="flux.nb"
                                                        ng:change="dirtify( flux )" /></select>
             </label>
@@ -25,9 +25,10 @@
             <div class="clearfix"></div>
         </li>
     </ul>
-    <button ng:click="add_default_flux()"><span class="glyphicon glyphicon-plus-sign"></span></button>
     <div class="clearfix"></div>
 
+    <button style="right: 4em;"
+            ng:click="add_default_flux()"><span class="glyphicon glyphicon-cloud-download"></span></button>
     <button ng:click="add_flux()"><span class="glyphicon glyphicon-plus-sign"></span></button>
 </div>
 <div class="modal-footer">
