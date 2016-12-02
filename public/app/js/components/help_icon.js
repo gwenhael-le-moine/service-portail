@@ -2,7 +2,8 @@
 
 angular.module( 'portailApp' )
     .component( 'helpicon',
-                { template: '<div uib-dropdown keyboard-nav ng:if="$ctrl.help_links.length > 0">' +
+                { bindings: { user: '<' },
+                  template: '<div uib-dropdown keyboard-nav ng:if="$ctrl.help_links.length > 0">' +
                   '            <a class="uib-dropdown-toggle" uib-dropdown-toggle><h2>?</h2> </a>' +
                   '            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="simple-btn-keyboard-nav">' +
                   '                <li ng:repeat="link in $ctrl.help_links">' +
@@ -10,12 +11,13 @@ angular.module( 'portailApp' )
                   '                </li>' +
                   '            </ul>' +
                   '        </div>',
-                  controller: [ 'currentUser',
-                                function( currentUser ) {
+                  controller: [ 'CONFIG',
+                                function( CONFIG ) {
                                     var ctrl = this;
 
-                                    currentUser.help_links().then( function( response ) {
-                                        ctrl.help_links = response;
-                                    } );
+                                    ctrl.help_links = _(CONFIG.help_links)
+                                        .select( function( link ) {
+                                            return _(link.profils).includes( ctrl.user.profil_actif.profil_id );
+                                        } );
                                 } ]
                 } );

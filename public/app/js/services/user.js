@@ -2,8 +2,8 @@
 
 angular.module( 'portailApp' )
     .factory( 'User',
-              [ '$resource', 'APP_PATH',
-                function( $resource, APP_PATH ) {
+              [ '$resource', 'APP_PATH', 'URL_ENT',
+                function( $resource, APP_PATH, URL_ENT ) {
                     return $resource( APP_PATH + '/api/user',
                                       { force_refresh: '@force_refresh' },
                                       { update: { method: 'PUT',
@@ -32,13 +32,6 @@ angular.module( 'portailApp' )
                 } ] );
 
 angular.module( 'portailApp' )
-    .factory( 'UserHelpLinks',
-              [ '$resource', 'APP_PATH',
-                function( $resource, APP_PATH ) {
-                    return $resource( APP_PATH + '/api/user/help-links' );
-                } ] );
-
-angular.module( 'portailApp' )
     .factory( 'UserRegroupements',
               [ '$resource', 'APP_PATH',
                 function( $resource, APP_PATH ) {
@@ -51,8 +44,8 @@ angular.module( 'portailApp' )
 
 angular.module( 'portailApp' )
     .service( 'currentUser',
-              [ '$rootScope', '$http', '$resource', '$q', 'APP_PATH', 'URL_ENT', 'User', 'UserRessources', 'UserRegroupements', 'UserHelpLinks', 'Apps',
-                function( $rootScope, $http, $resource, $q, APP_PATH, URL_ENT, User, UserRessources, UserRegroupements, UserHelpLinks, Apps ) {
+              [ '$rootScope', '$http', '$resource', '$q', 'APP_PATH', 'URL_ENT', 'User', 'UserRessources', 'UserRegroupements', 'Apps',
+                function( $rootScope, $http, $resource, $q, APP_PATH, URL_ENT, User, UserRessources, UserRegroupements, Apps ) {
                     var user = null;
 
                     this.force_refresh = function( force_reload ) {
@@ -68,7 +61,6 @@ angular.module( 'portailApp' )
                         return user;
                     };
 
-                    this.help_links = function() { return UserHelpLinks.query().$promise; };
                     this.ressources = function() { return UserRessources.query().$promise; };
                     this.apps = function() {
                         return user.then( function( u ) {
