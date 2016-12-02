@@ -35,7 +35,7 @@ angular.module( 'portailApp' )
                                                                              return { nom: rn.lib,
                                                                                       description: rn.nom_court,
                                                                                       url: rn.url_access_get,
-                                                                                      icon: rn.type_ressource === 'MANUEL' ?  : ( rn.type_ressource === 'AUTRE' ? '07_blogs.svg' : '08_ressources.svg' ) };
+                                                                                      icon: rn.type_ressource === 'MANUEL' ? '05_validationcompetences.svg' : ( rn.type_ressource === 'AUTRE' ? '07_blogs.svg' : '08_ressources.svg' ) };
                                                                          } )
                                                                          .value();
                                                                  } }
