@@ -2,8 +2,8 @@
 
 angular.module( 'portailApp' )
     .factory( 'User',
-              [ '$resource', 'APP_PATH', 'URL_ENT',
-                function( $resource, APP_PATH, URL_ENT ) {
+              [ '$resource', '$rootScope', 'APP_PATH', 'URL_ENT', 'UID',
+                function( $resource, $rootScope, APP_PATH, URL_ENT, UID ) {
                     return $resource( APP_PATH + '/api/user',
                                       { force_refresh: '@force_refresh' },
                                       { update: { method: 'PUT',
@@ -20,15 +20,26 @@ angular.module( 'portailApp' )
                                                           } },
                                         change_profil_actif: { method: 'PUT',
                                                                url: APP_PATH + '/api/user/profil_actif/:index',
-                                                               params: { profil_id: '@profil_id' } }
+                                                               params: { profil_id: '@profil_id' } },
+                                        ressources_numeriques: { method: 'GET',
+                                                                 url: URL_ENT + '/api/app/users/' + UID + '/ressources',
+                                                                 isArray: true,
+                                                                 transformResponse: function( response, _headers_getters ) {
+                                                                     return _.chain(angular.fromJson( response ))
+                                                                         .select( function( rn ) {
+                                                                             var now = moment();
+                                                                             return rn.etablissement_code_uai === $rootScope.current_user.profil_actif.etablissement_code_uai
+                                                                                 && ( moment( rn.date_deb_abon).isBefore( now ) ) && ( moment( rn.date_fin_abon).isAfter( now ) );
+                                                                         } )
+                                                                         .map( function( rn ) {
+                                                                             return { nom: rn.lib,
+                                                                                      description: rn.nom_court,
+                                                                                      url: rn.url_access_get,
+                                                                                      icon: rn.type_ressource === 'MANUEL' ?  : ( rn.type_ressource === 'AUTRE' ? '07_blogs.svg' : '08_ressources.svg' ) };
+                                                                         } )
+                                                                         .value();
+                                                                 } }
                                       } );
-                } ] );
-
-angular.module( 'portailApp' )
-    .factory( 'UserRessources',
-              [ '$resource', 'APP_PATH',
-                function( $resource, APP_PATH ) {
-                    return $resource( APP_PATH + '/api/user/ressources_numeriques' );
                 } ] );
 
 angular.module( 'portailApp' )
@@ -44,8 +55,8 @@ angular.module( 'portailApp' )
 
 angular.module( 'portailApp' )
     .service( 'currentUser',
-              [ '$rootScope', '$http', '$resource', '$q', 'APP_PATH', 'URL_ENT', 'User', 'UserRessources', 'UserRegroupements', 'Apps',
-                function( $rootScope, $http, $resource, $q, APP_PATH, URL_ENT, User, UserRessources, UserRegroupements, Apps ) {
+              [ '$rootScope', '$http', '$resource', '$q', 'APP_PATH', 'URL_ENT', 'User', 'UserRegroupements', 'Apps',
+                function( $rootScope, $http, $resource, $q, APP_PATH, URL_ENT, User, UserRegroupements, Apps ) {
                     var user = null;
 
                     this.force_refresh = function( force_reload ) {
@@ -61,7 +72,7 @@ angular.module( 'portailApp' )
                         return user;
                     };
 
-                    this.ressources = function() { return UserRessources.query().$promise; };
+                    this.ressources = function() { return User.ressources_numeriques().$promise; };
                     this.apps = function() {
                         return user.then( function( u ) {
                             if ( !u.has_profil || !_(u).has('profil_actif') ) {

@@ -138,36 +138,6 @@ module Portail
 
             json eleves
           end
-
-          #
-          # Ressources numériques de l'utilisateur
-          #
-          app.get "#{APP_PATH}/api/user/ressources_numeriques/?" do
-            content_type :json
-
-            ressources = Laclasse::CrossApp::Sender
-                           .send_request_signed( :service_annuaire_user, "#{user[:uid]}/ressources", 'expand' => 'true' )
-                           .reject do |ressource|
-              ressource[ 'etablissement_code_uai' ] != user[:user_detailed]['profil_actif']['etablissement_code_uai'] ||
-                Date.parse( ressource['date_deb_abon'] ) >= Date.today ||
-                Date.parse( ressource['date_fin_abon'] ) <= Date.today
-            end
-                           .map do |ressource|
-              { nom: ressource['lib'],
-                description: ressource['nom_court'],
-                url: ressource['url_access_get'],
-                icon: case ressource['type_ressource']
-                      when 'MANUEL'
-                        '05_validationcompetences.svg'
-                      when 'AUTRE'
-                        '07_blogs.svg'
-                      else
-                        '08_ressources.svg'
-                      end }
-            end
-
-            json ressources
-          end
         end
       end
     end
