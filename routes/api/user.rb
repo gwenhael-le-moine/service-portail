@@ -90,54 +90,6 @@ module Portail
 
             json user_verbose
           end
-
-          #
-          # Classes et groupes de l'utilisateur
-          #
-          app.get "#{APP_PATH}/api/user/regroupements/?" do
-            content_type :json
-
-            regroupements = Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_user, "#{user[:uid]}/regroupements", 'expand' => 'true' )
-            regroupements = [ regroupements[ 'classes' ],
-                              regroupements[ 'groupes_eleves' ] ]
-                              .flatten
-                              .reject do |regroupement|
-              regroupement[ 'etablissement_code' ] != user[:user_detailed]['profil_actif']['etablissement_code_uai']
-            end
-                              .each do |regroupement|
-              regroupement[ 'id' ] =  regroupement.key?( 'classe_id' ) ? regroupement['classe_id'] : regroupement['groupe_id']
-              regroupement[ 'libelle' ] = regroupement.key?( 'classe_libelle' ) ? regroupement['classe_libelle'] : regroupement['groupe_libelle']
-              regroupement[ 'type' ] = regroupement.key?( 'classe_id' ) ? 'classe' : 'groupe_eleve'
-            end
-                              .uniq { |regroupement| regroupement['id'] }
-                              .sort_by { |regroupement| regroupement['libelle'].to_s }
-                              .reverse
-                              .map do |regroupement|
-              { libelle: regroupement['libelle'],
-                id: regroupement['id'],
-                etablissement_nom: regroupement['etablissement_nom'],
-                type: regroupement['type'] }
-            end
-
-            json regroupements
-          end
-
-          #
-          # Élèves des Classes et groupes de l'utilisateur
-          #
-          app.get "#{APP_PATH}/api/user/regroupements/:id/eleves" do
-            content_type :json
-
-            eleves = Laclasse::CrossApp::Sender
-                       .send_request_signed( :service_annuaire_regroupement, params[:id].to_s, 'expand' => 'true' )['eleves']
-                       .map do |eleve|
-              eleve[ 'avatar' ] = "#{ANNUAIRE[:url]}/avatar/#{eleve[ 'avatar' ]}"
-
-              eleve
-            end
-
-            json eleves
-          end
         end
       end
     end

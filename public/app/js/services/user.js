@@ -25,20 +25,9 @@ angular.module( 'portailApp' )
                 } ] );
 
 angular.module( 'portailApp' )
-    .factory( 'UserRegroupements',
-              [ '$resource', 'APP_PATH',
-                function( $resource, APP_PATH ) {
-                    return $resource( APP_PATH + '/api/user/regroupements/:id',
-                                      { id: '@id' },
-                                      { eleves: { method: 'GET',
-                                                  url: APP_PATH + '/api/user/regroupements/:id/eleves',
-                                                  isArray: true } } );
-                } ] );
-
-angular.module( 'portailApp' )
     .service( 'currentUser',
-              [ '$rootScope', '$http', '$resource', '$q', 'APP_PATH', 'UID', 'URL_ENT', 'User', 'UserRegroupements', 'Apps',
-                function( $rootScope, $http, $resource, $q, APP_PATH, UID, URL_ENT, User, UserRegroupements, Apps ) {
+              [ '$rootScope', '$http', '$resource', '$q', 'UID', 'APP_PATH', 'URL_ENT', 'User', 'Apps',
+                function( $rootScope, $http, $resource, $q, UID, APP_PATH, URL_ENT, User, Apps ) {
                     var user = null;
 
                     this.force_refresh = function( force_reload ) {
@@ -83,8 +72,38 @@ angular.module( 'portailApp' )
                             }
                         } );
                     };
-                    this.regroupements = function() { return UserRegroupements.query().$promise; };
-                    this.eleves_regroupement = function( id ) { return UserRegroupements.eleves( { id: id } ).$promise; };
+                    this.regroupements = function() {
+                        return $http.get( URL_ENT + '/api/app/users/' + UID + '/regroupements' )
+                            .then( function( response ) {
+                                return user.then( function( user ) {
+                                    return _.chain(response.data.classes)
+                                        .concat(response.data.groupes_eleves)
+                                        .select( function( regroupement ) {
+                                            return _(regroupement).has('etablissement_code') && regroupement.etablissement_code == user.profil_actif.etablissement_code_uai;
+                                        } )
+                                        .map( function( regroupement ) {
+                                            return { type: _(regroupement).has('classe_id') ? 'classe' : 'groupe_eleve',
+                                                     id: _(regroupement).has('classe_id') ? regroupement.classe_id : regroupement.groupe_id,
+                                                     libelle: _(regroupement).has('classe_id') ? regroupement.classe_libelle : regroupement.groupe_libelle,
+                                                     etablissement_nom: regroupement.etablissement_nom };
+                                        } )
+                                        .uniq()
+                                        .sortBy( function( regroupement ) {
+                                            return regroupement.type;
+                                        } )
+                                        .value();
+                                } );
+                            } );
+                    };
+                    this.eleves_regroupement = function( id ) {
+                        return $http.get( URL_ENT + '/api/app/regroupements/' + id )
+                            .then( function( response ) {
+                                return _(response.data.eleves)
+                                    .map( function( eleve ) {
+                                        eleve.avatar = URL_ENT + '/api/avatar/' + eleve.avatar;
+                                    } );
+                            } );
+                    };
 
                     this.avatar = { upload: function( file ) {
                         var formdata = new FormData();
