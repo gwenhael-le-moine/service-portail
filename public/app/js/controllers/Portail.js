@@ -110,41 +110,41 @@ angular.module( 'portailApp' )
                                                                         || tile.libelle.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() ) );
                                                            };
                                                        },
-                                                       aside_template: 'views/aside_TROMBI_regroupements.html',
-                                                       tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( regroupement, index ) {
-                                                           regroupement.taxonomy = 'regroupement';
-                                                           regroupement.index = index + 1;
-                                                           regroupement.couleur = regroupement.type === 'classe' ? 'vert' : 'bleu';
-                                                           regroupement.couleur += index % 2 == 0 ? '' : '-moins';
-                                                           regroupement.action = function() {
-                                                               $scope.filter_criteria.text = '';
+                                                           aside_template: 'views/aside_TROMBI_regroupements.html',
+                                                           tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( regroupement, index ) {
+                                                               regroupement.taxonomy = 'regroupement';
+                                                               regroupement.index = index + 1;
+                                                               regroupement.couleur = regroupement.type === 'classe' ? 'vert' : 'bleu';
+                                                               regroupement.couleur += index % 2 == 0 ? '' : '-moins';
+                                                               regroupement.action = function() {
+                                                                   $scope.filter_criteria.text = '';
 
-                                                               currentUser.eleves_regroupement( regroupement.id )
-                                                                   .then( function( response ) {
-                                                                       $scope.tree = { configurable: false,
-                                                                                       filter: function() {
-                                                                                           return function( tile ) {
-                                                                                               return tile.taxonomy !== 'eleve'
-                                                                                                   || _($scope.filter_criteria.text).isEmpty()
-                                                                                                   || tile.nom.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() )
-                                                                                                   || tile.prenom.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() );
-                                                                                           };
-                                                                                       },
-                                                                                       aside_template: 'views/aside_TROMBI_people.html',
-                                                                                       tiles: Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.map( function( eleve, index ) {
-                                                                                           eleve.taxonomy = 'eleve';
-                                                                                           eleve.index = index + 1;
-                                                                                           eleve.couleur = 'jaune';
-                                                                                           eleve.couleur += index % 2 == 0 ? '' : '-moins';
+                                                                   currentUser.eleves_regroupement( regroupement.id )
+                                                                       .then( function( response ) {
+                                                                           $scope.tree = { configurable: false,
+                                                                                           filter: function() {
+                                                                                               return function( tile ) {
+                                                                                                   return tile.taxonomy !== 'eleve'
+                                                                                                       || _($scope.filter_criteria.text).isEmpty()
+                                                                                                       || tile.nom.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() )
+                                                                                                       || tile.prenom.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() );
+                                                                                               };
+                                                                                           },
+                                                                                           aside_template: 'views/aside_TROMBI_people.html',
+                                                                                           tiles: Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.map( function( eleve, index ) {
+                                                                                               eleve.taxonomy = 'eleve';
+                                                                                               eleve.index = index + 1;
+                                                                                               eleve.couleur = 'jaune';
+                                                                                               eleve.couleur += index % 2 == 0 ? '' : '-moins';
 
-                                                                                           return eleve;
-                                                                                       } ) ) ) };
-                                                                       $scope.parent = node;
-                                                                   } );
-                                                           };
+                                                                                               return eleve;
+                                                                                           } ) ) ) };
+                                                                           $scope.parent = node;
+                                                                       } );
+                                                               };
 
-                                                           return regroupement;
-                                                       } ) ) ) };
+                                                               return regroupement;
+                                                           } ) ) ) };
                                        $scope.parent = node;
                                    } );
                                }
