@@ -20,25 +20,7 @@ angular.module( 'portailApp' )
                                                           } },
                                         change_profil_actif: { method: 'PUT',
                                                                url: APP_PATH + '/api/user/profil_actif/:index',
-                                                               params: { profil_id: '@profil_id' } },
-                                        ressources_numeriques: { method: 'GET',
-                                                                 url: URL_ENT + '/api/app/users/' + UID + '/ressources',
-                                                                 isArray: true,
-                                                                 transformResponse: function( response, _headers_getters ) {
-                                                                     return _.chain(angular.fromJson( response ))
-                                                                         .select( function( rn ) {
-                                                                             var now = moment();
-                                                                             return rn.etablissement_code_uai === $rootScope.current_user.profil_actif.etablissement_code_uai
-                                                                                 && ( moment( rn.date_deb_abon).isBefore( now ) ) && ( moment( rn.date_fin_abon).isAfter( now ) );
-                                                                         } )
-                                                                         .map( function( rn ) {
-                                                                             return { nom: rn.lib,
-                                                                                      description: rn.nom_court,
-                                                                                      url: rn.url_access_get,
-                                                                                      icon: rn.type_ressource === 'MANUEL' ? '05_validationcompetences.svg' : ( rn.type_ressource === 'AUTRE' ? '07_blogs.svg' : '08_ressources.svg' ) };
-                                                                         } )
-                                                                         .value();
-                                                                 } }
+                                                               params: { profil_id: '@profil_id' } }
                                       } );
                 } ] );
 
@@ -55,8 +37,8 @@ angular.module( 'portailApp' )
 
 angular.module( 'portailApp' )
     .service( 'currentUser',
-              [ '$rootScope', '$http', '$resource', '$q', 'APP_PATH', 'URL_ENT', 'User', 'UserRegroupements', 'Apps',
-                function( $rootScope, $http, $resource, $q, APP_PATH, URL_ENT, User, UserRegroupements, Apps ) {
+              [ '$rootScope', '$http', '$resource', '$q', 'APP_PATH', 'UID', 'URL_ENT', 'User', 'UserRegroupements', 'Apps',
+                function( $rootScope, $http, $resource, $q, APP_PATH, UID, URL_ENT, User, UserRegroupements, Apps ) {
                     var user = null;
 
                     this.force_refresh = function( force_reload ) {
@@ -72,7 +54,24 @@ angular.module( 'portailApp' )
                         return user;
                     };
 
-                    this.ressources = function() { return User.ressources_numeriques().$promise; };
+                    this.ressources = function() {
+                        return $http.get( URL_ENT + '/api/app/users/' + UID + '/ressources' )
+                            .then( function( response ) {
+                                return _.chain(angular.fromJson( response.data ))
+                                    .select( function( rn ) {
+                                        var now = moment();
+                                        return rn.etablissement_code_uai === $rootScope.current_user.profil_actif.etablissement_code_uai
+                                            && ( moment( rn.date_deb_abon).isBefore( now ) ) && ( moment( rn.date_fin_abon).isAfter( now ) );
+                                    } )
+                                    .map( function( rn ) {
+                                        return { nom: rn.lib,
+                                                 description: rn.nom_court,
+                                                 url: rn.url_access_get,
+                                                 icon: rn.type_ressource === 'MANUEL' ? '05_validationcompetences.svg' : ( rn.type_ressource === 'AUTRE' ? '07_blogs.svg' : '08_ressources.svg' ) };
+                                    } )
+                                    .value();
+                            } );
+                    };
                     this.apps = function() {
                         return user.then( function( u ) {
                             if ( !u.has_profil || !_(u).has('profil_actif') ) {
