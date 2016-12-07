@@ -2,10 +2,10 @@
 
 angular.module( 'portailApp' )
     .factory( 'User',
-              [ '$resource', '$rootScope', 'APP_PATH', 'URL_ENT', 'UID',
-                function( $resource, $rootScope, APP_PATH, URL_ENT, UID ) {
-                    return $resource( APP_PATH + '/api/user',
-                                      { force_refresh: '@force_refresh' },
+              [ '$resource', '$rootScope', 'URL_ENT', 'UID',
+                function( $resource, $rootScope, URL_ENT, UID ) {
+                    return $resource( URL_ENT + '/api/app/users/' + UID,
+                                      { expand: 'true' },
                                       { update: { method: 'PUT',
                                                   params: { nom: '@nom',
                                                             prenom: '@prenom',
@@ -19,8 +19,9 @@ angular.module( 'portailApp' )
                                                             // bloque: '@bloque'
                                                           } },
                                         change_profil_actif: { method: 'PUT',
-                                                               url: APP_PATH + '/api/user/profil_actif/:index',
-                                                               params: { profil_id: '@profil_id' } }
+                                                               url: URL_ENT + '/api/app/users/' + UID + '/profil_actif',
+                                                               params: { profil_id: '@profil_id',
+                                                                         uai: '@uai'} }
                                       } );
                 } ] );
 
@@ -63,7 +64,7 @@ angular.module( 'portailApp' )
                     };
                     this.apps = function() {
                         return user.then( function( u ) {
-                            if ( !u.has_profil || !_(u).has('profil_actif') ) {
+                            if ( !_(u).has('profils') || !_(u).has('profil_actif') ) {
                                 return Apps.query_defaults().$promise.then( function( tiles ) {
                                     return $q.resolve( _(tiles).where( { application_id: 'MAIL' } ) );
                                 } );

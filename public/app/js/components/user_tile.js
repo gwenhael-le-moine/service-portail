@@ -11,7 +11,7 @@ angular.module( 'portailApp' )
                   '                        <h4 class="hidden-xs hidden-sm full-name">{{$ctrl.user.prenom}} {{$ctrl.user.nom}}</h4>' +
                   '                        <h4 class="hidden-md hidden-lg initiales">{{$ctrl.user.prenom[0]}}{{$ctrl.user.nom[0]}}</h4>' +
                   '                    </a>' +
-                  '                    <profilactif class="gris4" ng:if="$ctrl.user.has_profil"' +
+                  '                    <profilactif class="gris4" ng:if="$ctrl.user.profils"' +
                   '                                 user="$ctrl.user"></profilactif>' +
                   '                    <a class="btn hidden-xs hidden-sm logout" ng:href="{{$ctrl.prefix}}/logout" title="Déconnexion de Laclasse.com">se déconnecter</a>' +
                   '                </span>' +
