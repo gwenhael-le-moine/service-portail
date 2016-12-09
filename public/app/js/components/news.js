@@ -30,6 +30,7 @@ angular.module( 'portailApp' )
                   controller: [ '$sce', '$uibModal', 'news', 'APP_PATH', 'RANDOM_IMAGES',
                                 function( $sce, $uibModal, news, APP_PATH, RANDOM_IMAGES ) {
                                     var ctrl = this;
+                                    ctrl.newsfeed = [];
 
                                     this.retrieve_news = function( force_reload ) {
                                         news.get( force_reload )
