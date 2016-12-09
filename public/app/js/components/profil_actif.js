@@ -6,7 +6,7 @@ angular.module( 'portailApp' )
                   template: '<select ' +
                   'ng:model="$ctrl.new_profil"' +
                   'ng:change="$ctrl.apply_change( $ctrl.new_profil )"' +
-                  'ng:options="profil as profil.etablissement_nom + \' : \' + profil.profil_nom group by profil.etablissement_nom for profil in $ctrl.user.profils track by profil.index" >' +
+                  'ng:options="profil as profil.etablissement_nom + \' : \' + profil.profil_nom group by profil.etablissement_nom for profil in $ctrl.user.profils track by $index" >' +
                   '</select>',
                   controller: [ '$state', '$stateParams',
                                 function( $state, $stateParams ) {
