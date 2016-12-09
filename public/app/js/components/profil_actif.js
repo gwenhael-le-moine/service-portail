@@ -12,7 +12,7 @@ angular.module( 'portailApp' )
                                 function( $state, $stateParams ) {
                                     var ctrl = this;
 
-                                    ctrl.new_profil = anguler.copy( ctrl.user.profil_actif );
+                                    ctrl.new_profil = angular.copy( ctrl.user.profil_actif );
                                     console.log(ctrl.new_profil)
 
                                     ctrl.apply_change = function( new_profil ) {
