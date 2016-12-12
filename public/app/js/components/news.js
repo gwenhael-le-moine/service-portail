@@ -39,7 +39,7 @@ angular.module( 'portailApp' )
                                                     item.id = index;
                                                     item.trusted_content = $sce.trustAsHtml( item.content );
                                                     item.no_image = _(item.image).isNull();
-                                                    item.pubDate = moment( item.pubDate ).toDate();
+                                                    item.pubDate = moment( new Date( item.pubDate ) ).toDate();
 
                                                     if ( item.no_image ) {
                                                         if ( item.title == 'Publipostage' ) {
