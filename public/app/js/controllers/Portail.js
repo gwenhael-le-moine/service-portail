@@ -221,7 +221,7 @@ angular.module( 'portailApp' )
                                    apps = Utils.pad_tiles_tree( apps );
 
                                    $scope.apps = { configurable: true,
-                                                   aside_template: 'views/aside_apps.html',
+                                                   aside_template: 'views/aside_news.html',
                                                    tiles: apps };
 
                                    go_to_root_tile.action();
