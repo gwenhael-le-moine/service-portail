@@ -6,7 +6,30 @@ angular.module( 'portailApp' )
                 function( $resource, $rootScope, URL_ENT, UID ) {
                     return $resource( URL_ENT + '/api/app/users/' + UID,
                                       { expand: 'true' },
-                                      { update: { method: 'PUT',
+                                      { get: { transformResponse: function( response ) {
+                                          var user = angular.fromJson( response );
+
+                                          user.profils.forEach( function( profil, index ) {
+                                              profil.index = index;
+                                          } );
+                                          user.profil_actif = _(user.profils).findWhere({ actif: true });
+
+                                          user.is_admin = function() {
+                                              return _(user).has('profil_actif')
+                                                  && ( !_.chain(user.roles)
+                                                       .findWhere({ role_id: 'ADM_ETB',
+                                                                    etablissement_code_uai: user.profil_actif.etablissement_code_uai })
+                                                       .isUndefined()
+                                                       .value()
+                                                       || !_.chain(user.roles)
+                                                       .findWhere({ role_id: 'TECH' })
+                                                       .isUndefined()
+                                                       .value() );
+                                          };
+
+                                          return user;
+                                      } },
+                                        update: { method: 'PUT',
                                                   params: { nom: '@nom',
                                                             prenom: '@prenom',
                                                             sexe: '@sexe',

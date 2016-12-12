@@ -35,7 +35,7 @@
 
             <!-- Mode normal -->
             <span class="hidden-xs hidden-sm floating-button toggle big off blanc"
-                  ng:if="tree.configurable && current_user.profil_actif.admin && !modification"
+                  ng:if="tree.configurable && current_user.is_admin() && !modification"
                   ng:click="edit_tiles()"></span>
 
             <!-- Mode modification -->

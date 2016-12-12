@@ -24,7 +24,7 @@ angular.module( 'portailApp' )
                   '       rn-carousel-index="$ctrl.carouselIndex">' +
                   '  </div>' +
                   '  <span class="hidden-xs hidden-sm floating-button big toggle bouton-config-news blanc"' +
-                  '        ng:if="$ctrl.user.profil_actif.admin && $ctrl.edition"' +
+                  '        ng:if="$ctrl.user.is_admin() && $ctrl.edition"' +
                   '        ng:click="$ctrl.config_news_fluxes()"></span>' +
                   '</ul>',
                   controller: [ '$sce', '$uibModal', 'news', 'APP_PATH', 'RANDOM_IMAGES',
