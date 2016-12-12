@@ -44,7 +44,13 @@ angular.module( 'portailApp' )
                                         change_profil_actif: { method: 'PUT',
                                                                url: URL_ENT + '/api/app/users/' + UID + '/profil_actif',
                                                                params: { profil_id: '@profil_id',
-                                                                         uai: '@uai'} }
+                                                                         uai: '@uai'} },
+                                        delete_avatar: { method: 'DELETE',
+                                                         url: URL_ENT + '/api/app/users/' + UID + '/avatar' },
+                                        upload_avatar: { method: 'POST',
+                                                         url: URL_ENT + '/api/app/users/' + UID + '/upload/avatar',
+                                                         transformRequest: angular.identity,
+                                                         headers: { 'Content-Type': undefined } }
                                       } );
                 } ] );
 
@@ -128,19 +134,4 @@ angular.module( 'portailApp' )
                                     } );
                             } );
                     };
-
-                    this.avatar = { upload: function( file ) {
-                        var formdata = new FormData();
-                        formdata.append( 'image', file );
-                        formdata.append( 'fileFormDataName', 'image' );
-
-                        return $http.post( URL_ENT + '/api/app/users/' + UID + '/upload/avatar',
-                                           formdata,
-                                           { transformRequest: angular.identity,
-                                             headers: { 'Content-Type': undefined } } );
-                    },
-                                    delete: function() {
-                                        return $http.delete( URL_ENT + '/api/app/users/' + UID + '/avatar' );
-                                    }
-                                  };
                 } ] );
