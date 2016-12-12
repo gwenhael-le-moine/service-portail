@@ -50,8 +50,8 @@ angular.module( 'portailApp' )
 
 angular.module( 'portailApp' )
     .service( 'currentUser',
-              [ '$rootScope', '$http', '$resource', '$q', 'UID', 'APP_PATH', 'URL_ENT', 'User', 'Apps',
-                function( $rootScope, $http, $resource, $q, UID, APP_PATH, URL_ENT, User, Apps ) {
+              [ '$rootScope', '$http', '$resource', '$q', 'UID', 'URL_ENT', 'User', 'Apps',
+                function( $rootScope, $http, $resource, $q, UID, URL_ENT, User, Apps ) {
                     var user = null;
 
                     this.force_refresh = function( force_reload ) {
@@ -134,13 +134,13 @@ angular.module( 'portailApp' )
                         formdata.append( 'image', file );
                         formdata.append( 'fileFormDataName', 'image' );
 
-                        return $http.post( APP_PATH + '/api/user/avatar',
+                        return $http.post( URL_ENT + '/api/app/users/' + UID + '/upload/avatar',
                                            formdata,
                                            { transformRequest: angular.identity,
                                              headers: { 'Content-Type': undefined } } );
                     },
                                     delete: function() {
-                                        return $http.delete( APP_PATH + '/api/user/avatar' );
+                                        return $http.delete( URL_ENT + '/api/app/users/' + UID + '/avatar' );
                                     }
                                   };
                 } ] );

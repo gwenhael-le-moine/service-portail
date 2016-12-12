@@ -24,9 +24,7 @@ require_relative './lib/helpers/provision'
 require_relative './routes/index'
 require_relative './routes/auth'
 require_relative './routes/status'
-require_relative './routes/api/user'
 require_relative './routes/api/news'
-require_relative './routes/api/version'
 
 require_relative './routes/stats'
 
@@ -83,10 +81,7 @@ class SinatraApp < Sinatra::Base
 
   register Portail::Routes::Auth
 
-  register Portail::Routes::Api::User
   register Portail::Routes::Api::News
-
-  register Portail::Routes::Api::Version
 end
 
 SinatraApp.run! if __FILE__ == $PROGRAM_NAME
