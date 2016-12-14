@@ -49,7 +49,15 @@ angular.module( 'portailApp' )
                                                          url: URL_ENT + '/api/app/users/' + UID + '/avatar' },
                                         upload_avatar: { method: 'POST',
                                                          url: URL_ENT + '/api/app/users/' + UID + '/upload/avatar',
-                                                         transformRequest: angular.identity,
+                                                         transformRequest: function( request ) {
+                                                             var fd = new FormData();
+                                                             fd.append( 'image', request.new_avatar.blob );
+                                                             fd.append( 'fileFormDataName', 'image' );
+
+                                                             delete request.new_avatar;
+
+                                                             return fd;
+                                                         },
                                                          headers: { 'Content-Type': undefined } }
                                       } );
                 } ] );

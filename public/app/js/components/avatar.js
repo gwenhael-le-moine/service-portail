@@ -111,14 +111,7 @@ angular.module( 'portailApp' )
                                     };
 
                                     ctrl.upload_avatar = function() {
-                                        var formdata = new FormData();
-                                        formdata.append( 'image', ctrl.user.new_avatar.blob );
-                                        formdata.append( 'fileFormDataName', 'image' );
-
-                                        console.log(formdata)
-                                        console.log(ctrl.user)
-
-                                        ctrl.user.$upload_avatar( {}, formdata )
+                                        ctrl.user.$upload_avatar()
                                             .then( reset_new_avatar );
                                     };
 
