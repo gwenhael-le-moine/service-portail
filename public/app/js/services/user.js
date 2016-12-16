@@ -51,7 +51,7 @@ angular.module( 'portailApp' )
                                                          url: URL_ENT + '/api/app/users/' + UID + '/upload/avatar',
                                                          transformRequest: function( request ) {
                                                              var fd = new FormData();
-                                                             fd.append( 'image', request.new_avatar.blob );
+                                                             fd.append( 'image', request.new_avatar.blob, UID + '.png' );
                                                              fd.append( 'fileFormDataName', 'image' );
 
                                                              delete request.new_avatar;
