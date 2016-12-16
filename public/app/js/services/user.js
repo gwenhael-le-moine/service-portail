@@ -15,7 +15,7 @@ angular.module( 'portailApp' )
                                           user.profil_actif = _(user.profils).findWhere({ actif: true });
 
                                           user.is_admin = function() {
-                                              return _(user).has('profil_actif')
+                                              return !_(user.profil_actif).isUndefined()
                                                   && ( !_.chain(user.roles)
                                                        .findWhere({ role_id: 'ADM_ETB',
                                                                     etablissement_code_uai: user.profil_actif.etablissement_code_uai })
@@ -101,7 +101,8 @@ angular.module( 'portailApp' )
                     };
                     this.apps = function() {
                         return user.then( function( u ) {
-                            if ( !_(u).has('profils') || !_(u).has('profil_actif') ) {
+                            console.log(u)
+                            if ( _(u.profils).isEmpty() || _(u.profil_actif).isUndefined() ) {
                                 return Apps.query_defaults().$promise.then( function( tiles ) {
                                     return $q.resolve( _(tiles).where( { application_id: 'MAIL' } ) );
                                 } );
