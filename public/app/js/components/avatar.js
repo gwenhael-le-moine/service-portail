@@ -12,7 +12,7 @@ angular.module( 'portailApp' )
                 { bindings: { user: '=' },
                   template: '<div class="avatar">' +
                   '              <img draggable="false" class="svg" ' +
-                  '               ng:src="{{$ctrl.user.new_avatar.image ? $ctrl.user.new_avatar.image : $ctrl.user.avatar}}" />' +
+                  '               ng:src="{{$ctrl.user.new_avatar.image ? $ctrl.user.new_avatar.image : $ctrl.URL_ENT + \'/\' + $ctrl.user.avatar}}" />' +
                   '              <input type="file" file-changed="$ctrl.onChange" ng:if="!$ctrl.processing"/>' +
                   '              <span ng:if="$ctrl.processing"><i class="fa fa-spinner fa-pulse"></i> traitement</span>' +
                   '              <footer>' +
@@ -20,10 +20,11 @@ angular.module( 'portailApp' )
                   '                          ng:click="$ctrl.upload_avatar()">Valider l\'avatar</button>' +
                   '              </footer>' +
                   '</div>',
-                  controller: [ 'currentUser',
-                                function( currentUser ) {
+                  controller: [ 'currentUser', 'URL_ENT',
+                                function( currentUser, URL_ENT ) {
                                     var ctrl = this;
 
+                                    ctrl.URL_ENT = URL_ENT;
                                     ctrl.processing = false;
 
                                     var blobToDataURL = function( blob, callback ) {
@@ -112,7 +113,9 @@ angular.module( 'portailApp' )
 
                                     ctrl.upload_avatar = function() {
                                         ctrl.user.$upload_avatar()
-                                            .then( reset_new_avatar );
+                                            .then( function( response ) {
+                                                reset_new_avatar();
+                                            } );
                                     };
 
                                     reset_new_avatar();

@@ -4,7 +4,7 @@ angular.module( 'portailApp' )
     .component( 'usertile',
                 { bindings: { user: '=' },
                   template: '<div class="col-xs-11 col-sm-11 col-md-6 col-lg-6 user"' +
-                  '             ng:style="{ \'background-image\': \'url(\' + $ctrl.user.avatar + \')\' }">' +
+                  '             ng:style="{ \'background-image\': \'url(\' + $ctrl.URL_ENT + \'/\' + $ctrl.user.avatar + \')\' }">' +
                   '            <div class="user-info-bg">' +
                   '                <span class="user-info">' +
                   '                    <a href ng:click="$ctrl.edit_profile()" style="text-decoration: none;">' +
@@ -13,18 +13,19 @@ angular.module( 'portailApp' )
                   '                    </a>' +
                   '                    <profilactif class="gris4" ng:if="$ctrl.user.profils"' +
                   '                                 user="$ctrl.user"></profilactif>' +
-                  '                    <a class="btn hidden-xs hidden-sm logout" ng:href="{{$ctrl.prefix}}/logout" title="Déconnexion de Laclasse.com">se déconnecter</a>' +
+                  '                    <a class="btn hidden-xs hidden-sm logout" ng:href="{{$ctrl.APP_PATH}}/logout" title="Déconnexion de Laclasse.com">se déconnecter</a>' +
                   '                </span>' +
                   '            </div>' +
                   '        </div>',
-                  controller: [ 'APP_PATH',
-                                function( APP_PATH ) {
+                  controller: [ 'APP_PATH', 'URL_ENT',
+                                function( APP_PATH, URL_ENT ) {
                                     var ctrl = this;
 
-                                    ctrl.prefix = APP_PATH;
+                                    ctrl.APP_PATH = APP_PATH;
+                                    ctrl.URL_ENT = URL_ENT;
 
                                     ctrl.edit_profile = function() {
-                                        ctrl.user.edit_profile = true;
+                                        ctrl.user.edit_profile = !ctrl.user.edit_profile;
                                     };
                                 } ]
                 } );
