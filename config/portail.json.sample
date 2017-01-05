@@ -141,11 +141,6 @@
           "profils": [ "DIR", "ENS", "DOC" ]
       },
       {
-          "title": "Ecole primaire : créer les classes et les comptes élèves par un import de fichier .csv",
-          "url": "http://ent-laclasse.blogs.laclasse.com/2017/01/02/ecole-primaire-creer-les-classes-et-les-comptes-eleves-par-un-import-de-fichier-csv/",
-          "profils": [ "DIR", "ENS", "DOC" ]
-      },
-      {
           "title": "Tutoriel tuile 'Panneau d'Administration'",
           "url": "http://ent-laclasse.blogs.laclasse.com/2016/07/08/administrer-son-etablissement/",
           "profils": [ "DIR", "ENS", "DOC" ]
