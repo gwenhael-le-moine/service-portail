@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/laclasse-com/laclasse-common
-  revision: d870d1d55c1f81b570141dac1bbc3c9162206184
+  revision: 954932295d05d89ac6846ab4f8e23905988360fd
   specs:
     laclasse-common (0.2.37)
       redis-rack (~> 1.5.0)
@@ -9,10 +9,11 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.4.0)
+    addressable (2.5.0)
+      public_suffix (~> 2.0, >= 2.0.2)
     ast (2.3.0)
     backports (3.6.8)
-    capybara (2.10.1)
+    capybara (2.11.0)
       addressable
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
@@ -25,7 +26,7 @@ GEM
     css2less (0.0.2)
     daemon_controller (0.2.6)
     diff-lcs (1.2.5)
-    domain_name (0.5.20160826)
+    domain_name (0.5.20161129)
       unf (>= 0.0.5, < 1.0.0)
     execjs (2.7.0)
     hashie (3.4.6)
@@ -35,7 +36,7 @@ GEM
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     json (2.0.2)
-    libv8 (3.16.14.15)
+    libv8 (3.16.14.17)
     method_source (0.8.2)
     mime-types (3.1)
       mime-types-data (~> 3.2015)
@@ -43,7 +44,7 @@ GEM
     mini_portile2 (2.1.0)
     multi_json (1.12.1)
     netrc (0.11.0)
-    nokogiri (1.6.8.1)
+    nokogiri (1.7.0.1)
       mini_portile2 (~> 2.1.0)
     omniauth (1.3.1)
       hashie (>= 1.2, < 4)
@@ -52,9 +53,9 @@ GEM
       addressable (~> 2.3)
       nokogiri (~> 1.5)
       omniauth (~> 1.2)
-    parser (2.3.1.4)
+    parser (2.3.3.1)
       ast (~> 2.2)
-    poltergeist (1.11.0)
+    poltergeist (1.12.0)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
       websocket-driver (>= 0.2.0)
@@ -63,15 +64,16 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    puma (3.6.0)
-    rack (1.6.4)
+    public_suffix (2.0.5)
+    puma (3.6.2)
+    rack (1.6.5)
     rack-protection (1.5.3)
       rack
     rack-rewrite (1.5.1)
     rack-test (0.6.3)
       rack (>= 1.0)
-    rainbow (2.1.0)
-    rake (11.3.0)
+    rainbow (2.2.1)
+    rake (12.0.0)
     redis (3.3.1)
     redis-rack (1.5.0)
       rack (~> 1.5)
@@ -99,14 +101,14 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
-    rubocop (0.44.1)
+    rubocop (0.46.0)
       parser (>= 2.3.1.1, < 3.0)
       powerpack (~> 0.1)
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-progressbar (1.8.1)
-    sass (3.4.22)
+    sass (3.4.23)
     sinatra (1.4.7)
       rack (~> 1.5)
       rack-protection (~> 1.4)
@@ -121,16 +123,16 @@ GEM
     sinatra-param (1.4.0)
       sinatra (~> 1.3)
     slop (3.6.0)
-    therubyracer (0.12.2)
-      libv8 (~> 3.16.14.0)
+    therubyracer (0.12.3)
+      libv8 (~> 3.16.14.15)
       ref
     tilt (2.0.5)
-    uglifier (3.0.3)
+    uglifier (3.0.4)
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.2)
-    unicode-display_width (1.1.1)
+    unicode-display_width (1.1.2)
     websocket-driver (0.6.4)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
@@ -155,7 +157,7 @@ DEPENDENCIES
   rack
   rack-rewrite
   rake
-  redis
+  redis (= 3.3.1)
   redis-server
   rest-client
   rspec
@@ -168,4 +170,4 @@ DEPENDENCIES
   uglifier
 
 BUNDLED WITH
-   1.12.5
+   1.13.6
