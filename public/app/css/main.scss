@@ -132,6 +132,11 @@ body {
                     padding: 0.25em;
                 }
                 select {
+                    &:disabled {
+                        appearance: none;
+                        -moz-appearance: none;
+                        -webkit-appearance: none;
+                    }
                     color: #fff;
                     background-color: rgba( 0, 0, 0, 0.6 );
                     border: 0;
