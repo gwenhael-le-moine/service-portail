@@ -10,7 +10,6 @@ angular.module( 'portailApp', [ 'ngResource',
                                 'angularMoment',
                                 'ngColorPicker',
                                 'angular-carousel',
-                                'toastr',
                                 'ngFitText',
                                 'angular-loading-bar' ] )
     .config( [ '$stateProvider', '$urlRouterProvider', 'APP_PATH',

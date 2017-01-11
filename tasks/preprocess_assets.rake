@@ -56,8 +56,6 @@ namespace :preprocess_assets do
   task css: :load_config do
     STDERR.puts 'Sassification of node_modules CSS'
     uglified = Sass.compile( [ 'public/app/node_modules/bootstrap/dist/css/bootstrap-theme.min.css',
-                               # 'public/app/node_modules/ngAnimate/css/ng-animation.css',
-                               'public/app/node_modules/angular-toastr/dist/angular-toastr.css',
                                'public/app/node_modules/laclasse-common-client/css/main.css',
                                'public/app/node_modules/laclasse-common-client/css/damier.css',
                                'public/app/node_modules/laclasse-common-client/css/floating-buttons.css',
@@ -99,7 +97,6 @@ namespace :preprocess_assets do
                                                           'public/app/node_modules/angular-animate/angular-animate.js',
                                                           'public/app/node_modules/ng-color-picker/color-picker.js',
                                                           'public/app/node_modules/angular-carousel/dist/angular-carousel.js',
-                                                          'public/app/node_modules/angular-toastr/dist/angular-toastr.tpls.js',
                                                           'public/app/node_modules/ng-fittext/src/ng-FitText.js',
                                                           'public/app/node_modules/angular-loading-bar/build/loading-bar.js' ] )
     File.open( './public/app/node_modules/node_modules.min.js', 'w' )
