@@ -15,21 +15,20 @@ gem 'redis', '3.3.1'
 gem 'redis-server'
 gem 'rest-client'
 gem 'sinatra'
-gem 'sinatra-param'
 gem 'sinatra-contrib'
+gem 'sinatra-param'
 
 # Gems spécifiques ENT
 gem 'laclasse-common', git: 'https://github.com/laclasse-com/laclasse-common'
 
 group :development do
-  gem 'rspec'
+  gem 'capybara'
   gem 'css2less'
+  gem 'poltergeist'
   gem 'pry'
+  gem 'rspec'
+  gem 'rubocop'
   gem 'sass'
   gem 'therubyracer' # used when no node.js is install on computer
   gem 'uglifier'
-  gem 'rubocop'
-
-  gem 'capybara'
-  gem 'poltergeist'
 end
