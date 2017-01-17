@@ -6,29 +6,31 @@ angular.module( 'portailApp' )
                 function( $resource, $rootScope, URL_ENT, UID ) {
                     return $resource( URL_ENT + '/api/app/users/' + UID,
                                       { expand: 'true' },
-                                      { get: { transformResponse: function( response ) {
-                                          var user = angular.fromJson( response );
+                                      { get: { cache: false,
+                                               transformResponse: function( response ) {
+                                                   var user = angular.fromJson( response );
 
-                                          user.profils.forEach( function( profil, index ) {
-                                              profil.index = index;
-                                          } );
-                                          user.profil_actif = _(user.profils).findWhere({ actif: true });
+                                                   user.profils.forEach( function( profil, index ) {
+                                                       profil.index = index;
+                                                   } );
+                                                   user.profil_actif = _(user.profils).findWhere({ actif: true });
 
-                                          user.is_admin = function() {
-                                              return !_(user.profil_actif).isUndefined()
-                                                  && ( !_.chain(user.roles)
-                                                       .findWhere({ role_id: 'ADM_ETB',
-                                                                    etablissement_code_uai: user.profil_actif.etablissement_code_uai })
-                                                       .isUndefined()
-                                                       .value()
-                                                       || !_.chain(user.roles)
-                                                       .findWhere({ role_id: 'TECH' })
-                                                       .isUndefined()
-                                                       .value() );
-                                          };
+                                                   user.is_admin = function() {
+                                                       return !_(user.profil_actif).isUndefined()
+                                                           && ( !_.chain(user.roles)
+                                                                .findWhere({ role_id: 'ADM_ETB',
+                                                                             etablissement_code_uai: user.profil_actif.etablissement_code_uai })
+                                                                .isUndefined()
+                                                                .value()
+                                                                || !_.chain(user.roles)
+                                                                .findWhere({ role_id: 'TECH' })
+                                                                .isUndefined()
+                                                                .value() );
+                                                   };
 
-                                          return user;
-                                      } },
+                                                   return user;
+                                               }
+                                             },
                                         update: { method: 'PUT',
                                                   params: { nom: '@nom',
                                                             prenom: '@prenom',
@@ -37,8 +39,8 @@ angular.module( 'portailApp' )
                                                             adresse: '@adresse',
                                                             code_postal: '@code_postal',
                                                             ville: '@ville',
-                                                            // login: '@login',
                                                             password: '@password',
+                                                            // login: '@login',
                                                             // bloque: '@bloque'
                                                           } },
                                         change_profil_actif: { method: 'PUT',
@@ -101,7 +103,6 @@ angular.module( 'portailApp' )
                     };
                     this.apps = function() {
                         return user.then( function( u ) {
-                            console.log(u)
                             if ( _(u.profils).isEmpty() || _(u.profil_actif).isUndefined() ) {
                                 return Apps.query_defaults().$promise.then( function( tiles ) {
                                     return $q.resolve( _(tiles).where( { application_id: 'MAIL' } ) );

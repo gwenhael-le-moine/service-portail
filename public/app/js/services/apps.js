@@ -18,6 +18,7 @@ angular.module( 'portailApp' )
                                         color		: '@color' },
                                       { update: { method: 'PUT' },
                                         query: { method: 'GET',
+                                                 cache: false,
                                                  url: URL_ENT + '/api/portail/entree/etablissement/:uai',
                                                  params: { uai: '@uai' },
                                                  isArray: true,
