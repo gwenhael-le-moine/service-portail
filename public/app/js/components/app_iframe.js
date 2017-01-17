@@ -14,6 +14,7 @@ angular.module( 'portailApp' )
                   controller: [ '$sce', 'Apps', 'Utils',
                                 function ( $sce, Apps, Utils ) {
                                     var ctrl = this;
+                                  ctrl.$onInit = function() {
                                     ctrl.iOS = ( navigator.userAgent.match( /iPad/i ) !== null ) || ( navigator.userAgent.match( /iPhone/i ) !== null );
                                     var apps_list = [];
 
@@ -34,6 +35,7 @@ angular.module( 'portailApp' )
                                                          url: $sce.trustAsResourceUrl( ctrl.app.url ) };
                                         }
                                         } );
+                                  }
                                 }
                               ]
                 } );
