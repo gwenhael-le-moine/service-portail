@@ -13,7 +13,7 @@ angular.module( 'portailApp' )
                   '        </div>',
                   controller: [ 'CONFIG',
                                 function( CONFIG ) {
-                                    let ctrl = this;
+                                    var ctrl = this;
 
                                     ctrl.$onInit = function() {
                                         ctrl.help_links = _(CONFIG.help_links)
