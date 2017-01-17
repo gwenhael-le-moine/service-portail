@@ -25,7 +25,11 @@ angular.module( 'portailApp' )
                                                  transformResponse: function( response, _headers_getters ) {
                                                      return _(angular.fromJson( response ))
                                                          .map( function( app ) {
-                                                             return _(CONFIG.apps.default[app.application_id]).extend( app );
+                                                             if ( !_( CONFIG.apps.default[app.application_id] ).isUndefined() ) {
+                                                                 return _( CONFIG.apps.default[app.application_id] ).extend( app ); }
+                                                             else {
+                                                                 return app;
+                                                             }
                                                          } );
                                                  } },
                                         query_defaults: { method: 'GET',
