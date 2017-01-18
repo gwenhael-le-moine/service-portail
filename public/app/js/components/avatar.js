@@ -118,7 +118,7 @@ angular.module( 'portailApp' )
                                             } );
                                     };
 
-                                    ctrl.onInit = function() {
+                                    ctrl.$onInit = function() {
                                         reset_new_avatar();
                                     };
                                 } ]

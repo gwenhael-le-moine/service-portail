@@ -53,7 +53,7 @@ angular.module( 'portailApp' )
                                         }
                                     };
 
-                                    ctrl.onInit = function() {
+                                    ctrl.$onInit = function() {
                                         ctrl.user.editable = _(ctrl.user.id_jointure_aaf).isNull();
 
                                         ctrl.user.date_naissance = new Date( ctrl.user.date_naissance );

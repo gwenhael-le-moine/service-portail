@@ -30,9 +30,10 @@ angular.module( 'portailApp' )
                   controller: [ '$sce', '$uibModal', 'news', 'APP_PATH', 'RANDOM_IMAGES',
                                 function( $sce, $uibModal, news, APP_PATH, RANDOM_IMAGES ) {
                                     var ctrl = this;
+
                                     ctrl.newsfeed = [];
 
-                                    this.retrieve_news = function( force_reload ) {
+                                    ctrl.retrieve_news = function( force_reload ) {
                                         news.get( force_reload )
                                             .then( function( response ) {
                                                 ctrl.newsfeed = _(response.data).map( function( item, index ) {
@@ -58,7 +59,7 @@ angular.module( 'portailApp' )
                                             });
                                     };
 
-                                    this.config_news_fluxes = function() {
+                                    ctrl.config_news_fluxes = function() {
                                         $uibModal.open( { templateUrl: 'views/popup_config_news_fluxes.html',
                                                           controller: 'PopupConfigNewsFluxesCtrl' } )
                                             .result.then( function() {
@@ -66,8 +67,8 @@ angular.module( 'portailApp' )
                                             } );
                                     };
 
-                                    ctrl.onInit = function() {
-                                        this.retrieve_news( false );
+                                    ctrl.$onInit = function() {
+                                        ctrl.retrieve_news( false );
                                     };
                                 } ]
                 } );
