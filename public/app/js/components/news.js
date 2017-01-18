@@ -66,7 +66,8 @@ angular.module( 'portailApp' )
                                             } );
                                     };
 
-                                    this.retrieve_news( false );
-
+                                    ctrl.onInit = function() {
+                                        this.retrieve_news( false );
+                                    };
                                 } ]
                 } );

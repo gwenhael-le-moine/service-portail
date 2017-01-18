@@ -53,8 +53,10 @@ angular.module( 'portailApp' )
                                         }
                                     };
 
-                                    ctrl.user.editable = _(ctrl.user.id_jointure_aaf).isNull();
+                                    ctrl.onInit = function() {
+                                        ctrl.user.editable = _(ctrl.user.id_jointure_aaf).isNull();
 
-                                    ctrl.user.date_naissance = new Date( ctrl.user.date_naissance );
+                                        ctrl.user.date_naissance = new Date( ctrl.user.date_naissance );
+                                    };
                                 } ]
                 } );

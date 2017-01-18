@@ -2,7 +2,7 @@
 
 angular.module( 'portailApp' )
     .component( 'usertile',
-                { bindings: { user: '=' },
+                { bindings: { user: '<' },
                   template: '<div class="col-xs-11 col-sm-11 col-md-6 col-lg-6 user"' +
                   '             ng:style="{ \'background-image\': \'url(\' + $ctrl.URL_ENT + \'/\' + $ctrl.user.avatar + \')\' }">' +
                   '            <div class="user-info-bg">' +

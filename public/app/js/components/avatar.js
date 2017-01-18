@@ -118,6 +118,8 @@ angular.module( 'portailApp' )
                                             } );
                                     };
 
-                                    reset_new_avatar();
+                                    ctrl.onInit = function() {
+                                        reset_new_avatar();
+                                    };
                                 } ]
                 } );
