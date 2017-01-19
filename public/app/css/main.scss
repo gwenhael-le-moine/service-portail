@@ -124,6 +124,10 @@ body {
                 }
                 a {
                     color: #fff;
+                    .default-password {
+                        width: auto;
+                        color: rgba(235, 84, 84, 0.9);
+                    }
                 }
                 .logout {
                     border: 1px solid #fff;
@@ -1017,4 +1021,24 @@ svg {
             width: auto;
         }
     }
+}
+
+// tooltips view-source:https://mdn.mozillademos.org/files/4591/css-only_tooltips.html
+span[data-descr] {
+    position: relative;
+    cursor: help;
+}
+
+span[data-descr]:hover::after {
+    content: attr(data-descr);
+    position: absolute;
+    right: 0;
+    bottom: 24px;
+    min-width: 180px;
+    background-color: rgba(235, 84, 84, 0.9);
+    padding: 5px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: sans-serif;
 }

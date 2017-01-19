@@ -7,8 +7,10 @@ angular.module( 'portailApp' )
                   '             ng:style="{ \'background-image\': \'url(\' + $ctrl.URL_ENT + \'/\' + $ctrl.user.avatar + \')\' }">' +
                   '            <div class="user-info-bg">' +
                   '                <span class="user-info">' +
-                  '                    <a href ng:click="$ctrl.edit_profile()" style="text-decoration: none;">' +
-                  '                        <h4 class="hidden-xs hidden-sm full-name">{{$ctrl.user.prenom}} {{$ctrl.user.nom}}</h4>' +
+                  '                    <a href style="text-decoration: none;" ng:click="$ctrl.edit_profile()">' +
+                  '                        <h4 class="hidden-xs hidden-sm full-name">{{$ctrl.user.prenom}} {{$ctrl.user.nom}}' +
+                  '                            <sup ng:if="$ctrl.user.default_password"><span class="glyphicon glyphicon-alert default-password" aria-hidden="true" data-descr="{{$ctrl.change_password_message}}"></span></sup>' +
+                  '                        </h4>' +
                   '                        <h4 class="hidden-md hidden-lg initiales">{{$ctrl.user.prenom[0]}}{{$ctrl.user.nom[0]}}</h4>' +
                   '                    </a>' +
                   '                    <profilactif class="gris4" ng:if="$ctrl.user.profils"' +
@@ -23,6 +25,8 @@ angular.module( 'portailApp' )
 
                                     ctrl.APP_PATH = APP_PATH;
                                     ctrl.URL_ENT = URL_ENT;
+
+                                    ctrl.change_password_message = 'Pensez à changer votre mot de passe...';
 
                                     ctrl.edit_profile = function() {
                                         ctrl.user.edit_profile = !ctrl.user.edit_profile;

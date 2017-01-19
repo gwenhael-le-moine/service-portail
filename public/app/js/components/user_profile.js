@@ -15,15 +15,15 @@ angular.module( 'portailApp' )
                                                     { ouvert: true,
                                                       enabled: true } ];
 
+                                    ctrl.password = { new1: '',
+                                                      new2: '' };
+
                                     ctrl.open_datepicker = function( $event ) {
                                         $event.preventDefault();
                                         $event.stopPropagation();
 
                                         ctrl.opened = true;
                                     };
-
-                                    ctrl.password = { new1: '',
-                                                      new2: '' };
 
                                     ctrl.mark_as_dirty = function( key ) {
                                         dirty[ key ] = true;
