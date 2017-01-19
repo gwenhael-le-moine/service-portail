@@ -112,7 +112,7 @@
 
         <accordion-group data-is-open="$ctrl.groups[ 1 ].ouvert" ng:if="$ctrl.groups[ 1 ].enabled">
             <accordion-heading>
-                <span class="glyphicon" ng:class="{'glyphicon-chevron-down': $ctrl.groups[ 1 ].ouvert, 'glyphicon-chevron-right': !$ctrl.groups[ 1 ].ouvert}"></span> Mot de passe
+                <span class="glyphicon" ng:class="{'glyphicon-chevron-down': $ctrl.groups[ 1 ].ouvert, 'glyphicon-chevron-right': !$ctrl.groups[ 1 ].ouvert}"></span> Mot de passe<span style="font-weight: bold; color: rgba(235,84,84,0.75)" ng:if="$ctrl.user.default_password">, pensez à le changer...</span>
             </accordion-heading>
             <div class="row">
                 <div class="form-group col-md-6 col-xs-12">
