@@ -2,13 +2,12 @@
 
 angular.module( 'portailApp' )
     .component( 'profilactif',
-                { bindings: { user: '=' },
-                  template: '<select ' +
-                  'ng:disabled="$ctrl.user.profils.length <= 1"' +
-                  'ng:model="$ctrl.user.profil_actif"' +
-                  'ng:change="$ctrl.apply_change()"' +
-                  'ng:options="profil as profil.etablissement_nom + \' : \' + profil.profil_nom group by profil.etablissement_nom for profil in $ctrl.user.profils track by profil.index" >' +
-                  '</select>',
+                { bindings: { user: '<' },
+                  template: '<select ng:disabled="$ctrl.user.profils.length <= 1"' +
+                  '                  ng:model="$ctrl.user.profil_actif"' +
+                  '                  ng:change="$ctrl.apply_change()"' +
+                  '                  ng:options="profil as profil.etablissement_nom + \' : \' + profil.profil_nom group by profil.etablissement_nom for profil in $ctrl.user.profils track by profil.etablissement_nom + \' : \' + profil.profil_nom" >' +
+                  '          </select>',
                   controller: [ '$state', '$stateParams',
                                 function( $state, $stateParams ) {
                                     var ctrl = this;

@@ -10,16 +10,12 @@ angular.module( 'portailApp' )
                                                transformResponse: function( response ) {
                                                    var user = angular.fromJson( response );
 
-                                                   user.profils.forEach( function( profil, index ) {
-                                                       profil.index = index;
-                                                   } );
                                                    user.profil_actif = _(user.profils).findWhere({ actif: true });
 
                                                    user.is_admin = function() {
                                                        return !_(user.profil_actif).isUndefined()
                                                            && ( !_.chain(user.roles)
-                                                                .findWhere({ role_id: 'ADM_ETB',
-                                                                             etablissement_code_uai: user.profil_actif.etablissement_code_uai })
+                                                                .findWhere({ role_id: 'ADM_ETB', etablissement_code_uai: user.profil_actif.etablissement_code_uai })
                                                                 .isUndefined()
                                                                 .value()
                                                                 || !_.chain(user.roles)
