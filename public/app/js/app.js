@@ -53,13 +53,7 @@ angular.module( 'portailApp', [ 'ngResource',
                 $rootScope.modification = false;
                 $rootScope.$on( '$stateChangeSuccess',
                                 function( event, toState, toParams, fromState, fromParams ) {
-                                    var app = 'PORTAIL';
-                                    if ( _(toParams).has('app') ) {
-                                        app = toParams.app;
-                                    } else if ( toState.name == 'app.trombinoscope' ) {
-                                        app = 'TROMBINOSCOPE';
-                                    }
-                                    log.add( app, null, null );
+                                    log.add( ( toState.name == 'app' ) ? toParams.appid : 'PORTAIL' , null, null );
                                 } );
             }
           ] );
