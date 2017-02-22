@@ -42,7 +42,7 @@ angular.module( 'portailApp', [ 'ngResource',
                                                } ] } );
 
                    $urlRouterProvider.otherwise( '/' );
-                             }
+               }
              ] )
     .config( [ '$httpProvider',
                function( $httpProvider ) {
