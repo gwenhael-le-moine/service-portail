@@ -202,7 +202,7 @@ angular.module( 'portailApp' )
                                } else {
                                    response.forEach( function( app ) { app.taxonomy = 'app'; } );
 
-                                   $scope.inactive_apps = _(response).where({ active: false });
+                                   $scope.inactive_tiles = _(response).where({ active: false });
 
                                    var apps = _(response)
                                        .select( function( app ) {
