@@ -255,7 +255,7 @@ angular.module( 'portailApp' )
                                              controller: 'PopupAjoutAppCtrl',
                                              resolve: { current_tiles: function() { return tiles; },
                                                         inactive_tiles: function() { return inactive_tiles; } } } )
-                               .result.then( function( new_tiles ) {
+                               .result.then( function success( new_tiles ) {
                                    $q.all( _(new_tiles).map( function( new_tile ) {
                                        var recipient_index = _(tiles).findIndex( function( tile ) { return !_(tile).has('taxonomy'); } );
 
@@ -271,7 +271,7 @@ angular.module( 'portailApp' )
                                            tiles[ recipient_index ].to_create = true;
                                        }
                                    } ) );
-                               } );
+                               }, function error() {  } );
                        };
 
                        $scope.edit_tiles = function() {
