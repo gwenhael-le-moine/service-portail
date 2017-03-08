@@ -45,7 +45,7 @@ angular.module( 'portailApp' )
 
                        Apps.query_defaults().$promise
                            .then( function( response ) {
-                               $scope.available_tiles = $scope.available_tiles.concat( _.chain( inactive_tiles.concat( _(response).where({ active: true }) ) )
+                               $scope.available_tiles = $scope.available_tiles.concat( _.chain( inactive_tiles.concat( response ) )
                                                                                        .uniq( function( app ) { return app.application_id; } )
                                                                                        .each( function( app ) {
                                                                                            app.taxonomy = 'app';
