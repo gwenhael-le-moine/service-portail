@@ -42,7 +42,7 @@ angular.module( 'portailApp' )
                                         change_profil_actif: { method: 'PUT',
                                                                url: URL_ENT + '/api/app/users/' + UID + '/profil_actif',
                                                                params: { profil_id: '@profil_id',
-                                                                         uai: '@uai'} },
+                                                                         uai: '@uai' } },
                                         delete_avatar: { method: 'DELETE',
                                                          url: URL_ENT + '/api/app/users/' + UID + '/avatar' },
                                         upload_avatar: { method: 'POST',
@@ -109,27 +109,24 @@ angular.module( 'portailApp' )
                         } );
                     };
                     this.regroupements = function() {
-                        return $http.get( URL_ENT + '/api/app/users/' + UID + '/regroupements' )
-                            .then( function( response ) {
-                                return user.then( function( user ) {
-                                    return _.chain(response.data.classes)
-                                        .concat(response.data.groupes_eleves)
-                                        .select( function( regroupement ) {
-                                            return _(regroupement).has('etablissement_code') && regroupement.etablissement_code == user.profil_actif.etablissement_code_uai;
-                                        } )
-                                        .map( function( regroupement ) {
-                                            return { type: _(regroupement).has('classe_id') ? 'classe' : 'groupe_eleve',
-                                                     id: _(regroupement).has('classe_id') ? regroupement.classe_id : regroupement.groupe_id,
-                                                     libelle: _(regroupement).has('classe_id') ? regroupement.classe_libelle : regroupement.groupe_libelle,
-                                                     etablissement_nom: regroupement.etablissement_nom };
-                                        } )
-                                        .uniq()
-                                        .sortBy( function( regroupement ) {
-                                            return regroupement.type;
-                                        } )
-                                        .value();
-                                } );
-                            } );
+                        return user.then( function( user ) {
+                            return _.chain(user.classes)
+                                .concat(user.groupes_eleves)
+                                .select( function( regroupement ) {
+                                    return _(regroupement).has('etablissement_code') && regroupement.etablissement_code === user.profil_actif.etablissement_code_uai;
+                                } )
+                                .map( function( regroupement ) {
+                                    return { type: _(regroupement).has('classe_id') ? 'classe' : 'groupe_eleve',
+                                             id: _(regroupement).has('classe_id') ? regroupement.classe_id : regroupement.groupe_id,
+                                             libelle: _(regroupement).has('classe_id') ? regroupement.classe_libelle : regroupement.groupe_libelle,
+                                             etablissement_nom: regroupement.etablissement_nom };
+                                } )
+                                .uniq()
+                                .sortBy( function( regroupement ) {
+                                    return regroupement.type;
+                                } )
+                                .value();
+                        } );
                     };
                     this.eleves_regroupement = function( id ) {
                         return $http.get( URL_ENT + '/api/app/regroupements/' + id )
