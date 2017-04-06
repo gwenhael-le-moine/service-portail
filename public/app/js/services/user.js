@@ -65,6 +65,7 @@ angular.module( 'portailApp' )
               [ '$rootScope', '$http', '$resource', '$q', 'UID', 'URL_ENT', 'User', 'Apps',
                 function( $rootScope, $http, $resource, $q, UID, URL_ENT, User, Apps ) {
                     var user = null;
+                    var service = this;
 
                     this.force_refresh = function( force_reload ) {
                         user = User.get( { force_refresh: force_reload } ).$promise;
@@ -74,7 +75,7 @@ angular.module( 'portailApp' )
                     };
                     this.get = function( force_reload ) {
                         if ( _(user).isNull() || force_reload ) {
-                            this.force_refresh( force_reload );
+                            service.force_refresh( force_reload );
                         }
                         return user;
                     };
