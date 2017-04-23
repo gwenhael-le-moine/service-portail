@@ -33,7 +33,7 @@ angular.module( 'portailApp' )
                                                          } );
                                                  } },
                                         query_defaults: { method: 'GET',
-                                                          url: URL_ENT + '/api/portail/entree/applications',
+                                                          url: URL_ENT + '/api/applications',
                                                           isArray: true,
                                                           transformResponse: function( response, _headers_getters ) {
                                                               return _.chain(angular.fromJson( response ))
