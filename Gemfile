@@ -2,8 +2,8 @@
 
 source 'https://rubygems.org'
 
-gem 'htmlentities'
 gem 'html_truncator'
+gem 'htmlentities'
 gem 'json'
 gem 'omniauth'
 gem 'omniauth-cas'

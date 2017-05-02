@@ -36,7 +36,7 @@ module Portail
 
         entry[:image] = article.image if article.respond_to?( :image )
         entry[:image] = article.logo.content if entry[:image].nil? && article.respond_to?( :logo )
-        entry[:image] = article.links.select { |l| !l.type.nil? }.first.href if entry[:image].nil? && article.respond_to?( :links )
+        entry[:image] = article.links.reject { |l| l.type.nil? }.first.href if entry[:image].nil? && article.respond_to?( :links )
 
         if entry[:image].nil? && article.respond_to?( :content_encoded ) && !article.content_encoded.nil?
           images = article.content_encoded.match( all_images_url_regexp )

@@ -42,11 +42,11 @@ end
 # Application Sinatra servant de base
 class SinatraApp < Sinatra::Base
   configure do
-    set :app_file, __FILE__
-    set :root, APP_ROOT
-    set :public_folder, proc { File.join( root, 'public' ) }
-    set :inline_templates, true
-    set :protection, true
+    set( :app_file, __FILE__ )
+    set( :root, APP_ROOT )
+    set( :public_folder, proc { File.join( root, 'public' ) } )
+    set( :inline_templates, true )
+    set( :protection, true )
 
     settings.add_charset << 'application/json'
   end
