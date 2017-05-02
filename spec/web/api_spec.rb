@@ -10,8 +10,8 @@ feature SinatraApp do
   end
 
   scenario '/status' do
-    get 'http://localhost:9292/portail/status', {}, 'rack.session' => MOCKED_LOGGED_RACK_SESSION
+    get 'http://localhost:9292/status', {}, 'rack.session' => MOCKED_LOGGED_RACK_SESSION
 
-    expect( JSON.parse( last_response.body ).keys ).to eq %w(app_id app_version rack_env status reason)
+    expect( JSON.parse( last_response.body ).keys ).to eq %w[app_id app_version rack_env status reason]
   end
 end
