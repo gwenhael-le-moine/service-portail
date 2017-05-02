@@ -11,5 +11,6 @@ angular.module( 'portailApp' )
                                         icon: '@icon',
                                         flux: '@flux',
                                         title: '@title' },
-                                      { update: { method: 'PUT' } } );
+                                      { get: { isArray: true },
+                                        update: { method: 'PUT' } } );
                 } ] );

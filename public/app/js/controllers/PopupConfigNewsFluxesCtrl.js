@@ -2,15 +2,20 @@
 
 angular.module( 'portailApp' )
     .controller( 'PopupConfigNewsFluxesCtrl',
-                 [ '$scope', '$rootScope', '$uibModalInstance', 'Flux', 'CONFIG',
-                   function( $scope, $rootScope, $uibModalInstance, Flux, CONFIG ) {
+                 [ '$scope', '$rootScope', '$uibModalInstance', 'currentUser', 'Flux', 'CONFIG',
+                   function( $scope, $rootScope, $uibModalInstance, currentUser, Flux, CONFIG ) {
                        var ctrl = $scope;
 
-                       Flux.query().$promise.then( function( response ) {
-                           ctrl.current_flux = _(response).map( function( flux ) {
-                               flux.dirty = false;
+                       currentUser.get( false ).then( function( user ) {
+                           console.log(user)
+                           Flux.get({ etab_code_uai: user.profil_actif.etablissement_code_uai }).$promise
+                               .then( function( response ) {
+                                   console.log(response)
+                                   ctrl.current_flux = _(response).map( function( flux ) {
+                                       flux.dirty = false;
 
-                               return flux;
+                                       return flux;
+                                   } );
                            } );
                        } );
 
