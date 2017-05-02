@@ -7,12 +7,12 @@ angular.module( 'portailApp' )
                        $scope.prefix = APP_PATH;
                        $scope.COULEURS = COULEURS;
 
-                       $scope.tiles_templates = { app: 'views/tile_app.html',
-                                                  back: 'views/tile_app.html',
-                                                  regroupement: 'views/tile_regroupement.html',
-                                                  eleve: 'views/tile_eleve.html',
-                                                  rn: 'views/tile_rn.html',
-                                                  ccn: 'views/tile_ccn.html' };
+                       $scope.tiles_templates = { app: 'app/views/tile_app.html',
+                                                  back: 'app/views/tile_app.html',
+                                                  regroupement: 'app/views/tile_regroupement.html',
+                                                  eleve: 'app/views/tile_eleve.html',
+                                                  rn: 'app/views/tile_rn.html',
+                                                  ccn: 'app/views/tile_ccn.html' };
                        $scope.filter_criteria = {};
 
                        var go_to_root_tile = {
@@ -46,7 +46,7 @@ angular.module( 'portailApp' )
                                    if ( $scope.modification ) { return; }
                                    $scope.tree = { configurable: false,
                                                    filter: default_filter,
-                                                   aside_template: 'views/aside_CCNUM.html',
+                                                   aside_template: 'app/views/aside_CCNUM.html',
                                                    tiles: Utils.pad_tiles_tree( [ go_to_root_tile ]
                                                                                 .concat( CCN.query()
                                                                                          .map( function( ccn, index ) {
@@ -77,7 +77,7 @@ angular.module( 'portailApp' )
                                    currentUser.ressources().then( function ( response ) {
                                        $scope.tree = { configurable: false,
                                                        filter: default_filter,
-                                                       aside_template: 'views/aside_RN.html',
+                                                       aside_template: 'app/views/aside_RN.html',
                                                        tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( rn, index ) {
                                                            rn.taxonomy = 'rn';
                                                            rn.index = index + 1;
@@ -110,7 +110,7 @@ angular.module( 'portailApp' )
                                                                         || tile.libelle.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() ) );
                                                            };
                                                        },
-                                                       aside_template: 'views/aside_TROMBI_regroupements.html',
+                                                       aside_template: 'app/views/aside_TROMBI_regroupements.html',
                                                        tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( regroupement, index ) {
                                                            regroupement.taxonomy = 'regroupement';
                                                            regroupement.index = index + 1;
@@ -130,7 +130,7 @@ angular.module( 'portailApp' )
                                                                                                    || tile.prenom.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() );
                                                                                            };
                                                                                        },
-                                                                                       aside_template: 'views/aside_TROMBI_people.html',
+                                                                                       aside_template: 'app/views/aside_TROMBI_people.html',
                                                                                        tiles: Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.map( function( eleve, index ) {
                                                                                            eleve.taxonomy = 'eleve';
                                                                                            eleve.index = index + 1;
@@ -221,7 +221,7 @@ angular.module( 'portailApp' )
                                    apps = Utils.pad_tiles_tree( apps );
 
                                    $scope.apps = { configurable: true,
-                                                   aside_template: 'views/aside_news.html',
+                                                   aside_template: 'app/views/aside_news.html',
                                                    tiles: apps };
 
                                    go_to_root_tile.action();
@@ -251,7 +251,7 @@ angular.module( 'portailApp' )
                                                    allowDuplicates: false };
 
                        $scope.add_tile = function( tiles, inactive_tiles ) {
-                           $uibModal.open( { templateUrl: 'views/popup_ajout_app.html',
+                           $uibModal.open( { templateUrl: 'app/views/popup_ajout_app.html',
                                              controller: 'PopupAjoutAppCtrl',
                                              resolve: { current_tiles: function() { return tiles; },
                                                         inactive_tiles: function() { return inactive_tiles; } } } )

@@ -12,7 +12,7 @@ module Portail
           #
           # Agrégateur RSS
           #
-          app.get "#{APP_PATH}/api/news/?" do
+          app.get '/api/news/?' do
             content_type :json, charset: 'utf-8'
 
             news = []
@@ -37,7 +37,6 @@ module Portail
                           .reverse
                           .first( feed[:nb] )
                           .map { |article| Portail::Utils::RSS.rationalize( article ) }
-
               rescue => e
                 LOGGER.debug e.message
                 LOGGER.error e.backtrace
@@ -45,9 +44,9 @@ module Portail
               end
             end
 
-            json news
-                   .flatten
-                   .uniq { |article| article[:content] }
+            json( news
+                    .flatten
+                    .uniq { |article| article[:content] } )
           end
         end
       end

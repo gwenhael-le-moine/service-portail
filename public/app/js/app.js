@@ -28,14 +28,14 @@ angular.module( 'portailApp', [ 'ngResource',
                    $stateProvider
                        .state( 'portail',
                                { url: '/',
-                                 templateUrl: 'views/portail.html',
+                                 templateUrl: 'app/views/portail.html',
                                  resolve: { current_user: get_current_user },
                                  controller: 'PortailCtrl' } )
                        .state( 'app',
                                { resolve: { current_user: get_current_user,
                                             prefix: function() { return APP_PATH; } },
                                  url: '/app/:appid',
-                                 templateUrl: 'views/app-wrapper.html',
+                                 templateUrl: 'app/views/app-wrapper.html',
                                  controller: [ '$scope', '$stateParams',
                                                function( $scope, $stateParams ) {
                                                    $scope.appid = $stateParams.appid;

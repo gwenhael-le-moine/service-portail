@@ -19,13 +19,6 @@ LOGGER.info 'Portail prêt à servir'
 
 Laclasse::Helpers::Rack.configure_rake self
 
-use Rack::Rewrite do
-  rewrite %r{^#{APP_PATH}(/app/(pages|js|css|node_modules|images)/.*(html|map|css|js|ttf|woff|png|jpg|jpeg|gif|svg)[?v=0-9a-zA-Z\-.]*$)}, '$1'
-  rewrite %r{^#{APP_PATH}/stats(/app/(pages|js|css|node_modules|images)/.*(html|map|css|js|ttf|woff|png|jpg|jpeg|gif|svg)[?v=0-9a-zA-Z\-.]*$)}, '$1'
-  rewrite %r{^#{APP_PATH}(/(inscription_CCN_2016|legalese)/.*(html|doc|odt)[?v=0-9a-zA-Z\-.]*$)}, '$1'
-  rewrite( %r{^#{APP_PATH}(/views/.*html[?v=0-9a-zA-Z\-.]*$)}, '/app/$1' ) if ENV['RACK_ENV'] == 'development'
-end
-
 use OmniAuth::Builder do
   configure do |config|
     config.path_prefix = "#{APP_PATH}/auth"
@@ -36,4 +29,6 @@ end
 
 LOGGER.debug "#{ENV['RACK_ENV']} environment"
 
-run SinatraApp
+map "#{APP_PATH}/" do
+  run SinatraApp
+end

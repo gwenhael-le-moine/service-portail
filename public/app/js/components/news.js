@@ -60,7 +60,7 @@ angular.module( 'portailApp' )
                                     };
 
                                     ctrl.config_news_fluxes = function() {
-                                        $uibModal.open( { templateUrl: 'views/popup_config_news_fluxes.html',
+                                        $uibModal.open( { templateUrl: 'app/views/popup_config_news_fluxes.html',
                                                           controller: 'PopupConfigNewsFluxesCtrl' } )
                                             .result.then( function() {
                                                 ctrl.retrieve_news( true );

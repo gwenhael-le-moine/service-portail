@@ -4,7 +4,7 @@ module Portail
   module Routes
     module Status
       def self.registered( app )
-        app.get "#{APP_PATH}/status/?" do
+        app.get '/status/?' do
           content_type :json
 
           status = 'OK'
