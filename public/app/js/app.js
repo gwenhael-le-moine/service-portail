@@ -11,7 +11,8 @@ angular.module( 'portailApp', [ 'ngResource',
                                 'ngColorPicker',
                                 'angular-carousel',
                                 'ngFitText',
-                                'angular-loading-bar' ] )
+                                'angular-loading-bar',
+                                'zxcvbn' ] )
     .config( [ '$stateProvider', '$urlRouterProvider', 'APP_PATH',
                function ( $stateProvider, $urlRouterProvider, APP_PATH ) {
                    var get_current_user = [ '$rootScope', 'currentUser',

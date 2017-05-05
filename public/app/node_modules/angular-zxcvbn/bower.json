@@ -1,0 +1,38 @@
+{
+  "name": "angular-zxcvbn",
+  "version": "3.2.2",
+  "authors": [
+    "Jose Luis Rivas <me@ghostbar.co>",
+    "James Clark <james.clark92@hotmail.co.uk>"
+  ],
+  "description": "Angular Directive for the zxcvbn library",
+  "main": "dist/angular-zxcvbn.js",
+  "keywords": [
+    "angular",
+    "directive",
+    "zxcvbn"
+  ],
+  "license": "MIT",
+  "ignore": [
+    ".idea",
+    "bower_components",
+    "coverage",
+    "src",
+    ".gitignore",
+    ".jshintrc",
+    ".travis.yml",
+    "bower.json",
+    "gulpfile.js",
+    "CHANGELOG",
+    "LICENSE",
+    "package.json",
+    "README.md"
+  ],
+  "devDependencies": {
+    "angular-mocks": "1.5.0"
+  },
+  "dependencies": {
+    "zxcvbn": "4.4.0",
+    "angular": "~1.5.0"
+  }
+}

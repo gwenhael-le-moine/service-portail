@@ -85,6 +85,7 @@ namespace :preprocess_assets do
     uglified, source_map = Uglify.those_files_with_map( [ 'public/app/node_modules/underscore/underscore.js',
                                                           'public/app/node_modules/moment/moment.js',
                                                           'public/app/node_modules/moment/locale/fr.js',
+                                                          'public/app/node_modules/zxcvdn/dist/zxcvdn.js',
                                                           'public/app/node_modules/angular/angular.js',
                                                           'public/app/node_modules/angular-i18n/angular-locale_fr-fr.js',
                                                           'public/app/node_modules/angular-resource/angular-resource.js',
@@ -98,7 +99,8 @@ namespace :preprocess_assets do
                                                           'public/app/node_modules/ng-color-picker/color-picker.js',
                                                           'public/app/node_modules/angular-carousel/dist/angular-carousel.js',
                                                           'public/app/node_modules/ng-fittext/src/ng-FitText.js',
-                                                          'public/app/node_modules/angular-loading-bar/build/loading-bar.js' ] )
+                                                          'public/app/node_modules/angular-loading-bar/build/loading-bar.js',
+                                                          'public/app/node_modules/angular-zxcvdn/dist/angular-zxcvdn.js' ] )
     File.open( './public/app/node_modules/node_modules.min.js', 'w' )
         .write( uglified )
     File.open( './public/app/node_modules/node_modules.min.js.map', 'w' )
