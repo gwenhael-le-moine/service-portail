@@ -2,7 +2,7 @@
     <li ng:repeat="slide in $ctrl.newsfeed | orderBy:'pubDate':true" active="slide.active"
         ng:class="{'publipostage': slide.title == 'Publipostage', 'no-image': slide.no_image}">
         <div class="carousel-image"
-             ng:style="{'background-image': 'url( slide.image + ')'}"></div>
+             ng:style="{'background-image': 'url(' + slide.image + ')'}"></div>
         <div class="carousel-caption">
             <span class="pub-date" ng:cloak>{{ slide.pubDate | date:'medium' }}</span>
             <a href="{{ slide.link }}" target="_blank" ng:if="slide.link != 'notYetImplemented'">
