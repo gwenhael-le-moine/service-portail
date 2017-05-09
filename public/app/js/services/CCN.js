@@ -113,7 +113,13 @@ angular.module( 'portailApp' )
                                                icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_picture.svg',
                                                nom: 'Picture',
                                                titre: '',
-                                               action: function() { Utils.log_and_open_link( 'CCN', 'http://picture.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); } } ] } ];
+                                               action: function() { Utils.log_and_open_link( 'CCN', 'http://picture.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); } } ] },
+                                 { nom: 'Projets 2017-2018',
+                                   description: '',
+                                   icon: '/app/node_modules/laclasse-common-client/images/06_thematiques.svg',
+                                   couleur: 'bleu-plus',
+                                   action: function() { Utils.log_and_open_link( 'inscription_CCN', 'https://www.laclasse.com/portail/inscription_CCN/index.html' ); }
+                                 } ];
                     };
                 }
               ] );
