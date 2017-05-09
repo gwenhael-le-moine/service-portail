@@ -4,13 +4,7 @@ angular.module( 'portailApp' )
     .component( 'appiframe',
                 { bindings: { user: '<',
                               appid: '<' },
-                  template: '<div class="iframe" ng:class="{\'ios\': $ctrl.iOS}">' +
-                  '    <iframe id="iframe"' +
-                  '            frameBorder="0"' +
-                  '            scrolling="{{$ctrl.iOS ? \'no\': \'yes\'}}"' +
-                  '            ng:src="{{$ctrl.app.url}}">' +
-                  '    </iframe>' +
-                  '</div>',
+                  templateUrl: 'app/js/components/app_iframe.html',
                   controller: [ '$sce', 'Apps', 'Utils',
                                 function ( $sce, Apps, Utils ) {
                                     var ctrl = this;

@@ -3,22 +3,7 @@
 angular.module( 'portailApp' )
     .component( 'usertile',
                 { bindings: { user: '<' },
-                  template: '<div class="col-xs-11 col-sm-11 col-md-6 col-lg-6 user"' +
-                  '             ng:style="{ \'background-image\': \'url(\' + $ctrl.URL_ENT + \'/\' + $ctrl.user.avatar + \')\' }">' +
-                  '            <div class="user-info-bg">' +
-                  '                <span class="user-info">' +
-                  '                    <a href style="text-decoration: none;" ng:click="$ctrl.edit_profile()">' +
-                  '                        <h4 class="hidden-xs hidden-sm full-name">{{$ctrl.user.prenom}} {{$ctrl.user.nom}}' +
-                  '                            <sup ng:if="$ctrl.user.default_password"><span class="glyphicon glyphicon-alert default-password" aria-hidden="true" data-descr="{{$ctrl.change_password_message}}"></span></sup>' +
-                  '                        </h4>' +
-                  '                        <h4 class="hidden-md hidden-lg initiales">{{$ctrl.user.prenom[0]}}{{$ctrl.user.nom[0]}}</h4>' +
-                  '                    </a>' +
-                  '                    <profilactif class="gris4" ng:if="$ctrl.user.profils"' +
-                  '                                 user="$ctrl.user"></profilactif>' +
-                  '                    <a class="btn hidden-xs hidden-sm logout" ng:href="{{$ctrl.APP_PATH}}/logout" title="Déconnexion de Laclasse.com">se déconnecter</a>' +
-                  '                </span>' +
-                  '            </div>' +
-                  '        </div>',
+                  templateUrl: 'app/js/components/user_tile.html',
                   controller: [ 'APP_PATH', 'URL_ENT',
                                 function( APP_PATH, URL_ENT ) {
                                     var ctrl = this;

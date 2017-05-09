@@ -10,16 +10,7 @@ angular.module( 'portailApp' )
                 } )
     .component( 'avatar',
                 { bindings: { user: '=' },
-                  template: '<div class="avatar">' +
-                  '              <img draggable="false" class="svg" ' +
-                  '               ng:src="{{$ctrl.user.new_avatar.image ? $ctrl.user.new_avatar.image : $ctrl.URL_ENT + \'/\' + $ctrl.user.avatar}}" />' +
-                  '              <input type="file" file-changed="$ctrl.onChange" ng:if="!$ctrl.processing"/>' +
-                  '              <span ng:if="$ctrl.processing"><i class="fa fa-spinner fa-pulse"></i> traitement</span>' +
-                  '              <footer>' +
-                  '                  <button ng:disabled="!$ctrl.user.new_avatar.blob"' +
-                  '                          ng:click="$ctrl.upload_avatar()">Valider l\'avatar</button>' +
-                  '              </footer>' +
-                  '</div>',
+                  templateUrl: 'app/js/components/avatar.html',
                   controller: [ 'currentUser', 'URL_ENT',
                                 function( currentUser, URL_ENT ) {
                                     var ctrl = this;
