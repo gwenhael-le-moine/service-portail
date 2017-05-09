@@ -3,10 +3,10 @@
     <div class="user-info-bg">
         <span class="user-info">
             <a href style="text-decoration: none;" ng:click="$ctrl.edit_profile()">
-                <h4 class="hidden-xs hidden-sm full-name">{{$ctrl.user.prenom}} {{$ctrl.user.nom}}
+                <h4 class="hidden-xs hidden-sm full-name">{{$ctrl.user.firstname}} {{$ctrl.user.lastname}}
                     <sup ng:if="$ctrl.user.default_password"><span class="glyphicon glyphicon-alert default-password" aria-hidden="true" data-descr="{{$ctrl.change_password_message}}"></span></sup>
                 </h4>
-                <h4 class="hidden-md hidden-lg initiales">{{$ctrl.user.prenom[0]}}{{$ctrl.user.nom[0]}}</h4>
+                <h4 class="hidden-md hidden-lg initiales">{{$ctrl.user.firstname[0]}}{{$ctrl.user.lastname[0]}}</h4>
             </a>
             <profilactif class="gris4" ng:if="$ctrl.user.profils"
                          user="$ctrl.user"></profilactif>

@@ -25,8 +25,8 @@
                                id="nom"
                                class="form-control"
                                ng:disabled="!$ctrl.user.editable"
-                               ng:change="$ctrl.mark_as_dirty( 'nom' )"
-                               ng:model="$ctrl.user.nom">
+                               ng:change="$ctrl.mark_as_dirty( 'lastname' )"
+                               ng:model="$ctrl.user.lastname">
                     </div>
                     <div class="form-group col-md-6 col-xs-12">
                         <label for="prenom">Prénom :</label>
@@ -34,8 +34,8 @@
                                id="prenom"
                                class="form-control"
                                ng:disabled="!$ctrl.user.editable"
-                               ng:change="$ctrl.mark_as_dirty( 'prenom' )"
-                               ng:model="$ctrl.user.prenom">
+                               ng:change="$ctrl.mark_as_dirty( 'firstname' )"
+                               ng:model="$ctrl.user.firstname">
                     </div>
                     <div class="form-group col-md-6 col-xs-12">
                         <label for="datenaissance">Date de naissance :</label>
@@ -43,7 +43,7 @@
                                id="date_naissance"
                                class="form-control"
                                disabled
-                               value="{{$ctrl.user.date_naissance | amDateFormat: 'LL'}}"
+                               value="{{$ctrl.user.birthdate | amDateFormat: 'LL'}}"
                                ng:if="!$ctrl.user.editable" />
                         <div uib-dropdown
                              id="datenaissance"
@@ -54,7 +54,7 @@
                                role="button"
                                data-toggle="uib-dropdown"
                                data-target="#"
-                               href>{{$ctrl.user.date_naissance | amDateFormat: 'LL'}}</a>
+                               href>{{$ctrl.user.birthdate | amDateFormat: 'LL'}}</a>
                             <div uib-dropdown-menu
                                  class="dropdown-menu"
                                  role="menu"
@@ -62,8 +62,8 @@
                                 <div uib-datepicker
                                      datepicker-options="datepicker_options"
                                      ng:disabled="!$ctrl.user.editable"
-                                     ng:change="$ctrl.mark_as_dirty( 'date_naissance' )"
-                                     ng:model="$ctrl.user.date_naissance"
+                                     ng:change="$ctrl.mark_as_dirty( 'birthdate' )"
+                                     ng:model="$ctrl.user.birthdate"
                                      ng:required="true">
                                 </div>
                             </div>
@@ -75,8 +75,8 @@
                                id="adresse"
                                class="form-control"
                                ng:disabled="!$ctrl.user.editable"
-                               ng:change="$ctrl.mark_as_dirty( 'adresse' )"
-                               ng:model="$ctrl.user.adresse">
+                               ng:change="$ctrl.mark_as_dirty( 'address' )"
+                               ng:model="$ctrl.user.address">
                     </div>
                     <div class="form-group col-md-6 col-xs-12">
                         <label for="codepostal">Code postal :</label>
@@ -84,8 +84,8 @@
                                id="codepostal"
                                class="form-control"
                                ng:disabled="!$ctrl.user.editable"
-                               ng:change="$ctrl.mark_as_dirty( 'code_postal' )"
-                               ng:model="$ctrl.user.code_postal">
+                               ng:change="$ctrl.mark_as_dirty( 'zip_code' )"
+                               ng:model="$ctrl.user.zip_code">
                     </div>
                     <div class="form-group col-md-6 col-xs-12">
                         <label for="ville">Ville :</label>
@@ -93,18 +93,18 @@
                                id="ville"
                                class="form-control"
                                ng:disabled="!$ctrl.user.editable"
-                               ng:change="$ctrl.mark_as_dirty( 'ville' )"
-                               ng:model="$ctrl.user.ville">
+                               ng:change="$ctrl.mark_as_dirty( 'city' )"
+                               ng:model="$ctrl.user.city">
                     </div>
 
                     <div class="form-group col-md-6 col-xs-12"
-                         ng:repeat="email in $ctrl.user.emails | orderBy:'principal':true | filter:filter_emails()">
-                        <label for="courriel">Courriel <span ng:if="email.principal">principal</span> :</label>
+                         ng:repeat="email in $ctrl.user.emails | orderBy:'primary':true | filter:filter_emails()">
+                        <label for="courriel">Courriel <span ng:if="email.primary">principal</span> :</label>
                         <input type="text"
                                id="courriel"
                                class="form-control"
                                ng:disabled="true"
-                               ng:model="email.adresse">
+                               ng:model="email.address">
                     </div>
                 </div>
 
