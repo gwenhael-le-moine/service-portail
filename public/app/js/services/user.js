@@ -4,7 +4,7 @@ angular.module( 'portailApp' )
     .factory( 'User',
               [ '$resource', '$rootScope', 'URL_ENT', 'UID',
                 function( $resource, $rootScope, URL_ENT, UID ) {
-                    return $resource( URL_ENT + '/api/app/users/' + UID,
+                    return $resource( URL_ENT + '/api/users/' + UID,
                                       { expand: 'true' },
                                       { get: { cache: false,
                                                transformResponse: function( response ) {
@@ -15,7 +15,7 @@ angular.module( 'portailApp' )
                                                    user.is_admin = function() {
                                                        return !_(user.profil_actif).isUndefined()
                                                            && ( !_.chain(user.roles)
-                                                                .findWhere({ role_id: 'ADM_ETB', etablissement_code_uai: user.profil_actif.etablissement_code_uai })
+                                                                .findWhere({ role_id: 'ADM_ETB', etablissement_id: user.profil_actif.etablissement_id })
                                                                 .isUndefined()
                                                                 .value()
                                                                 || !_.chain(user.roles)
@@ -40,13 +40,13 @@ angular.module( 'portailApp' )
                                                             // bloque: '@bloque'
                                                           } },
                                         change_profil_actif: { method: 'PUT',
-                                                               url: URL_ENT + '/api/app/users/' + UID + '/profil_actif',
+                                                               url: URL_ENT + '/api/users/' + UID + '/profil_actif',
                                                                params: { profil_id: '@profil_id',
                                                                          uai: '@uai' } },
                                         delete_avatar: { method: 'DELETE',
-                                                         url: URL_ENT + '/api/app/users/' + UID + '/avatar' },
+                                                         url: URL_ENT + '/api/users/' + UID + '/avatar' },
                                         upload_avatar: { method: 'POST',
-                                                         url: URL_ENT + '/api/app/users/' + UID + '/upload/avatar',
+                                                         url: URL_ENT + '/api/users/' + UID + '/upload/avatar',
                                                          transformRequest: function( request ) {
                                                              var fd = new FormData();
                                                              fd.append( 'image', request.new_avatar.blob, UID + '.png' );
@@ -81,12 +81,12 @@ angular.module( 'portailApp' )
                     };
 
                     this.ressources = function() {
-                        return $http.get( URL_ENT + '/api/app/users/' + UID + '/ressources' )
+                        return $http.get( URL_ENT + '/api/users/' + UID + '/ressources' )
                             .then( function( response ) {
                                 return _.chain(angular.fromJson( response.data ))
                                     .select( function( rn ) {
                                         var now = moment();
-                                        return rn.etablissement_code_uai === $rootScope.current_user.profil_actif.etablissement_code_uai
+                                        return rn.etablissement_id === $rootScope.current_user.profil_actif.etablissement_id
                                             && ( moment( rn.date_deb_abon).isBefore( now ) ) && ( moment( rn.date_fin_abon).isAfter( now ) );
                                     } )
                                     .map( function( rn ) {
@@ -105,7 +105,7 @@ angular.module( 'portailApp' )
                                     return $q.resolve( _(tiles).where( { application_id: 'MAIL' } ) );
                                 } );
                             } else {
-                                return Apps.query( { uai: u.profil_actif.etablissement_code_uai } ).$promise;
+                                return Apps.query( { uai: u.profil_actif.etablissement_id } ).$promise;
                             }
                         } );
                     };
@@ -114,7 +114,7 @@ angular.module( 'portailApp' )
                             return _.chain(user.classes)
                                 .concat(user.groupes_eleves)
                                 .select( function( regroupement ) {
-                                    return _(regroupement).has('etablissement_code') && regroupement.etablissement_code === user.profil_actif.etablissement_code_uai;
+                                    return _(regroupement).has('etablissement_code') && regroupement.etablissement_code === user.profil_actif.etablissement_id;
                                 } )
                                 .map( function( regroupement ) {
                                     return { type: _(regroupement).has('classe_id') ? 'classe' : 'groupe_eleve',

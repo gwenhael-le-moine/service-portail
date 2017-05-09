@@ -14,7 +14,7 @@ angular.module( 'portailApp' )
 
                                     ctrl.apply_change = function() {
                                         ctrl.user.$change_profil_actif( { profil_id: ctrl.user.profil_actif.profil_id,
-                                                                          uai: ctrl.user.profil_actif.etablissement_code_uai } )
+                                                                          uai: ctrl.user.profil_actif.etablissement_id } )
                                             .then( function() {
                                                 $state.transitionTo( $state.current, $stateParams, { reload: true, inherit: true, notify: true } );
                                             });
