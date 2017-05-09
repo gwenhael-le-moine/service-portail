@@ -8,7 +8,7 @@ angular.module( 'portailApp' )
 
                        currentUser.get( false ).then( function( user ) {
                            console.log(user)
-                           Flux.get({ etab_code_uai: user.profil_actif.etablissement_code_uai }).$promise
+                           Flux.get({ etablissement_id: user.profil_actif.etablissement_id }).$promise
                                .then( function( response ) {
                                    console.log(response)
                                    ctrl.current_flux = _(response).map( function( flux ) {
@@ -27,7 +27,7 @@ angular.module( 'portailApp' )
                        };
 
                        ctrl.save = function( flux ) {
-                           flux.etab_code_uai = $rootScope.current_user.profil_actif.etablissement_code_uai;
+                           flux.etablissement_id = $rootScope.current_user.profil_actif.etablissement_id;
                            return _(flux).has( 'id' ) ? flux.$update() : flux.$save();
                        };
 

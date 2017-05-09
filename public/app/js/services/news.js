@@ -2,12 +2,12 @@
 
 angular.module( 'portailApp' )
     .service('news',
-	     [ '$http', 'APP_PATH',
-	       function( $http, APP_PATH ) {
+	     [ '$http', 'URL_ENT', 'UID',
+	       function( $http, URL_ENT, UID ) {
 		   var news = null;
 		   this.get = function( force_reload ) {
 		       if ( _(news).isNull() || force_reload ) {
-			   news = $http.get( APP_PATH + '/api/news' );
+			   news = $http.get( URL_ENT + '/api/users/' + UID + '/news' );
 		       }
 
 		       return news;

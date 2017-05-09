@@ -194,7 +194,7 @@ angular.module( 'portailApp' )
                                            $q.all( _.chain(response)
                                                    .where( { default: true } )
                                                    .map( function( tile ) {
-                                                       tile.etab_code_uai = current_user.profil_actif.etablissement_code_uai;
+                                                       tile.etab_code_uai = current_user.profil_actif.etablissement_id;
                                                        return Apps.save( tile ).$promise;
                                                    } ) )
                                                .then( retrieve_tiles_tree );
@@ -327,7 +327,7 @@ angular.module( 'portailApp' )
                                             .map( function( tile ) {
                                                 switch( tile.taxonomy ) {
                                                 case 'app':
-                                                    tile.etab_code_uai = current_user.profil_actif.etablissement_code_uai;
+                                                    tile.etab_code_uai = current_user.profil_actif.etablissement_id;
 
                                                     return Apps.save( tile ).$promise;
                                                 case 'rn':
