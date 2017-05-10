@@ -10,7 +10,7 @@ angular.module( 'portailApp' )
                                 $http.post( URL_ENT + '/api/logs',
                                             { application_id: app,
                                               user_id: UID,
-                                              etablissement_id: user.profil_actif ? user.profil_actif.etablissement_id : 'none',
+                                              structure_id: user.profil_actif ? user.profil_actif.structure_id : 'none',
                                               profil_id: user.profil_actif ? user.profil_actif.profil_id : 'none',
                                               timestamp: Date.now(),
                                               url: _(url).isNull() ? APP_PATH + $state.current.url: url,

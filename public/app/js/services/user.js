@@ -15,7 +15,7 @@ angular.module( 'portailApp' )
                                                    user.is_admin = function() {
                                                        return !_(user.profil_actif).isUndefined()
                                                            && ( !_.chain(user.roles)
-                                                                .findWhere({ role_id: 'ADM_ETB', etablissement_id: user.profil_actif.etablissement_id })
+                                                                .findWhere({ role_id: 'ADM_ETB', structure_id: user.profil_actif.structure_id })
                                                                 .isUndefined()
                                                                 .value()
                                                                 || !_.chain(user.roles)
@@ -86,7 +86,7 @@ angular.module( 'portailApp' )
                                 return _.chain(angular.fromJson( response.data ))
                                     .select( function( rn ) {
                                         var now = moment();
-                                        return rn.etablissement_id === $rootScope.current_user.profil_actif.etablissement_id
+                                        return rn.structure_id === $rootScope.current_user.profil_actif.structure_id
                                             && ( moment( rn.date_deb_abon).isBefore( now ) ) && ( moment( rn.date_fin_abon).isAfter( now ) );
                                     } )
                                     .map( function( rn ) {
@@ -105,7 +105,7 @@ angular.module( 'portailApp' )
                                     return $q.resolve( _(tiles).where( { application_id: 'MAIL' } ) );
                                 } );
                             } else {
-                                return Apps.query( { uai: u.profil_actif.etablissement_id } ).$promise;
+                                return Apps.query( { uai: u.profil_actif.structure_id } ).$promise;
                             }
                         } );
                     };
@@ -114,12 +114,13 @@ angular.module( 'portailApp' )
                             return _.chain(user.classes)
                                 .concat(user.groupes_eleves)
                                 .select( function( regroupement ) {
-                                    return _(regroupement).has('etablissement_code') && regroupement.etablissement_code === user.profil_actif.etablissement_id;
+                                    return _(regroupement).has('structure_id') && regroupement.structure_id === user.profil_actif.structure_id;
                                 } )
                                 .map( function( regroupement ) {
                                     return { type: _(regroupement).has('classe_id') ? 'classe' : 'groupe_eleve',
                                              id: _(regroupement).has('classe_id') ? regroupement.classe_id : regroupement.groupe_id,
                                              libelle: _(regroupement).has('classe_id') ? regroupement.classe_libelle : regroupement.groupe_libelle,
+                                             // FIXME
                                              etablissement_nom: regroupement.etablissement_nom };
                                 } )
                                 .uniq()

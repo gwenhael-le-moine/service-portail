@@ -15,7 +15,7 @@ angular.module( 'portailApp' )
                                         if ( _(ctrl.user.profils).isEmpty() ) {
                                             apps_list = Apps.query_defaults().$promise;
                                         } else {
-                                            apps_list = Apps.query({ uai: ctrl.user.profil_actif.etablissement_id }).$promise;
+                                            apps_list = Apps.query({ uai: ctrl.user.profil_actif.structure_id }).$promise;
                                         }
 
                                         apps_list.then( function ( response ) {

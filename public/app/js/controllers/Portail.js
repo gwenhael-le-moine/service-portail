@@ -18,9 +18,9 @@ angular.module( 'portailApp' )
                        var go_to_root_tile = {
                            index: 0,
                            taxonomy: 'back',
-                           libelle: '↰ Retour',
+                           name: '↰ Retour',
                            description: 'Retour',
-                           couleur: 'gris3',
+                           color: 'gris3',
                            action: function() {
                                $scope.tree = $scope.apps;
                                $scope.parent = null;
@@ -82,7 +82,7 @@ angular.module( 'portailApp' )
                                                            rn.taxonomy = 'rn';
                                                            rn.index = index + 1;
                                                            rn.icon = '/app/node_modules/laclasse-common-client/images/' + rn.icon;
-                                                           rn.couleur = CASES[ index % 16 ].couleur;
+                                                           rn.color = CASES[ index % 16 ].couleur;
                                                            rn.action = function() { Utils.log_and_open_link( 'GAR', rn.url ); };
 
                                                            return rn;
@@ -105,17 +105,17 @@ angular.module( 'portailApp' )
                                                                    || ( tile.taxonomy !== 'regroupement'
                                                                         || ( _($scope.filter_criteria).has('show_classes') && $scope.filter_criteria.show_classes && tile.type === 'classe' )
                                                                         || ( _($scope.filter_criteria).has('show_groupes_eleves') && $scope.filter_criteria.show_groupes_eleves && tile.type === 'groupe_eleve' ) )
-                                                                   && ( !_(tile).has('libelle')
+                                                                   && ( !_(tile).has('name')
                                                                         || _($scope.filter_criteria.text).isEmpty()
-                                                                        || tile.libelle.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() ) );
+                                                                        || tile.name.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() ) );
                                                            };
                                                        },
                                                        aside_template: 'app/views/aside_TROMBI_regroupements.html',
                                                        tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( regroupement, index ) {
                                                            regroupement.taxonomy = 'regroupement';
                                                            regroupement.index = index + 1;
-                                                           regroupement.couleur = regroupement.type === 'classe' ? 'vert' : 'bleu';
-                                                           regroupement.couleur += index % 2 == 0 ? '' : '-moins';
+                                                           regroupement.color = regroupement.type === 'classe' ? 'vert' : 'bleu';
+                                                           regroupement.color += index % 2 == 0 ? '' : '-moins';
                                                            regroupement.action = function() {
                                                                $scope.filter_criteria.text = '';
 
@@ -134,8 +134,8 @@ angular.module( 'portailApp' )
                                                                                        tiles: Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.map( function( eleve, index ) {
                                                                                            eleve.taxonomy = 'eleve';
                                                                                            eleve.index = index + 1;
-                                                                                           eleve.couleur = 'jaune';
-                                                                                           eleve.couleur += index % 2 == 0 ? '' : '-moins';
+                                                                                           eleve.color = 'jaune';
+                                                                                           eleve.color += index % 2 == 0 ? '' : '-moins';
 
                                                                                            return eleve;
                                                                                        } ) ) ) };
@@ -194,7 +194,7 @@ angular.module( 'portailApp' )
                                            $q.all( _.chain(response)
                                                    .where( { default: true } )
                                                    .map( function( tile ) {
-                                                       tile.etab_code_uai = current_user.profil_actif.etablissement_id;
+                                                       tile.structure_id = current_user.profil_actif.structure_id;
                                                        return Apps.save( tile ).$promise;
                                                    } ) )
                                                .then( retrieve_tiles_tree );
@@ -202,15 +202,12 @@ angular.module( 'portailApp' )
                                } else {
                                    response.forEach( function( app ) { app.taxonomy = 'app'; } );
 
-                                   $scope.inactive_tiles = _(response).where({ active: false });
-
                                    var apps = _(response)
                                        .select( function( app ) {
                                            var now = moment();
                                            var is_it_summer = now.month() > 7 && now.month() < 9;
 
-                                           return app.active
-                                               && ( !is_it_summer || app.summer )
+                                           return ( !is_it_summer || app.summer )
                                                && ( !current_user.profils || !current_user.profil_actif || ( current_user.profil_actif.admin || !_(app.hidden).includes( current_user.profil_actif.profil_id ) ) )
                                                && ( app.application_id === 'MAIL' ? _.chain(current_user.emails).pluck( 'type' ).includes( 'Ent' ).value() : true );
                                        } )
@@ -250,11 +247,10 @@ angular.module( 'portailApp' )
                                                    clone: false,
                                                    allowDuplicates: false };
 
-                       $scope.add_tile = function( tiles, inactive_tiles ) {
+                       $scope.add_tile = function( tiles ) {
                            $uibModal.open( { templateUrl: 'app/views/popup_ajout_app.html',
                                              controller: 'PopupAjoutAppCtrl',
-                                             resolve: { current_tiles: function() { return tiles; },
-                                                        inactive_tiles: function() { return inactive_tiles; } } } )
+                                             resolve: { current_tiles: function() { return tiles; } } } )
                                .result.then( function success( new_tiles ) {
                                    $q.all( _(new_tiles).map( function( new_tile ) {
                                        var recipient_index = _(tiles).findIndex( function( tile ) { return !_(tile).has('taxonomy'); } );
@@ -266,7 +262,6 @@ angular.module( 'portailApp' )
 
                                        tiles[ recipient_index ] = tool_tile( new_tile );
                                        tiles[ recipient_index ].index = recipient_index;
-                                       tiles[ recipient_index ].active = true;
                                        if ( !_(new_tile).has('id') ) {
                                            tiles[ recipient_index ].to_create = true;
                                        }
@@ -327,7 +322,7 @@ angular.module( 'portailApp' )
                                             .map( function( tile ) {
                                                 switch( tile.taxonomy ) {
                                                 case 'app':
-                                                    tile.etab_code_uai = current_user.profil_actif.etablissement_id;
+                                                    tile.structure_id = current_user.profil_actif.structure_id;
 
                                                     return Apps.save( tile ).$promise;
                                                 case 'rn':

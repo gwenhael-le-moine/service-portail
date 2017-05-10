@@ -4,7 +4,7 @@ angular.module( 'portailApp' )
     .factory( 'RessourceNumerique',
               [ '$resource', 'URL_ENT',
                 function( $resource, URL_ENT ) {
-                    return $resource( URL_ENT + 'api/etablissements/:id/ressources/:ressource_id',
+                    return $resource( URL_ENT + 'api/structures/:id/ressources/:ressource_id',
                                       { id : '@id',
                                         ressource_id : '@ressource_id',
                                         ressource_num_id : '@ressource_num_id',

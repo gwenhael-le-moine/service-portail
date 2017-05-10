@@ -17,7 +17,7 @@ module Portail
 
             news = []
 
-            fluxes = Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_portail_flux, "/etablissement/#{user[:user_detailed]['profil_actif']['etablissement_id']}", {} ) unless user[:user_detailed]['profil_actif'].nil?
+            fluxes = Laclasse::CrossApp::Sender.send_request_signed( :service_annuaire_portail_flux, "/structure/#{user[:user_detailed]['profil_actif']['structure_id']}", {} ) unless user[:user_detailed]['profil_actif'].nil?
             fluxes = config[:news_feed] if fluxes.nil? || fluxes.empty?
 
             # Add user news

@@ -4,9 +4,9 @@ angular.module( 'portailApp' )
     .factory( 'Apps',
               [ '$resource', 'URL_ENT', 'CONFIG',
                 function( $resource, URL_ENT, CONFIG ) {
-                    return $resource( URL_ENT + '/api/etablissements/:etab_code_uai/tuiles/:id',
+                    return $resource( URL_ENT + '/api/structures/:etab_code_uai/tuiles/:id',
                                       { id              : '@id',
-                                        etablissement_id   : '@etab_code_uai',
+                                        structure_id    : '@etab_code_uai',
                                         application_id	: '@application_id',
                                         index		: '@index',
                                         type		: '@type',
@@ -18,7 +18,7 @@ angular.module( 'portailApp' )
                                       { update: { method: 'PUT' },
                                         query: { method: 'GET',
                                                  cache: false,
-                                                 url: URL_ENT + '/api/etablissements/:uai/tuiles',
+                                                 url: URL_ENT + '/api/structures/:uai/tuiles',
                                                  params: { uai: '@uai' },
                                                  isArray: true,
                                                  transformResponse: function( response, _headers_getters ) {

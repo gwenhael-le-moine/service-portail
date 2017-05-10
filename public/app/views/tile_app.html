@@ -25,14 +25,14 @@
             <div class="icone"
                  data-fittext
                  ng:if="!tile.icon">
-                {{tile.libelle[0]}}
+                {{tile.name[0]}}
             </div>
             <img draggable="false"
                  class="icone"
                  ng:src="{{prefix}}/{{ tile.icon }}"
                  ng:if="tile.icon">
             <span class="app-name">
-                {{tile.libelle}}
+                {{tile.name}}
                 <i class="glyphicon glyphicon-new-window"
                    ng:if="tile.type === 'EXTERNAL'"></i>
             </span>
@@ -51,8 +51,8 @@
 
         <label>
             nom : <input type="text" class="form-control"
-                         ng:model="tile.libelle"
-                         ng:change="tile.is_dirty( 'libelle' )" />
+                         ng:model="tile.name"
+                         ng:change="tile.is_dirty( 'name' )" />
         </label>
 
         <label>
@@ -65,13 +65,6 @@
             url : <input type="text" class="form-control"
                          ng:model="tile.url"
                          ng:change="tile.is_dirty( 'url' )" />
-        </label>
-
-        <label>
-            activée : <checkbox class="btn-success"
-                                style="padding: 1px 2px 2px;"
-                                ng:model="tile.active"
-                                ng:change="tile.is_dirty( 'active' )"></checkbox>
         </label>
     </div>
     </div>

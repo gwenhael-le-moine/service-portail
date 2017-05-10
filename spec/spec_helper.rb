@@ -32,6 +32,6 @@ MOCKED_LOGGED_RACK_SESSION = { authenticated: true,
                                                id_jointure_aaf: nil,
                                                avatar: 'https://v3dev.laclasse.com/api/default_avatar/avatar_feminin.svg',
                                                roles_max_priority_etab_actif: 'ADM_ETB',
-                                               user_detailed: { 'profil_actif' => { 'etablissement_code_uai' => '012345Z' } } },
+                                               user_detailed: { 'profil_actif' => { 'structure_id' => '012345Z' } } },
                                extra: {},
                                info: {} }.freeze

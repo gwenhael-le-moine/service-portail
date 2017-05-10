@@ -19,8 +19,8 @@ angular.module( 'statsApp',
                         return $http.get( URL_ENT + '/api/app/profils', { params: params } );
                     };
 
-                    this.get_etablissements = function( params ) {
-                        return $http.get( URL_ENT + '/api/app/etablissements', { params: params } );
+                    this.get_structures = function( params ) {
+                        return $http.get( URL_ENT + '/api/app/structures', { params: params } );
                     };
 
                     this.get_default_applications = function( params ) {
@@ -100,7 +100,7 @@ angular.module( 'statsApp',
                            } );
 
 
-                           Annuaire.get_etablissements({}).then( function( response ) {
+                           Annuaire.get_structures({}).then( function( response ) {
                                $scope.labels.uai = _.chain(response.data).map( function( etab ) { return [ etab.code_uai, etab.nom ]; } ).object().value();
 
                                Annuaire.get_stats( { from: $scope.debut.clone().toDate(),

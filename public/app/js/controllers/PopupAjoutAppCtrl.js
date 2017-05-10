@@ -3,9 +3,9 @@
 angular.module( 'portailApp' )
     .controller( 'PopupAjoutAppCtrl',
                  [ '$scope', '$uibModalInstance', 'APP_PATH', 'Apps', 'RessourceNumerique', 'currentUser',
-                   'current_tiles', 'inactive_tiles',
+                   'current_tiles',
                    function( $scope, $uibModalInstance, APP_PATH, Apps, RessourceNumerique, currentUser,
-                             current_tiles, inactive_tiles ) {
+                             current_tiles ) {
                        $scope.prefix = APP_PATH;
 
                        $scope.available_tiles = [];
@@ -15,11 +15,10 @@ angular.module( 'portailApp' )
                            $scope.available_tiles.push( new Apps( { creation: true,
                                                                     present: false,
                                                                     type: 'EXTERNAL',
-                                                                    libelle: '',
+                                                                    name: '',
                                                                     description: '',
                                                                     url: 'http://',
                                                                     color: '',
-                                                                    active: true,
                                                                     selected: true,
                                                                     taxonomy: 'app'} ) );
                        };
@@ -45,7 +44,7 @@ angular.module( 'portailApp' )
 
                        Apps.query_defaults().$promise
                            .then( function( response ) {
-                               $scope.available_tiles = $scope.available_tiles.concat( _.chain( inactive_tiles.concat( response ) )
+                               $scope.available_tiles = $scope.available_tiles.concat( _.chain( response )
                                                                                        .uniq( function( app ) { return app.application_id; } )
                                                                                        .each( function( app ) {
                                                                                            app.taxonomy = 'app';
