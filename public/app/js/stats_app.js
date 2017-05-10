@@ -4,8 +4,7 @@
 angular.module( 'statsApp',
                 [ 'ui.bootstrap',
                   'nvd3',
-                  'angularMoment',
-                  'angular-loading-bar' ] )
+                  'angularMoment' ] )
     .run( [ 'amMoment', function( amMoment ) { amMoment.changeLocale( 'fr' ); } ] )
     .config( [ '$httpProvider', function( provider ) { provider.defaults.withCredentials = true; } ] )
     .service( 'Annuaire',
