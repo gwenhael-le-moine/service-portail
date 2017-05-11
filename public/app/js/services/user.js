@@ -13,19 +13,19 @@ angular.module( 'portailApp' )
                                                                 gender: '@gender',
                                                                 birthdate: '@birthdate',
                                                                 address: '@address',
-                                                            zip_code: '@zip_code',
-                                                            city: '@city',
-                                                            password: '@password',
-                                                            // login: '@login',
-                                                            // bloque: '@bloque'
-                                                          } },
-                                        activate_profile: { method: 'PUT',
-                                                            url: URL_ENT + '/api/users/' + UID + '/profil_actif',
-                                                            params: { profil_id: '@profil_id',
-                                                                      active: true } },
-                                        delete_avatar: { method: 'DELETE',
-                                                         url: URL_ENT + '/api/users/' + UID + '/avatar' },
-                                        upload_avatar: { method: 'POST',
+                                                                zip_code: '@zip_code',
+                                                                city: '@city',
+                                                                password: '@password',
+                                                                // login: '@login',
+                                                                // bloque: '@bloque'
+                                                              } },
+                                            activate_profile: { method: 'PUT',
+                                                                url: URL_ENT + '/api/users/' + UID + '/profil_actif',
+                                                                params: { profil_id: '@profil_id',
+                                                                          active: true } },
+                                            delete_avatar: { method: 'DELETE',
+                                                             url: URL_ENT + '/api/users/' + UID + '/avatar' },
+                                            upload_avatar: { method: 'POST',
                                                              url: URL_ENT + '/api/users/' + UID + '/upload/avatar',
                                                              transformRequest: function( request ) {
                                                                  var fd = new FormData();
@@ -37,7 +37,7 @@ angular.module( 'portailApp' )
                                                                  return fd;
                                                              },
                                                              headers: { 'Content-Type': undefined } }
-                                      } );
+                                          } );
                     User.prototype.active_profile = function() {
                         return _(this.profiles).findWhere({ active: true });
                     };

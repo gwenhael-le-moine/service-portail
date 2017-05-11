@@ -116,7 +116,7 @@
                 .constant( 'APP_VERSION', '<%=APP_VERSION%>' )
                 .constant( 'APP_PATH', '<%=APP_PATH%>' )
                 .constant( 'URL_ENT', '<%=URL_ENT%>' )
-                .constant( 'CONFIG', <%=config.to_json%> )
+                .constant( 'CONFIG', <%=File.read( './config/portail.json' )%> )
                 .constant( 'UID', '<%=user[:info].uid%>' )
                 .config( [ '$compileProvider',
                            function( $compileProvider ) {

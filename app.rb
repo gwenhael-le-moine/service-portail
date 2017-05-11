@@ -18,26 +18,11 @@ require 'laclasse/helpers/authentication'
 require 'laclasse/helpers/user'
 require 'laclasse/helpers/app_infos'
 
-require_relative './lib/helpers/config'
-require_relative './lib/helpers/provision'
-
 require_relative './routes/index'
 require_relative './routes/auth'
 require_relative './routes/status'
-require_relative './routes/api/news'
 
 require_relative './routes/stats'
-
-# https://gist.github.com/chastell/1196800
-class Hash
-  def to_html
-    [ '<ul>',
-      map do |k, v|
-        [ "<li><strong>#{k}</strong> : ", v.respond_to?(:to_html) ? v.to_html : "<span>#{v}</span></li>" ]
-      end,
-      '</ul>' ].join
-  end
-end
 
 # Application Sinatra servant de base
 class SinatraApp < Sinatra::Base
@@ -51,19 +36,11 @@ class SinatraApp < Sinatra::Base
     settings.add_charset << 'application/json'
   end
 
-  configure :development do
-    # also_reload '/path/to/some/file'
-    # dont_reload '/path/to/other/file'
-  end
-
   helpers Sinatra::Param
 
   helpers Laclasse::Helpers::Authentication
   helpers Laclasse::Helpers::User
   helpers Laclasse::Helpers::AppInfos
-
-  helpers Portail::Helpers::Config
-  helpers Portail::Helpers::Provision
 
   ##### routes #################################################################
 
@@ -80,8 +57,6 @@ class SinatraApp < Sinatra::Base
   register Portail::Routes::Stats
 
   register Portail::Routes::Auth
-
-  register Portail::Routes::Api::News
 end
 
 SinatraApp.run! if __FILE__ == $PROGRAM_NAME
