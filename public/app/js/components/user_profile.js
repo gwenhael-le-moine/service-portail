@@ -31,7 +31,7 @@ angular.module( 'portailApp' )
 
                                     ctrl.filter_emails = function() {
                                         return function( email ) {
-                                            return ( ctrl.user.profil_actif.profil_id !== 'TUT' || email.type !== 'Ent' ) && _(email.adresse.match( email.user_id )).isNull();
+                                            return ( ctrl.user.active_profile().type !== 'TUT' || email.type !== 'Ent' ) && _(email.asdress.match( email.user_id )).isNull();
                                         };
                                     };
 

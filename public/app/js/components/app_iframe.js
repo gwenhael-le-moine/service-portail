@@ -12,10 +12,10 @@ angular.module( 'portailApp' )
                                         ctrl.iOS = ( navigator.userAgent.match( /iPad/i ) !== null ) || ( navigator.userAgent.match( /iPhone/i ) !== null );
                                         var apps_list = [];
 
-                                        if ( _(ctrl.user.profils).isEmpty() ) {
+                                        if ( _(ctrl.user.profiles).isEmpty() ) {
                                             apps_list = Apps.query_defaults().$promise;
                                         } else {
-                                            apps_list = Apps.query({ uai: ctrl.user.profil_actif.structure_id }).$promise;
+                                            apps_list = Apps.query({ uai: ctrl.user.active_profile().structure_id }).$promise;
                                         }
 
                                         apps_list.then( function ( response ) {

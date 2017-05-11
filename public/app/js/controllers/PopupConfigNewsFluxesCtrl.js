@@ -7,10 +7,8 @@ angular.module( 'portailApp' )
                        var ctrl = $scope;
 
                        currentUser.get( false ).then( function( user ) {
-                           console.log(user)
-                           Flux.get({ structure_id: user.profil_actif.structure_id }).$promise
+                           Flux.get({ structure_id: user.active_profile().structure_id }).$promise
                                .then( function( response ) {
-                                   console.log(response)
                                    ctrl.current_flux = _(response).map( function( flux ) {
                                        flux.dirty = false;
 
@@ -27,7 +25,7 @@ angular.module( 'portailApp' )
                        };
 
                        ctrl.save = function( flux ) {
-                           flux.structure_id = $rootScope.current_user.profil_actif.structure_id;
+                           flux.structure_id = $rootScope.current_user.active_profile().structure_id;
                            return _(flux).has( 'id' ) ? flux.$update() : flux.$save();
                        };
 

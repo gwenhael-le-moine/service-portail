@@ -4,60 +4,50 @@ angular.module( 'portailApp' )
     .factory( 'User',
               [ '$resource', '$rootScope', 'URL_ENT', 'UID',
                 function( $resource, $rootScope, URL_ENT, UID ) {
-                    return $resource( URL_ENT + '/api/users/' + UID,
-                                      { expand: 'true' },
-                                      { get: { cache: false,
-                                               transformResponse: function( response ) {
-                                                   var user = angular.fromJson( response );
-
-                                                   user.profil_actif = _(user.profils).findWhere({ actif: true });
-
-                                                   user.is_admin = function() {
-                                                       return !_(user.profil_actif).isUndefined()
-                                                           && ( !_.chain(user.roles)
-                                                                .findWhere({ role_id: 'ADM_ETB', structure_id: user.profil_actif.structure_id })
-                                                                .isUndefined()
-                                                                .value()
-                                                                || !_.chain(user.roles)
-                                                                .findWhere({ role_id: 'TECH' })
-                                                                .isUndefined()
-                                                                .value() );
-                                                   };
-
-                                                   return user;
-                                               }
-                                             },
-                                        update: { method: 'PUT',
-                                                  params: { nom: '@nom',
-                                                            prenom: '@prenom',
-                                                            sexe: '@sexe',
-                                                            date_naissance: '@date_naissance',
-                                                            adresse: '@adresse',
-                                                            code_postal: '@code_postal',
-                                                            ville: '@ville',
+                    var User = $resource( URL_ENT + '/api/users/' + UID,
+                                          {  },
+                                          { get: { cache: false },
+                                            update: { method: 'PUT',
+                                                      params: { firstname: '@firstname',
+                                                                lastname: '@lastname',
+                                                                gender: '@gender',
+                                                                birthdate: '@birthdate',
+                                                                address: '@address',
+                                                            zip_code: '@zip_code',
+                                                            city: '@city',
                                                             password: '@password',
                                                             // login: '@login',
                                                             // bloque: '@bloque'
                                                           } },
-                                        change_profil_actif: { method: 'PUT',
-                                                               url: URL_ENT + '/api/users/' + UID + '/profil_actif',
-                                                               params: { profil_id: '@profil_id',
-                                                                         uai: '@uai' } },
+                                        activate_profile: { method: 'PUT',
+                                                            url: URL_ENT + '/api/users/' + UID + '/profil_actif',
+                                                            params: { profil_id: '@profil_id',
+                                                                      active: true } },
                                         delete_avatar: { method: 'DELETE',
                                                          url: URL_ENT + '/api/users/' + UID + '/avatar' },
                                         upload_avatar: { method: 'POST',
-                                                         url: URL_ENT + '/api/users/' + UID + '/upload/avatar',
-                                                         transformRequest: function( request ) {
-                                                             var fd = new FormData();
-                                                             fd.append( 'image', request.new_avatar.blob, UID + '.png' );
-                                                             fd.append( 'fileFormDataName', 'image' );
+                                                             url: URL_ENT + '/api/users/' + UID + '/upload/avatar',
+                                                             transformRequest: function( request ) {
+                                                                 var fd = new FormData();
+                                                                 fd.append( 'image', request.new_avatar.blob, UID + '.png' );
+                                                                 fd.append( 'fileFormDataName', 'image' );
 
-                                                             delete request.new_avatar;
+                                                                 delete request.new_avatar;
 
-                                                             return fd;
-                                                         },
-                                                         headers: { 'Content-Type': undefined } }
+                                                                 return fd;
+                                                             },
+                                                             headers: { 'Content-Type': undefined } }
                                       } );
+                    User.prototype.active_profile = function() {
+                        return _(this.profiles).findWhere({ active: true });
+                    };
+
+                    User.prototype.is_admin = function() {
+                        return ( _(this).has('super_admin') && this.super_admin )
+                            || ( !_.chain(this.profiles).findWhere({ structure_id: user.active_profile().structure_id, type: 'ADM' }).isUndefined().value() );
+                    };
+
+                    return User;
                 } ] );
 
 angular.module( 'portailApp' )
@@ -86,7 +76,7 @@ angular.module( 'portailApp' )
                                 return _.chain(angular.fromJson( response.data ))
                                     .select( function( rn ) {
                                         var now = moment();
-                                        return rn.structure_id === $rootScope.current_user.profil_actif.structure_id
+                                        return rn.structure_id === $rootScope.current_user.active_profile().structure_id
                                             && ( moment( rn.date_deb_abon).isBefore( now ) ) && ( moment( rn.date_fin_abon).isAfter( now ) );
                                     } )
                                     .map( function( rn ) {
@@ -100,12 +90,12 @@ angular.module( 'portailApp' )
                     };
                     this.apps = function() {
                         return user.then( function( u ) {
-                            if ( _(u.profils).isEmpty() || _(u.profil_actif).isUndefined() ) {
+                            if ( _(u.profiles).isEmpty() || _(u.active_profile()).isUndefined() ) {
                                 return Apps.query_defaults().$promise.then( function( tiles ) {
                                     return $q.resolve( _(tiles).where( { application_id: 'MAIL' } ) );
                                 } );
                             } else {
-                                return Apps.query( { uai: u.profil_actif.structure_id } ).$promise;
+                                return Apps.query( { uai: u.active_profile().structure_id } ).$promise;
                             }
                         } );
                     };
@@ -114,7 +104,7 @@ angular.module( 'portailApp' )
                             return _.chain(user.classes)
                                 .concat(user.groupes_eleves)
                                 .select( function( regroupement ) {
-                                    return _(regroupement).has('structure_id') && regroupement.structure_id === user.profil_actif.structure_id;
+                                    return _(regroupement).has('structure_id') && regroupement.structure_id === user.active_profile().structure_id;
                                 } )
                                 .map( function( regroupement ) {
                                     return { type: _(regroupement).has('classe_id') ? 'classe' : 'groupe_eleve',
