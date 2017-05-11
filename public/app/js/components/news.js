@@ -5,8 +5,8 @@ angular.module( 'portailApp' )
                 { bindings: { user: '<',
                               edition: '<' },
                   templateUrl: 'app/js/components/news.html',
-                  controller: [ '$sce', '$uibModal', 'news', 'APP_PATH', 'RANDOM_IMAGES',
-                                function( $sce, $uibModal, news, APP_PATH, RANDOM_IMAGES ) {
+                  controller: [ '$sce', '$uibModal', 'news', 'RANDOM_IMAGES',
+                                function( $sce, $uibModal, news, RANDOM_IMAGES ) {
                                     var ctrl = this;
 
                                     ctrl.newsfeed = [];
@@ -22,7 +22,7 @@ angular.module( 'portailApp' )
 
                                                     if ( item.no_image ) {
                                                         if ( item.title == 'Publipostage' ) {
-                                                            item.image =  APP_PATH + '/app/node_modules/laclasse-common-client/images/11_publipostage.svg';
+                                                            item.image =  'app/node_modules/laclasse-common-client/images/11_publipostage.svg';
                                                         } else {
                                                             item.image = _(RANDOM_IMAGES).sample();
                                                         }
