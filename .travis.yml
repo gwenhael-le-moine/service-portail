@@ -21,7 +21,7 @@ before_script:
   - "sleep 3"
 
 script:
-  - "bundle exec rspec spec/api/ spec/lib/"
+  - "bundle exec rspec spec/lib/"
   - "bundle exec rubocop -D"
   - "bundle exec rake preprocess_assets:production"
   - "bundle exec rspec spec/web/"
