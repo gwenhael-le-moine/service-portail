@@ -57,7 +57,7 @@ angular.module( 'portailApp' )
                                                                                                  ccn.action = function() {
                                                                                                      $scope.tree = { configurable: false,
                                                                                                                      filter: default_filter,
-                                                                                                                     aside_template: 'views/aside_CCNUM_archives.html',
+                                                                                                                     aside_template: 'app/views/aside_CCNUM_archives.html',
                                                                                                                      tiles: [ go_to_parent_tile( node ) ].concat( ccn.leaves.map( function( ccn, index ) {
                                                                                                                          ccn.taxonomy = 'ccn';
                                                                                                                          ccn.index = index + 1;
@@ -189,42 +189,42 @@ angular.module( 'portailApp' )
                        var retrieve_tiles_tree = function() {
                            console.log(currentUser)
                            currentUser.apps().then( function( response ) {
-                                   if ( _(response).isEmpty() ) {
-                                       Apps.query_defaults().$promise
-                                           .then( function( response ) {
-                                               $q.all( _.chain(response)
-                                                       .where( { default: true } )
-                                                       .map( function( tile ) {
-                                                           tile.structure_id = current_user.active_profile().structure_id;
-                                                           return Apps.save( tile ).$promise;
-                                                       } ) )
-                                                   .then( retrieve_tiles_tree );
-                                           } );
-                                   } else {
-                                       response.forEach( function( app ) { app.taxonomy = 'app'; } );
+                               if ( _(response).isEmpty() ) {
+                                   Apps.query_defaults().$promise
+                                       .then( function( response ) {
+                                           $q.all( _.chain(response)
+                                                   .where( { default: true } )
+                                                   .map( function( tile ) {
+                                                       tile.structure_id = current_user.active_profile().structure_id;
+                                                       return Apps.save( tile ).$promise;
+                                                   } ) )
+                                               .then( retrieve_tiles_tree );
+                                       } );
+                               } else {
+                                   response.forEach( function( app ) { app.taxonomy = 'app'; } );
 
-                                       var apps = _(response)
-                                           .select( function( app ) {
-                                               var now = moment();
-                                               var is_it_summer = now.month() > 7 && now.month() < 9;
+                                   var apps = _(response)
+                                       .select( function( app ) {
+                                           var now = moment();
+                                           var is_it_summer = now.month() > 7 && now.month() < 9;
 
-                                               return ( !is_it_summer || app.summer )
-                                                   && ( !current_user.profiles || !current_user.active_profile() || ( current_user.is_admin() || !_(app.hidden).includes( current_user.active_profile().type ) ) )
-                                                   && ( app.application_id === 'MAIL' ? _.chain(current_user.emails).pluck( 'type' ).includes( 'Ent' ).value() : true );
-                                           } )
-                                           .map( tool_tile );
+                                           return ( !is_it_summer || app.summer )
+                                               && ( !current_user.profiles || !current_user.active_profile() || ( current_user.is_admin() || !_(app.hidden).includes( current_user.active_profile().type ) ) )
+                                               && ( app.application_id === 'MAIL' ? _.chain(current_user.emails).pluck( 'type' ).includes( 'Ent' ).value() : true );
+                                       } )
+                                       .map( tool_tile );
 
-                                       apps = Utils.fill_empty_tiles( apps );
-                                       apps = _(apps).sortBy( function( tile ) { return tile.index; } );
-                                       apps = Utils.pad_tiles_tree( apps );
+                                   apps = Utils.fill_empty_tiles( apps );
+                                   apps = _(apps).sortBy( function( tile ) { return tile.index; } );
+                                   apps = Utils.pad_tiles_tree( apps );
 
-                                       $scope.apps = { configurable: true,
-                                                       aside_template: 'app/views/aside_news.html',
-                                                       tiles: apps };
+                                   $scope.apps = { configurable: true,
+                                                   aside_template: 'app/views/aside_news.html',
+                                                   tiles: apps };
 
-                                       go_to_root_tile.action();
-                                   }
-                               } );
+                                   go_to_root_tile.action();
+                               }
+                           } );
                        };
 
                        // Edition

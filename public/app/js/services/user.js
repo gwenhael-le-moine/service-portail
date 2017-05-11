@@ -19,10 +19,6 @@ angular.module( 'portailApp' )
                                                                 // login: '@login',
                                                                 // bloque: '@bloque'
                                                               } },
-                                            activate_profile: { method: 'PUT',
-                                                                url: URL_ENT + '/api/users/' + UID + '/profil_actif',
-                                                                params: { profil_id: '@profil_id',
-                                                                          active: true } },
                                             delete_avatar: { method: 'DELETE',
                                                              url: URL_ENT + '/api/users/' + UID + '/avatar' },
                                             upload_avatar: { method: 'POST',
@@ -68,6 +64,17 @@ angular.module( 'portailApp' )
                             service.force_refresh( force_reload );
                         }
                         return user;
+                    };
+
+                    this.activate_profile = function( profile_id ) {
+                        this.get().then( function success( user ) {
+                            return $http({ method: 'PUT',
+                                           url: URL_ENT + '/api/users/' + user.id + '/profiles/' + profile_id,
+                                           data: { active: true } } )
+                                .then( function success( response ) {
+                                    user = new User( response );
+                                }, function error( response ) {} );
+                        } );
                     };
 
                     this.ressources = function() {

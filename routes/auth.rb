@@ -9,7 +9,7 @@ module Portail
 
           protocol = CASAUTH::CONFIG[:ssl] ? 'https' : 'http'
           redirect params[:url] if params[:url] != "#{protocol}://#{env['HTTP_HOST']}#{APP_PATH}/"
-          redirect "#{APP_PATH}/"
+          redirect "#{protocol}://#{env['HTTP_HOST']}#{APP_PATH}/"
         end
 
         app.get '/auth/failure' do
