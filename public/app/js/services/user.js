@@ -2,37 +2,37 @@
 
 angular.module( 'portailApp' )
     .factory( 'User',
-              [ '$resource', '$rootScope', 'URL_ENT', 'UID',
-                function( $resource, $rootScope, URL_ENT, UID ) {
-                    var User = $resource( URL_ENT + '/api/users/' + UID,
-                                          {  },
+              [ '$resource', '$rootScope', 'URL_ENT',
+                function( $resource, $rootScope, URL_ENT ) {
+                    var User = $resource( URL_ENT + '/api/users/:id',
+                                          { id: '@id',
+                                            firstname: '@firstname',
+                                            lastname: '@lastname',
+                                            gender: '@gender',
+                                            birthdate: '@birthdate',
+                                            address: '@address',
+                                            zip_code: '@zip_code',
+                                            city: '@city',
+                                            password: '@password',
+                                            // login: '@login',
+                                            // bloque: '@bloque'
+                                          },
                                           { get: { cache: false },
-                                            update: { method: 'PUT',
-                                                      params: { firstname: '@firstname',
-                                                                lastname: '@lastname',
-                                                                gender: '@gender',
-                                                                birthdate: '@birthdate',
-                                                                address: '@address',
-                                                                zip_code: '@zip_code',
-                                                                city: '@city',
-                                                                password: '@password',
-                                                                // login: '@login',
-                                                                // bloque: '@bloque'
-                                                              } },
-                                            delete_avatar: { method: 'DELETE',
-                                                             url: URL_ENT + '/api/users/' + UID + '/avatar' },
-                                            upload_avatar: { method: 'POST',
-                                                             url: URL_ENT + '/api/users/' + UID + '/upload/avatar',
-                                                             transformRequest: function( request ) {
-                                                                 var fd = new FormData();
-                                                                 fd.append( 'image', request.new_avatar.blob, UID + '.png' );
-                                                                 fd.append( 'fileFormDataName', 'image' );
+                                            update: { method: 'PUT' } //,
+                                            // delete_avatar: { method: 'DELETE',
+                                            //                  url: URL_ENT + '/api/users/' + UID + '/avatar' },
+                                            // upload_avatar: { method: 'POST',
+                                            //                  url: URL_ENT + '/api/users/' + UID + '/upload/avatar',
+                                            //                  transformRequest: function( request ) {
+                                            //                      var fd = new FormData();
+                                            //                      fd.append( 'image', request.new_avatar.blob, UID + '.png' );
+                                            //                      fd.append( 'fileFormDataName', 'image' );
 
-                                                                 delete request.new_avatar;
+                                            //                      delete request.new_avatar;
 
-                                                                 return fd;
-                                                             },
-                                                             headers: { 'Content-Type': undefined } }
+                                            //                      return fd;
+                                            //                  },
+                                            //                  headers: { 'Content-Type': undefined } }
                                           } );
                     User.prototype.active_profile = function() {
                         return _(this.profiles).findWhere({ active: true });
@@ -48,92 +48,84 @@ angular.module( 'portailApp' )
 
 angular.module( 'portailApp' )
     .service( 'currentUser',
-              [ '$rootScope', '$http', '$resource', '$q', 'UID', 'URL_ENT', 'User', 'Apps',
-                function( $rootScope, $http, $resource, $q, UID, URL_ENT, User, Apps ) {
-                    var user = null;
+              [ '$rootScope', '$http', '$resource', '$q', 'URL_ENT', 'User', 'Apps',
+                function( $rootScope, $http, $resource, $q, URL_ENT, User, Apps ) {
                     var service = this;
 
-                    this.force_refresh = function( force_reload ) {
-                        user = User.get( { force_refresh: force_reload } ).$promise;
-                        user.then( function( response ) {
-                            $rootScope.current_user = response;
-                        } );
-                    };
-                    this.get = function( force_reload ) {
-                        if ( _(user).isNull() || force_reload ) {
-                            service.force_refresh( force_reload );
-                        }
-                        return user;
-                    };
+                    service.get = _.memoize( function( force_reload ) {
+                        return $http.get( URL_ENT + '/api/users/current' );
+                    } );
 
-                    this.activate_profile = function( profile_id ) {
-                        this.get().then( function success( user ) {
+                    service.activate_profile = function( profile_id ) {
+                        service.get().then( function success( response ) {
+                            var user = new User( response.data );
+
                             return $http({ method: 'PUT',
                                            url: URL_ENT + '/api/users/' + user.id + '/profiles/' + profile_id,
                                            data: { active: true } } )
                                 .then( function success( response ) {
                                     user = new User( response );
-                                }, function error( response ) {} );
+                                },
+                                       function error( response ) {} );
                         } );
                     };
 
-                    this.ressources = function() {
-                        return $http.get( URL_ENT + '/api/users/' + UID + '/ressources' )
-                            .then( function( response ) {
-                                return _.chain(angular.fromJson( response.data ))
-                                    .select( function( rn ) {
-                                        var now = moment();
-                                        return rn.structure_id === $rootScope.current_user.active_profile().structure_id
-                                            && ( moment( rn.date_deb_abon).isBefore( now ) ) && ( moment( rn.date_fin_abon).isAfter( now ) );
-                                    } )
-                                    .map( function( rn ) {
-                                        return { nom: rn.lib,
-                                                 description: rn.nom_court,
-                                                 url: rn.url_access_get,
-                                                 icon: rn.type_ressource === 'MANUEL' ? '05_validationcompetences.svg' : ( rn.type_ressource === 'AUTRE' ? '07_blogs.svg' : '08_ressources.svg' ) };
-                                    } )
-                                    .value();
-                            } );
+                    service.ressources = function() {
+                        return service.get().then( function success( response ) {
+                            var user = new User( response.data );
+
+                            return $http.get( URL_ENT + '/api/users/' + user.id + '/ressources' )
+                                .then( function( response ) {
+                                    return _.chain(angular.fromJson( response.data ))
+                                        .select( function( rn ) {
+                                            var now = moment();
+                                            return rn.structure_id === $rootScope.current_user.active_profile().structure_id
+                                                && ( moment( rn.date_deb_abon).isBefore( now ) ) && ( moment( rn.date_fin_abon).isAfter( now ) );
+                                        } )
+                                        .map( function( rn ) {
+                                            return { nom: rn.lib,
+                                                     description: rn.nom_court,
+                                                     url: rn.url_access_get,
+                                                     icon: rn.type_ressource === 'MANUEL' ? '05_validationcompetences.svg' : ( rn.type_ressource === 'AUTRE' ? '07_blogs.svg' : '08_ressources.svg' ) };
+                                        } )
+                                        .value();
+                                } );
+
+                        } );
                     };
-                    this.apps = function() {
-                        return user.then( function( u ) {
-                            if ( _(u.profiles).isEmpty() || _(u.active_profile()).isUndefined() ) {
+
+                    service.apps = function() {
+                        return service.get().then( function success( response ) {
+                            var user = new User( response.data );
+
+                            if ( _(user.profiles).isEmpty() ) {
                                 return Apps.query_defaults().$promise.then( function( tiles ) {
                                     return $q.resolve( _(tiles).where( { application_id: 'MAIL' } ) );
                                 } );
                             } else {
-                                return Apps.query( { uai: u.active_profile().structure_id } ).$promise;
+                                return Apps.query( { uai: user.active_profile().structure_id } ).$promise;
                             }
                         } );
                     };
-                    this.regroupements = function() {
-                        return user.then( function( user ) {
-                            return _.chain(user.classes)
-                                .concat(user.groupes_eleves)
-                                .select( function( regroupement ) {
-                                    return _(regroupement).has('structure_id') && regroupement.structure_id === user.active_profile().structure_id;
-                                } )
-                                .map( function( regroupement ) {
-                                    return { type: _(regroupement).has('classe_id') ? 'classe' : 'groupe_eleve',
-                                             id: _(regroupement).has('classe_id') ? regroupement.classe_id : regroupement.groupe_id,
-                                             libelle: _(regroupement).has('classe_id') ? regroupement.classe_libelle : regroupement.groupe_libelle,
-                                             // FIXME
-                                             etablissement_nom: regroupement.etablissement_nom };
-                                } )
-                                .uniq()
-                                .sortBy( function( regroupement ) {
-                                    return regroupement.type;
-                                } )
-                                .value();
-                        } );
-                    };
-                    this.eleves_regroupement = function( id ) {
-                        return $http.get( URL_ENT + '/api/app/regroupements/' + id )
-                            .then( function( response ) {
-                                return _(response.data.eleves)
-                                    .map( function( eleve ) {
-                                        eleve.avatar = URL_ENT + '/api/avatar/' + eleve.avatar;
-                                    } );
-                            } );
-                    };
+
+                    // service.regroupements = function() {
+                    //     return user.then( function( user ) {
+                    //         console.log($http)
+                    //         console.log(user)
+                    //         $q.all( user.groups.map( function( group ) { return $http({ method: 'GET',
+                    //                                                                     url: URL_ENT + '/api/groups/' + group.group_id }); } ) )
+                    //             .then( function( response ) {
+                    //                 console.log(response)
+                    //             } )
+                    //     } );
+                    // };
+                    // service.eleves_regroupement = function( id ) {
+                    //     return $http.get( URL_ENT + '/api/app/regroupements/' + id )
+                    //         .then( function( response ) {
+                    //             return _(response.data.eleves)
+                    //                 .map( function( eleve ) {
+                    //                     eleve.avatar = URL_ENT + '/api/avatar/' + eleve.avatar;
+                    //                 } );
+                    //         } );
+                    // };
                 } ] );

@@ -2,17 +2,16 @@
 
 angular.module( 'portailApp' )
     .component( 'news',
-                { bindings: { user: '<',
-                              edition: '<' },
+                { bindings: { edition: '<' },
                   templateUrl: 'app/js/components/news.html',
-                  controller: [ '$sce', '$uibModal', 'news', 'RANDOM_IMAGES',
-                                function( $sce, $uibModal, news, RANDOM_IMAGES ) {
+                  controller: [ '$sce', '$uibModal', '$http', 'URL_ENT', 'RANDOM_IMAGES', 'currentUser', 'User',
+                                function( $sce, $uibModal, $http, URL_ENT, RANDOM_IMAGES, currentUser, User ) {
                                     var ctrl = this;
 
                                     ctrl.newsfeed = [];
 
                                     ctrl.retrieve_news = function( force_reload ) {
-                                        news.get( force_reload )
+                                        $http.get( URL_ENT + '/api/users/' + ctrl.current_user.id + '/news' )
                                             .then( function( response ) {
                                                 ctrl.newsfeed = _(response.data).map( function( item, index ) {
                                                     item.id = index;
@@ -44,7 +43,12 @@ angular.module( 'portailApp' )
                                     };
 
                                     ctrl.$onInit = function() {
-                                        ctrl.retrieve_news( false );
+                                        currentUser.get().then( function( response ) {
+                                            ctrl.current_user = new User( response.data );
+
+                                            ctrl.retrieve_news( false );
+
+                                        } );
                                     };
                                 } ]
                 } );

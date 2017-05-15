@@ -14,26 +14,13 @@ angular.module( 'portailApp', [ 'ngResource',
                                 'zxcvbn' ] )
     .config( [ '$stateProvider', '$urlRouterProvider', 'APP_PATH',
                function ( $stateProvider, $urlRouterProvider, APP_PATH ) {
-                   var get_current_user = [ '$rootScope', 'currentUser',
-                                            function( $rootScope, currentUser ) {
-                                                return currentUser.get( false )
-                                                    .then( function( response ) {
-                                                        $rootScope.current_user = response;
-                                                        $rootScope.current_user.edit_profile = false;
-
-                                                        return $rootScope.current_user;
-                                                    } );
-                                            } ];
-
                    $stateProvider
                        .state( 'portail',
                                { url: '/',
                                  templateUrl: 'app/views/portail.html',
-                                 resolve: { current_user: get_current_user },
                                  controller: 'PortailCtrl' } )
                        .state( 'app',
-                               { resolve: { current_user: get_current_user,
-                                            prefix: function() { return APP_PATH; } },
+                               { resolve: { prefix: function() { return APP_PATH; } },
                                  url: '/app/:appid',
                                  templateUrl: 'app/views/app-wrapper.html',
                                  controller: [ '$scope', '$stateParams',
@@ -46,6 +33,7 @@ angular.module( 'portailApp', [ 'ngResource',
              ] )
     .config( [ '$httpProvider',
                function( $httpProvider ) {
+                   $httpProvider.defaults.useXDomain = true;
                    $httpProvider.defaults.withCredentials = true;
                }] )
     .run( [ '$rootScope', 'log',

@@ -2,17 +2,20 @@
 
 angular.module( 'portailApp' )
     .component( 'helpicon',
-                { bindings: { user: '<' },
-                  templateUrl: 'app/js/components/help_icon.html',
-                  controller: [ 'CONFIG',
-                                function( CONFIG ) {
+                { templateUrl: 'app/js/components/help_icon.html',
+                  controller: [ 'CONFIG', 'currentUser', 'User',
+                                function( CONFIG, currentUser, User ) {
                                     var ctrl = this;
 
                                     ctrl.$onInit = function() {
-                                        ctrl.help_links = _(CONFIG.help_links)
-                                            .select( function( link ) {
-                                                return !_(ctrl.user.profiles).isEmpty() && _(link.profils).includes( ctrl.user.active_profile().type );
-                                            } );
+                                        currentUser.get().then( function( response ) {
+                                            var user = new User( response.data );
+
+                                            ctrl.help_links = _(CONFIG.help_links)
+                                                .select( function( link ) {
+                                                    return !_(user.profiles).isEmpty() && _(link.profils).includes( user.active_profile().type );
+                                                } );
+                                        } );
                                     };
                                 } ]
                 } );
