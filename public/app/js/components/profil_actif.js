@@ -11,6 +11,7 @@ angular.module( 'portailApp' )
                                     ctrl.apply_change = function() {
                                         currentUser.activate_profile( ctrl.current_profile.id )
                                             .then( function() {
+                                                ctrl.$onInit();
                                                 $state.transitionTo( $state.current, $stateParams, { reload: true, inherit: true, notify: true } );
                                             });
                                     };

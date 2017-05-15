@@ -18,21 +18,21 @@ angular.module( 'portailApp' )
                                             // bloque: '@bloque'
                                           },
                                           { get: { cache: false },
-                                            update: { method: 'PUT' } //,
+                                            update: { method: 'PUT' },
                                             // delete_avatar: { method: 'DELETE',
                                             //                  url: URL_ENT + '/api/users/' + UID + '/avatar' },
-                                            // upload_avatar: { method: 'POST',
-                                            //                  url: URL_ENT + '/api/users/' + UID + '/upload/avatar',
-                                            //                  transformRequest: function( request ) {
-                                            //                      var fd = new FormData();
-                                            //                      fd.append( 'image', request.new_avatar.blob, UID + '.png' );
-                                            //                      fd.append( 'fileFormDataName', 'image' );
+                                            upload_avatar: { method: 'POST',
+                                                             url: URL_ENT + '/api/users/:id/upload/avatar',
+                                                             transformRequest: function( request ) {
+                                                                 var fd = new FormData();
+                                                                 fd.append( 'image', request.new_avatar.blob, 'new_avatar.png' );
+                                                                 fd.append( 'fileFormDataName', 'image' );
 
-                                            //                      delete request.new_avatar;
+                                                                 delete request.new_avatar;
 
-                                            //                      return fd;
-                                            //                  },
-                                            //                  headers: { 'Content-Type': undefined } }
+                                                                 return fd;
+                                                             },
+                                                             headers: { 'Content-Type': undefined } }
                                           } );
                     User.prototype.active_profile = function() {
                         return _(this.profiles).findWhere({ active: true });
@@ -57,16 +57,17 @@ angular.module( 'portailApp' )
                     } );
 
                     service.activate_profile = function( profile_id ) {
-                        service.get().then( function success( response ) {
+                        return service.get().then( function success( response ) {
                             var user = new User( response.data );
 
                             return $http({ method: 'PUT',
                                            url: URL_ENT + '/api/users/' + user.id + '/profiles/' + profile_id,
-                                           data: { active: true } } )
-                                .then( function success( response ) {
-                                    user = new User( response );
-                                },
-                                       function error( response ) {} );
+                                           data: { active: true } } );
+
+                            // .then( function success( response ) {
+                            //     user = new User( response );
+                            // },
+                            //        function error( response ) {} );
                         } );
                     };
 
