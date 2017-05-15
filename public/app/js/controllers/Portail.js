@@ -9,16 +9,16 @@ angular.module( 'portailApp' )
                        currentUser.get().then( function( response ) {
                            ctrl.current_user = new User( response.data );
 
-                           $scope.prefix = APP_PATH;
-                           $scope.COULEURS = COULEURS;
+                           ctrl.prefix = APP_PATH;
+                           ctrl.COULEURS = COULEURS;
 
-                           $scope.tiles_templates = { app: 'app/views/tile_app.html',
+                           ctrl.tiles_templates = { app: 'app/views/tile_app.html',
                                                       back: 'app/views/tile_app.html',
                                                       regroupement: 'app/views/tile_regroupement.html',
                                                       eleve: 'app/views/tile_eleve.html',
                                                       rn: 'app/views/tile_rn.html',
                                                       ccn: 'app/views/tile_ccn.html' };
-                           $scope.filter_criteria = {};
+                           ctrl.filter_criteria = {};
 
                            var go_to_root_tile = {
                                index: 0,
@@ -27,8 +27,8 @@ angular.module( 'portailApp' )
                                description: 'Retour',
                                color: 'gris3',
                                action: function() {
-                                   $scope.tree = $scope.apps;
-                                   $scope.parent = null;
+                                   ctrl.tree = ctrl.apps;
+                                   ctrl.parent = null;
                                }
                            };
 
@@ -48,8 +48,8 @@ angular.module( 'portailApp' )
 
                                var app_specific = {
                                    CCNUM: { action: function() {
-                                       if ( $scope.modification ) { return; }
-                                       $scope.tree = { configurable: false,
+                                       if ( ctrl.modification ) { return; }
+                                       ctrl.tree = { configurable: false,
                                                        filter: default_filter,
                                                        aside_template: 'app/views/aside_CCNUM.html',
                                                        tiles: Utils.pad_tiles_tree( [ go_to_root_tile ]
@@ -60,7 +60,7 @@ angular.module( 'portailApp' )
 
                                                                                                  if ( _(ccn).has('leaves') ) {
                                                                                                      ccn.action = function() {
-                                                                                                         $scope.tree = { configurable: false,
+                                                                                                         ctrl.tree = { configurable: false,
                                                                                                                          filter: default_filter,
                                                                                                                          aside_template: 'app/views/aside_CCNUM_archives.html',
                                                                                                                          tiles: [ go_to_parent_tile( node ) ].concat( ccn.leaves.map( function( ccn, index ) {
@@ -69,18 +69,18 @@ angular.module( 'portailApp' )
 
                                                                                                                              return ccn;
                                                                                                                          } ) ) };
-                                                                                                         $scope.parent = ccn;
+                                                                                                         ctrl.parent = ccn;
                                                                                                      };
                                                                                                  }
                                                                                                  return ccn;
                                                                                              } ) ) ) };
-                                       $scope.parent = node;
+                                       ctrl.parent = node;
                                    }
                                           },
                                    GAR: { action: function() {
-                                       if ( $scope.modification ) { return; }
+                                       if ( ctrl.modification ) { return; }
                                        currentUser.ressources().then( function ( response ) {
-                                           $scope.tree = { configurable: false,
+                                           ctrl.tree = { configurable: false,
                                                            filter: default_filter,
                                                            aside_template: 'app/views/aside_RN.html',
                                                            tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( rn, index ) {
@@ -92,27 +92,27 @@ angular.module( 'portailApp' )
 
                                                                return rn;
                                                            } ) ) ) };
-                                           $scope.parent = node;
+                                           ctrl.parent = node;
                                        } );
                                    }
                                         },
                                    TROMBI: { action: function() {
-                                       if ( $scope.modification ) { return; }
-                                       $scope.filter_criteria = { show_classes: true,
+                                       if ( ctrl.modification ) { return; }
+                                       ctrl.filter_criteria = { show_classes: true,
                                                                   show_groupes_eleves: true,
                                                                   text: '' };
 
                                        currentUser.regroupements().then( function ( response ) {
-                                           $scope.tree = { configurable: false,
+                                           ctrl.tree = { configurable: false,
                                                            filter: function() {
                                                                return function( tile ) {
                                                                    return tile.taxonomy === 'back'
                                                                        || ( tile.taxonomy !== 'regroupement'
-                                                                            || ( _($scope.filter_criteria).has('show_classes') && $scope.filter_criteria.show_classes && tile.type === 'classe' )
-                                                                            || ( _($scope.filter_criteria).has('show_groupes_eleves') && $scope.filter_criteria.show_groupes_eleves && tile.type === 'groupe_eleve' ) )
+                                                                            || ( _(ctrl.filter_criteria).has('show_classes') && ctrl.filter_criteria.show_classes && tile.type === 'classe' )
+                                                                            || ( _(ctrl.filter_criteria).has('show_groupes_eleves') && ctrl.filter_criteria.show_groupes_eleves && tile.type === 'groupe_eleve' ) )
                                                                        && ( !_(tile).has('name')
-                                                                            || _($scope.filter_criteria.text).isEmpty()
-                                                                            || tile.name.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() ) );
+                                                                            || _(ctrl.filter_criteria.text).isEmpty()
+                                                                            || tile.name.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() ) );
                                                                };
                                                            },
                                                            aside_template: 'app/views/aside_TROMBI_regroupements.html',
@@ -122,17 +122,17 @@ angular.module( 'portailApp' )
                                                                regroupement.color = regroupement.type === 'classe' ? 'vert' : 'bleu';
                                                                regroupement.color += index % 2 == 0 ? '' : '-moins';
                                                                regroupement.action = function() {
-                                                                   $scope.filter_criteria.text = '';
+                                                                   ctrl.filter_criteria.text = '';
 
                                                                    currentUser.eleves_regroupement( regroupement.id )
                                                                        .then( function( response ) {
-                                                                           $scope.tree = { configurable: false,
+                                                                           ctrl.tree = { configurable: false,
                                                                                            filter: function() {
                                                                                                return function( tile ) {
                                                                                                    return tile.taxonomy !== 'eleve'
-                                                                                                       || _($scope.filter_criteria.text).isEmpty()
-                                                                                                       || tile.nom.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() )
-                                                                                                       || tile.prenom.toUpperCase().includes( $scope.filter_criteria.text.toUpperCase() );
+                                                                                                       || _(ctrl.filter_criteria.text).isEmpty()
+                                                                                                       || tile.nom.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() )
+                                                                                                       || tile.prenom.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() );
                                                                                                };
                                                                                            },
                                                                                            aside_template: 'app/views/aside_TROMBI_people.html',
@@ -144,13 +144,13 @@ angular.module( 'portailApp' )
 
                                                                                                return eleve;
                                                                                            } ) ) ) };
-                                                                           $scope.parent = node;
+                                                                           ctrl.parent = node;
                                                                        } );
                                                                };
 
                                                                return regroupement;
                                                            } ) ) ) };
-                                           $scope.parent = node;
+                                           ctrl.parent = node;
                                        } );
                                    }
                                            }
@@ -158,7 +158,7 @@ angular.module( 'portailApp' )
 
                                node.configure = false;
                                node.toggle_configure = function() {
-                                   $scope.tree.tiles.forEach( function( tile ) {
+                                   ctrl.tree.tiles.forEach( function( tile ) {
                                        tile.configure = tile.index === node.index ? !tile.configure : false;
                                    } );
                                };
@@ -179,7 +179,7 @@ angular.module( 'portailApp' )
                                    node.action = app_specific[ node.application_id ].action;
                                } else {
                                    node.action = function() {
-                                       if ( $scope.modification ) { return; }
+                                       if ( ctrl.modification ) { return; }
                                        if ( !_(node.application_id).isNull() && node.application_id !== 'PRONOTE' ) {
                                            $state.go( 'app', { appid: node.application_id } );
                                        } else {
@@ -222,7 +222,7 @@ angular.module( 'portailApp' )
                                        apps = _(apps).sortBy( function( tile ) { return tile.index; } );
                                        apps = Utils.pad_tiles_tree( apps );
 
-                                       $scope.apps = { configurable: true,
+                                       ctrl.apps = { configurable: true,
                                                        aside_template: 'app/views/aside_news.html',
                                                        tiles: apps };
 
@@ -232,9 +232,9 @@ angular.module( 'portailApp' )
                            };
 
                            // Edition
-                           $scope.modification = false;
+                           ctrl.modification = false;
                            var sortable_callback = function( event ) {
-                               _($scope.tree.tiles).each( function( tile, i ) {
+                               _(ctrl.tree.tiles).each( function( tile, i ) {
                                    tile.index = i;
                                    if ( !_(tile).has('dirty') ) {
                                        tile.dirty = {};
@@ -242,7 +242,7 @@ angular.module( 'portailApp' )
                                    tile.dirty.index = true;
                                } );
                            };
-                           $scope.sortable_options = { accept: function( sourceItemHandleScope, destSortableScope ) { return true; },
+                           ctrl.sortable_options = { accept: function( sourceItemHandleScope, destSortableScope ) { return true; },
                                                        longTouch: true,
                                                        itemMoved: sortable_callback,
                                                        orderChanged: sortable_callback,
@@ -252,7 +252,7 @@ angular.module( 'portailApp' )
                                                        clone: false,
                                                        allowDuplicates: false };
 
-                           $scope.add_tile = function( tiles ) {
+                           ctrl.add_tile = function( tiles ) {
                                $uibModal.open( { templateUrl: 'app/views/popup_ajout_app.html',
                                                  controller: 'PopupAjoutAppCtrl',
                                                  resolve: { current_tiles: function() { return tiles; } } } )
@@ -274,17 +274,17 @@ angular.module( 'portailApp' )
                                    }, function error() {  } );
                            };
 
-                           $scope.edit_tiles = function() {
-                               $scope.modification = true;
+                           ctrl.edit_tiles = function() {
+                               ctrl.modification = true;
                            };
 
-                           $scope.exit_tiles_edition = function() {
-                               $scope.modification = false;
+                           ctrl.exit_tiles_edition = function() {
+                               ctrl.modification = false;
                                retrieve_tiles_tree();
                            };
 
-                           $scope.save_tiles_edition = function( should_save ) {
-                               _.chain($scope.tree.tiles)
+                           ctrl.save_tiles_edition = function( should_save ) {
+                               _.chain(ctrl.tree.tiles)
                                    .select( function( tile ) {
                                        return _(tile).has('id') && _(tile).has('dirty') && !_(tile.dirty).isEmpty() && !_(tile).has('to_create');
                                    } )
@@ -307,7 +307,7 @@ angular.module( 'portailApp' )
                                        }
                                    } );
 
-                               var promises = _.chain($scope.tree.tiles)
+                               var promises = _.chain(ctrl.tree.tiles)
                                    .where({ to_delete: true })
                                    .map( function( tile ) {
                                        switch( tile.taxonomy ) {
@@ -322,7 +322,7 @@ angular.module( 'portailApp' )
                                        }
                                    } );
 
-                               promises.concat( _.chain($scope.tree.tiles)
+                               promises.concat( _.chain(ctrl.tree.tiles)
                                                 .where({ to_create: true })
                                                 .map( function( tile ) {
                                                     switch( tile.taxonomy ) {
@@ -340,11 +340,11 @@ angular.module( 'portailApp' )
                                                 } ) );
 
                                $q.all( promises ).then( function( response ) {
-                                   $scope.tree.tiles = Utils.fill_empty_tiles( _($scope.tree.tiles).reject( function( tile ) { return tile.to_delete; } ) );
+                                   ctrl.tree.tiles = Utils.fill_empty_tiles( _(ctrl.tree.tiles).reject( function( tile ) { return tile.to_delete; } ) );
                                } );
 
-                               $scope.modification = false;
-                               $scope.tree.tiles.forEach( function( tile ) {
+                               ctrl.modification = false;
+                               ctrl.tree.tiles.forEach( function( tile ) {
                                    if ( _(tile).has('configure') ) {
                                        tile.configure = false;
                                    }
