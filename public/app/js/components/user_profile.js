@@ -21,8 +21,6 @@ angular.module( 'portailApp' )
                                     ctrl.open_datepicker = function( $event ) {
                                         $event.preventDefault();
                                         $event.stopPropagation();
-
-                                        ctrl.opened = true;
                                     };
 
                                     ctrl.mark_as_dirty = function( key ) {
@@ -36,20 +34,22 @@ angular.module( 'portailApp' )
                                     };
 
                                     ctrl.fermer = function( sauvegarder ) {
-                                        if ( sauvegarder && !_(dirty).isEmpty() ) {
-                                            if ( _(ctrl.password.new1).isEmpty() || ( !_(ctrl.password.new1).isEmpty() && ( ctrl.password.new1 == ctrl.password.new2 ) ) ) {
-                                                var mod_user = {};
+                                        if ( sauvegarder
+                                             && !_(dirty).isEmpty()
+                                             && ( _(ctrl.password.new1).isEmpty()
+                                                  || ( !_(ctrl.password.new1).isEmpty()
+                                                       && ( ctrl.password.new1 === ctrl.password.new2 ) ) ) ) {
+                                            var mod_user = {};
 
-                                                _(dirty).keys().forEach( function( key ) {
-                                                    mod_user[ key ] = ctrl.user[ key ];
-                                                } );
+                                            _(dirty).keys().forEach( function( key ) {
+                                                mod_user[ key ] = ctrl.user[ key ];
+                                            } );
 
-                                                if ( !_(ctrl.password.new1).isEmpty() ) {
-                                                    mod_user.password = ctrl.password.new1;
-                                                }
-
-                                                User.update( mod_user );
+                                            if ( !_(ctrl.password.new1).isEmpty() ) {
+                                                mod_user.password = ctrl.password.new1;
                                             }
+
+                                            User.update( { id: ctrl.user.id }, mod_user );
                                         }
                                     };
 
