@@ -13,9 +13,7 @@ angular.module( 'portailApp' )
                                             address: '@address',
                                             zip_code: '@zip_code',
                                             city: '@city',
-                                            password: '@password',
-                                            // login: '@login',
-                                            // bloque: '@bloque'
+                                            password: '@password'
                                           },
                                           { get: { cache: false },
                                             update: { method: 'PUT' },
@@ -63,11 +61,6 @@ angular.module( 'portailApp' )
                             return $http({ method: 'PUT',
                                            url: URL_ENT + '/api/users/' + user.id + '/profiles/' + profile_id,
                                            data: { active: true } } );
-
-                            // .then( function success( response ) {
-                            //     user = new User( response );
-                            // },
-                            //        function error( response ) {} );
                         } );
                     };
 
