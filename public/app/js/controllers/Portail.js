@@ -233,6 +233,16 @@ angular.module( 'portailApp' )
 
                            // Edition
                            ctrl.modification = false;
+
+                           ctrl.edit_tiles = function() {
+                               ctrl.modification = true;
+                           };
+
+                           ctrl.exit_tiles_edition = function() {
+                               ctrl.modification = false;
+                               retrieve_tiles_tree();
+                           };
+
                            var sortable_callback = function( event ) {
                                _(ctrl.tree.tiles).each( function( tile, i ) {
                                    tile.index = i;
@@ -243,14 +253,14 @@ angular.module( 'portailApp' )
                                } );
                            };
                            ctrl.sortable_options = { accept: function( sourceItemHandleScope, destSortableScope ) { return true; },
-                                                       longTouch: true,
-                                                       itemMoved: sortable_callback,
-                                                       orderChanged: sortable_callback,
-                                                       containment: '.damier',
-                                                       containerPositioning: 'relative',
-                                                       additionalPlaceholderClass: 'col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case',
-                                                       clone: false,
-                                                       allowDuplicates: false };
+                                                     longTouch: true,
+                                                     itemMoved: sortable_callback,
+                                                     orderChanged: sortable_callback,
+                                                     containment: '.damier',
+                                                     containerPositioning: 'relative',
+                                                     additionalPlaceholderClass: 'col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case',
+                                                     clone: false,
+                                                     allowDuplicates: false };
 
                            ctrl.add_tile = function( tiles ) {
                                $uibModal.open( { templateUrl: 'app/views/popup_ajout_app.html',
@@ -274,53 +284,42 @@ angular.module( 'portailApp' )
                                    }, function error() {  } );
                            };
 
-                           ctrl.edit_tiles = function() {
-                               ctrl.modification = true;
-                           };
-
-                           ctrl.exit_tiles_edition = function() {
-                               ctrl.modification = false;
-                               retrieve_tiles_tree();
-                           };
-
                            ctrl.save_tiles_edition = function( should_save ) {
-                               _.chain(ctrl.tree.tiles)
-                                   .select( function( tile ) {
-                                       return _(tile).has('id') && _(tile).has('dirty') && !_(tile.dirty).isEmpty() && !_(tile).has('to_create');
-                                   } )
-                                   .each( function( tile ) {
-                                       switch( tile.taxonomy ) {
-                                       case 'app':
-                                           var updated_fields = { id: tile.id };
-                                           _.chain(tile.dirty)
-                                               .keys()
-                                               .each( function( field ) {
-                                                   updated_fields[ field ] = tile[ field ];
-                                               } );
-                                           Apps.update( updated_fields );
-                                           break;
-                                       case 'rn':
-                                           console.log(tile)
-                                           break;
-                                       default:
-                                           console.log(tile)
-                                       }
-                                   } );
+                               var promises = [];
+                               promises.concat( _.chain(ctrl.tree.tiles)
+                                                .select( function( tile ) {
+                                                    return _(tile).has('id') && !_(tile).has('to_create') && _(tile).has('dirty') && !_(tile.dirty).isEmpty();
+                                                } )
+                                                .map( function( tile ) {
+                                                    switch( tile.taxonomy ) {
+                                                    case 'app':
+                                                        var updated_fields = {};
+                                                        _.chain(tile.dirty)
+                                                            .keys()
+                                                            .each( function( field ) {
+                                                                updated_fields[ field ] = tile[ field ];
+                                                            } );
+                                                        return Apps.update( { id: tile.id }, updated_fields );
+                                                        break;
+                                                    case 'rn':
+                                                    default:
+                                                        console.log(tile)
+                                                        return null;
+                                                    }
+                                                } ) );
 
-                               var promises = _.chain(ctrl.tree.tiles)
-                                   .where({ to_delete: true })
-                                   .map( function( tile ) {
-                                       switch( tile.taxonomy ) {
-                                       case 'app':
-                                           return Apps.delete({ id: tile.id }).$promise;
-                                       case 'rn':
-                                           console.log(tile)
-                                           return null;
-                                       default:
-                                           console.log(tile)
-                                           return null;
-                                       }
-                                   } );
+                               promises.concat( _.chain(ctrl.tree.tiles)
+                                                .where({ to_delete: true })
+                                                .map( function( tile ) {
+                                                    switch( tile.taxonomy ) {
+                                                    case 'app':
+                                                        return Apps.delete({ id: tile.id }).$promise;
+                                                    case 'rn':
+                                                    default:
+                                                        console.log(tile)
+                                                        return null;
+                                                    }
+                                                } ) );
 
                                promises.concat( _.chain(ctrl.tree.tiles)
                                                 .where({ to_create: true })
@@ -329,10 +328,8 @@ angular.module( 'portailApp' )
                                                     case 'app':
                                                         tile.structure_id = ctrl.current_user.active_profile().structure_id;
 
-                                                        return Apps.save( tile ).$promise;
+                                                        return Apps.save( {}, tile ).$promise;
                                                     case 'rn':
-                                                        console.log(tile)
-                                                        return null;
                                                     default:
                                                         console.log(tile)
                                                         return null;
