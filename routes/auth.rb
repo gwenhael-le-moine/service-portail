@@ -5,7 +5,7 @@ module Portail
     module Auth
       def self.registered( app )
         app.get '/auth/:provider/callback' do
-          init_session( request.env )
+          env['rack.session'][:authenticated] = true
 
           protocol = CASAUTH::CONFIG[:ssl] ? 'https' : 'http'
           redirect params[:url] if params[:url] != "#{protocol}://#{env['HTTP_HOST']}#{APP_PATH}/"

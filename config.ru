@@ -4,7 +4,6 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require './config/init'
 
-require 'laclasse/helpers/rack'
 require 'laclasse/laclasse_logger'
 require 'laclasse/utils/health_check'
 
@@ -17,7 +16,12 @@ Laclasse::Utils::HealthChecker.check
 
 LOGGER.info 'Portail prêt à servir'
 
-Laclasse::Helpers::Rack.configure_rake self
+use Rack::Session::Cookie,
+    key: 'rack.session',
+    expire_after: SESSION_TIME,
+    secret: SESSION_KEY
+# path: '/portail',
+# domain: URL_ENT.gsub( /http[s]?:\/\//, '' )
 
 use OmniAuth::Builder do
   configure do |config|
