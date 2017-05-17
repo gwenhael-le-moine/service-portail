@@ -62,7 +62,8 @@ namespace :preprocess_assets do
                                'public/app/node_modules/laclasse-common-client/css/flippable.css',
                                'public/app/node_modules/laclasse-common-client/css/bootstrap-theme.css',
                                'public/app/node_modules/ng-color-picker/color-picker.css',
-                               'public/app/node_modules/ng-sortable/dist/ng-sortable.css' ]
+                               'public/app/node_modules/ng-sortable/dist/ng-sortable.css',
+                               'public/app/node_modules/angular-toastr/dist/angular-toastr.css' ]
                                .map { |fichier| File.read( fichier ) }.join,
                              syntax: :scss,
                              style: :compressed )
@@ -71,7 +72,7 @@ namespace :preprocess_assets do
 
     STDERR.puts 'Sassification of application CSS'
     uglified = Sass.compile( [ 'public/app/css/main.scss' ]
-                             .map { |fichier| File.read( fichier ) }.join,
+                               .map { |fichier| File.read( fichier ) }.join,
                              syntax: :scss,
                              style: :compressed )
     File.open( './public/app/css/portail.min.css', 'w' )
@@ -98,7 +99,9 @@ namespace :preprocess_assets do
                                                           'public/app/node_modules/ng-color-picker/color-picker.js',
                                                           'public/app/node_modules/angular-carousel/dist/angular-carousel.js',
                                                           'public/app/node_modules/ng-fittext/src/ng-FitText.js',
-                                                          'public/app/node_modules/angular-zxcvbn/dist/angular-zxcvbn.js' ] )
+                                                          'public/app/node_modules/angular-zxcvbn/dist/angular-zxcvbn.js',
+                                                          'public/app/node_modules/angular-toastr/dist/angular-toastr.js',
+                                                          'public/app/node_modules/angular-toastr/dist/angular-toastr.tpls.js' ] )
     File.open( './public/app/node_modules/node_modules.min.js', 'w' )
         .write( uglified )
     File.open( './public/app/node_modules/node_modules.min.js.map', 'w' )

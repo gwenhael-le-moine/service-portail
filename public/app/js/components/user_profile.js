@@ -4,8 +4,8 @@ angular.module( 'portailApp' )
     .component( 'userprofile',
                 { bindings: { user: '=' },
                   templateUrl: 'app/js/components/user_profile.html',
-                  controller: [ '$rootScope', 'currentUser', 'APP_PATH', 'Utils', 'User',
-                                function( $rootScope, currentUser, APP_PATH, Utils, User ) {
+                  controller: [ '$rootScope', 'toastr', 'currentUser', 'APP_PATH', 'Utils', 'User',
+                                function( $rootScope, toastr, currentUser, APP_PATH, Utils, User ) {
                                     var ctrl = this;
                                     var dirty = {};
 
@@ -49,7 +49,12 @@ angular.module( 'portailApp' )
                                                 mod_user.password = ctrl.password.new1;
                                             }
 
-                                            User.update( { id: ctrl.user.id }, mod_user );
+                                            User.update( { id: ctrl.user.id }, mod_user ).$promise
+                                                .then( function success( response ) {
+                                                    $rootScope.current_user = new User( response );
+                                                    toastr.success( 'Mise à jour effectuée.' );
+                                                },
+                                                       function error( response ) {} );
                                         }
                                     };
 

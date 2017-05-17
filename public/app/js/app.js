@@ -11,7 +11,8 @@ angular.module( 'portailApp', [ 'ngResource',
                                 'ngColorPicker',
                                 'angular-carousel',
                                 'ngFitText',
-                                'zxcvbn' ] )
+                                'zxcvbn',
+                                'toastr' ] )
     .config( [ '$stateProvider', '$urlRouterProvider', 'APP_PATH',
                function ( $stateProvider, $urlRouterProvider, APP_PATH ) {
                    $stateProvider
