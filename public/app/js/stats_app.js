@@ -24,7 +24,7 @@ angular.module( 'statsApp',
                     };
 
                     this.get_default_applications = function( params ) {
-                        return $http.get( URL_ENT + '/api/portail/applications', { params: params } );
+                        return $http.get( URL_ENT + '/api/applications', { params: params } );
                     };
                 }
               ] )
