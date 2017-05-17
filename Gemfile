@@ -2,18 +2,11 @@
 
 source 'https://rubygems.org'
 
-gem 'html_truncator'
-gem 'htmlentities'
-gem 'json'
 gem 'omniauth'
 gem 'omniauth-cas'
 gem 'puma'
 gem 'rack'
-gem 'rack-rewrite'
 gem 'rake'
-gem 'redis', '3.3.1'
-gem 'redis-server'
-gem 'rest-client'
 gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'sinatra-param'

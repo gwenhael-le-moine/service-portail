@@ -2,13 +2,6 @@
 
 require 'rubygems'
 require 'bundler'
-require 'sinatra/json'
-require 'open-uri'
-require 'htmlentities'
-require 'uri'
-require 'json'
-require 'yaml'
-require 'date'
 
 Bundler.require( :default, ENV['RACK_ENV'].to_sym ) # require tout les gems définis dans Gemfile
 

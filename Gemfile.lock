@@ -20,22 +20,16 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
-    clamp (0.2.3)
     cliver (0.3.2)
     coderay (1.1.1)
     css2less (0.0.2)
-    daemon_controller (0.2.6)
     diff-lcs (1.3)
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     execjs (2.7.0)
     hashie (3.5.5)
-    html_truncator (0.4.1)
-      nokogiri (~> 1.5)
-    htmlentities (4.3.4)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    json (2.1.0)
     libv8 (3.16.14.19)
     method_source (0.8.2)
     mime-types (3.1)
@@ -44,7 +38,7 @@ GEM
     mini_portile2 (2.1.0)
     multi_json (1.12.1)
     netrc (0.11.0)
-    nokogiri (1.7.1)
+    nokogiri (1.7.2)
       mini_portile2 (~> 2.1.0)
     omniauth (1.6.1)
       hashie (>= 3.4.6, < 3.6.0)
@@ -66,22 +60,18 @@ GEM
       slop (~> 3.4)
     public_suffix (2.0.5)
     puma (3.8.2)
-    rack (1.6.5)
+    rack (1.6.8)
     rack-protection (1.5.3)
       rack
-    rack-rewrite (1.5.1)
     rack-test (0.6.3)
       rack (>= 1.0)
     rainbow (2.2.2)
       rake
     rake (12.0.0)
-    redis (3.3.1)
+    redis (3.3.3)
     redis-rack (1.5.0)
       rack (~> 1.5)
       redis-store (~> 1.1.0)
-    redis-server (0.0.5)
-      clamp (~> 0.2.1)
-      daemon_controller (~> 0.2.6)
     redis-store (1.1.7)
       redis (>= 2.2)
     ref (2.0.0)
@@ -110,10 +100,10 @@ GEM
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-progressbar (1.8.1)
     sass (3.4.23)
-    sinatra (1.4.8)
-      rack (~> 1.5)
+    sinatra (1.4.5)
+      rack (~> 1.4)
       rack-protection (~> 1.4)
-      tilt (>= 1.3, < 3)
+      tilt (~> 1.3, >= 1.3.4)
     sinatra-contrib (1.4.7)
       backports (>= 2.0)
       multi_json
@@ -127,7 +117,7 @@ GEM
     therubyracer (0.12.3)
       libv8 (~> 3.16.14.15)
       ref
-    tilt (2.0.7)
+    tilt (1.4.1)
     uglifier (3.2.0)
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
@@ -146,9 +136,6 @@ PLATFORMS
 DEPENDENCIES
   capybara
   css2less
-  html_truncator
-  htmlentities
-  json
   laclasse-common!
   omniauth
   omniauth-cas
@@ -156,11 +143,7 @@ DEPENDENCIES
   pry
   puma
   rack
-  rack-rewrite
   rake
-  redis (= 3.3.1)
-  redis-server
-  rest-client
   rspec
   rubocop
   sass
