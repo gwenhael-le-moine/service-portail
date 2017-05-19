@@ -3,28 +3,19 @@ language: ruby
 sudo: false
 
 rvm:
-  - "2.2.2"
+  - "2.2.6"
 
 before_install:
   - "gem update --system"
   - "gem --version"
-  - "gem install rspec"
-  - "gem install -v 1.10.6 bundler --no-rdoc --no-ri"
+  - "gem install -v 1.14.3 bundler --no-rdoc --no-ri"
 
 install:
-  - "bundle _1.10.6_ install"
-
-before_script:
-  - "cp config/options.rb.sample config/options.rb"
-  - "cp config/portail.json.sample config/portail.json"
-  - "bundle exec rake server & "
-  - "sleep 3"
+  - "bundle _1.14.3_ install"
 
 script:
-  - "bundle exec rspec spec/lib/"
   - "bundle exec rubocop -D"
   - "bundle exec rake preprocess_assets:production"
-  - "bundle exec rspec spec/web/"
 
 gemfile:
   - Gemfile
