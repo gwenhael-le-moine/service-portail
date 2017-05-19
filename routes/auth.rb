@@ -33,7 +33,7 @@ module LaClasse
           env['rack.session'][:authenticated] = false
           session.clear
 
-          redirect URL_ENT
+          redirect "#{URL_ENT}/sso/logout"
         end
       end
     end
