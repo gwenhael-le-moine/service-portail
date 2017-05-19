@@ -30,14 +30,11 @@ class SinatraApp < Sinatra::Base
     provider :cas, CASAUTH::CONFIG
   end
 
-  configure do
-    set( :app_file, __FILE__ )
-    set( :root, APP_ROOT )
-    set( :public_folder, proc { File.join( root, 'public' ) } )
-    set( :inline_templates, true )
-    set( :protection, true )
-
-    settings.add_charset << 'application/json'
+  configure :production, :development do
+    set :sessions, true
+    set :protection, true
+    set :protection, except: :frame_options
+    set :show_exceptions, false
   end
 
   ##### routes #################################################################
