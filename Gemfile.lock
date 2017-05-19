@@ -1,11 +1,3 @@
-GIT
-  remote: https://github.com/laclasse-com/laclasse-common
-  revision: 954932295d05d89ac6846ab4f8e23905988360fd
-  specs:
-    laclasse-common (0.2.37)
-      redis-rack (~> 1.5.0)
-      rest-client
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -24,12 +16,8 @@ GEM
     coderay (1.1.1)
     css2less (0.0.2)
     diff-lcs (1.3)
-    domain_name (0.5.20170404)
-      unf (>= 0.0.5, < 1.0.0)
     execjs (2.7.0)
     hashie (3.5.5)
-    http-cookie (1.0.3)
-      domain_name (~> 0.5)
     libv8 (3.16.14.19)
     method_source (0.8.2)
     mime-types (3.1)
@@ -37,7 +25,6 @@ GEM
     mime-types-data (3.2016.0521)
     mini_portile2 (2.1.0)
     multi_json (1.12.1)
-    netrc (0.11.0)
     nokogiri (1.7.2)
       mini_portile2 (~> 2.1.0)
     omniauth (1.6.1)
@@ -68,17 +55,7 @@ GEM
     rainbow (2.2.2)
       rake
     rake (12.0.0)
-    redis (3.3.3)
-    redis-rack (1.5.0)
-      rack (~> 1.5)
-      redis-store (~> 1.1.0)
-    redis-store (1.1.7)
-      redis (>= 2.2)
     ref (2.0.0)
-    rest-client (2.0.2)
-      http-cookie (>= 1.0.2, < 2.0)
-      mime-types (>= 1.16, < 4.0)
-      netrc (~> 0.8)
     rspec (3.6.0)
       rspec-core (~> 3.6.0)
       rspec-expectations (~> 3.6.0)
@@ -111,8 +88,6 @@ GEM
       rack-test
       sinatra (~> 1.4.0)
       tilt (>= 1.3, < 3)
-    sinatra-param (1.4.0)
-      sinatra (~> 1.3)
     slop (3.6.0)
     therubyracer (0.12.3)
       libv8 (~> 3.16.14.15)
@@ -120,9 +95,6 @@ GEM
     tilt (1.4.1)
     uglifier (3.2.0)
       execjs (>= 0.3.0, < 3)
-    unf (0.1.4)
-      unf_ext
-    unf_ext (0.0.7.4)
     unicode-display_width (1.2.1)
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
@@ -136,7 +108,6 @@ PLATFORMS
 DEPENDENCIES
   capybara
   css2less
-  laclasse-common!
   omniauth
   omniauth-cas
   poltergeist
@@ -149,7 +120,6 @@ DEPENDENCIES
   sass
   sinatra
   sinatra-contrib
-  sinatra-param
   therubyracer
   uglifier
 

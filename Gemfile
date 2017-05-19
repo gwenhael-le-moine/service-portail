@@ -9,10 +9,6 @@ gem 'rack'
 gem 'rake'
 gem 'sinatra'
 gem 'sinatra-contrib'
-gem 'sinatra-param'
-
-# Gems spécifiques ENT
-gem 'laclasse-common', git: 'https://github.com/laclasse-com/laclasse-common'
 
 group :development do
   gem 'capybara'

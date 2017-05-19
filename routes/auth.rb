@@ -4,7 +4,7 @@ module Portail
   module Routes
     module Auth
       def self.registered( app )
-        app.get '/auth/:provider/callback' do
+        app.get '/auth/cas/callback' do
           env['rack.session'][:authenticated] = true
 
           protocol = CASAUTH::CONFIG[:ssl] ? 'https' : 'http'
@@ -16,22 +16,24 @@ module Portail
           erb :auth_failure
         end
 
-        app.get '/auth/:provider/deauthorized' do
+        app.get '/auth/cas/deauthorized' do
           erb :auth_deauthorized
         end
 
         app.get '/protected' do
-          throw( :halt, [ 401, "Not authorized\n" ] ) unless logged?
+          throw( :halt, [ 401, "Not authorized\n" ] ) unless env['rack.session'][:authenticated]
           erb :auth_protected
         end
 
         app.get '/login' do
-          login! "#{APP_PATH}/"
+          redirect "#{APP_PATH}/auth/cas/?url=#{URL_ENT}#{APP_PATH}/"
         end
 
         app.get '/logout' do
-          protocol = CASAUTH::CONFIG[:ssl] ? 'https' : 'http'
-          logout! "#{protocol}://#{env['HTTP_HOST']}#{APP_PATH}/"
+          env['rack.session'][:authenticated] = false
+          session.clear
+
+          redirect URL_ENT
         end
       end
     end
