@@ -19,8 +19,8 @@ class SinatraApp < Sinatra::Base
   use Rack::Session::Cookie,
       expire_after: SESSION_TIME,
       secret: SESSION_KEY
-  # path: '/portail',
-  # domain: URL_ENT.gsub( /http[s]?:\/\//, '' )
+  # domain: URL_ENT.gsub( /http[s]?:\/\//, '' ),
+  # path: APP_PATH
 
   use OmniAuth::Builder do
     configure do |config|
@@ -50,7 +50,7 @@ class SinatraApp < Sinatra::Base
     redirect "#{APP_PATH}/auth/cas/?url=#{URI.encode( request.path_info )}" unless env['rack.session'][:authenticated]
   end
 
-  register Portail::Routes::Auth
+  register LaClasse::Routes::Auth
 
   register Portail::Routes::Index
 

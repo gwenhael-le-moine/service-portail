@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-module Portail
+module LaClasse
   module Routes
     module Auth
       def self.registered( app )
