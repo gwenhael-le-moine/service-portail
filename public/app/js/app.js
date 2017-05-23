@@ -24,10 +24,17 @@ angular.module( 'portailApp', [ 'ngResource',
                                { resolve: { prefix: function() { return APP_PATH; } },
                                  url: '/app/:appid',
                                  templateUrl: 'app/views/app-wrapper.html',
-                                 controller: [ '$scope', '$stateParams',
-                                               function( $scope, $stateParams ) {
-                                                   $scope.appid = $stateParams.appid;
-                                               } ] } );
+                                 controller: [ '$scope', '$stateParams', 'currentUser',
+                                               function( $scope, $stateParams, currentUser ) {
+                                                   var ctrl = $scope;
+
+                                                   ctrl.appid = $stateParams.appid;
+
+                                                   currentUser.get( false ).then( function( user ) {
+                                                       ctrl.current_user = user;
+                                                   } );
+                                               }
+                                             ] } );
 
                    $urlRouterProvider.otherwise( '/' );
                }
