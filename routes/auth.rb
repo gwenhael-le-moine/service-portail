@@ -6,6 +6,7 @@ module LaClasse
       def self.registered( app )
         app.get '/auth/cas/callback' do
           env['rack.session'][:authenticated] = true
+          env['rack.session']['uid'] = env['omniauth.auth']['extra']['uid']
 
           protocol = CASAUTH::CONFIG[:ssl] ? 'https' : 'http'
           redirect params[:url] if params[:url] != "#{protocol}://#{env['HTTP_HOST']}#{APP_PATH}/"
