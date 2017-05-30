@@ -2,32 +2,34 @@
 
 angular.module( 'portailApp' )
     .component( 'appiframe',
-                { bindings: { user: '<',
-                              appid: '<' },
+                { bindings: { appid: '<' },
                   templateUrl: 'app/js/components/app_iframe.html',
-                  controller: [ '$sce', 'Apps', 'Utils',
-                                function ( $sce, Apps, Utils ) {
+                  controller: [ '$sce', 'Apps', 'Utils', 'currentUser',
+                                function ( $sce, Apps, Utils, currentUser ) {
                                     var ctrl = this;
                                     ctrl.$onInit = function() {
                                         ctrl.iOS = ( navigator.userAgent.match( /iPad/i ) !== null ) || ( navigator.userAgent.match( /iPhone/i ) !== null );
                                         var apps_list = [];
 
-                                        if ( _(ctrl.user.profiles).isEmpty() ) {
-                                            apps_list = Apps.query_defaults().$promise;
-                                        } else {
-                                            apps_list = Apps.query({ uai: ctrl.user.active_profile().structure_id }).$promise;
-                                        }
-
-                                        apps_list.then( function ( response ) {
-                                            // Toutes les applications en iframe
-                                            ctrl.app = _( response ).findWhere( { application_id: ctrl.appid } );
-
-                                            if ( _(ctrl.app).isUndefined() ) {
-                                                Utils.go_home();
+                                        currentUser.get().then( function( response ) {
+                                            if ( _(response.data.profiles).isEmpty() ) {
+                                                apps_list = Apps.query_defaults().$promise;
                                             } else {
-                                                ctrl.app = { nom: ctrl.app.nom,
-                                                             url: $sce.trustAsResourceUrl( ctrl.app.url ) };
+                                                apps_list = Apps.query({ uai: response.data.active_profile().structure_id }).$promise;
                                             }
+
+                                            apps_list.then( function ( response ) {
+                                                // Toutes les applications en iframe
+                                                ctrl.app = _( response ).findWhere( { application_id: ctrl.appid } );
+
+                                                if ( _(ctrl.app).isUndefined() ) {
+                                                    Utils.go_home();
+                                                } else {
+                                                    ctrl.app = { nom: ctrl.app.nom,
+                                                                 url: $sce.trustAsResourceUrl( ctrl.app.url ) };
+                                                }
+                                            } );
+
                                         } );
                                     };
                                 }
