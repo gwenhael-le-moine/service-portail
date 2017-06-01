@@ -13,8 +13,10 @@ angular.module( 'portailApp', [ 'ngResource',
                                 'ngFitText',
                                 'zxcvbn',
                                 'toastr' ] )
-    .config( [ '$stateProvider', '$urlRouterProvider', 'APP_PATH',
-               function ( $stateProvider, $urlRouterProvider, APP_PATH ) {
+    .config( [ '$stateProvider', '$urlRouterProvider', '$locationProvider',
+               function ( $stateProvider, $urlRouterProvider, $locationProvider ) {
+                   $locationProvider.html5Mode(true);
+
                    $stateProvider
                        .state( 'portail',
                                { url: '/',
