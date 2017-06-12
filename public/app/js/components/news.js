@@ -14,17 +14,14 @@ angular.module( 'portailApp' )
                                         $http.get( URL_ENT + '/api/users/' + ctrl.current_user.id + '/news' )
                                             .then( function( response ) {
                                                 ctrl.newsfeed = _(response.data).map( function( item, index ) {
-                                                    item.id = index;
-                                                    item.trusted_content = $sce.trustAsHtml( item.content );
+                                                    item.trusted_content = $sce.trustAsHtml( item.description );
                                                     item.no_image = _(item.image).isNull();
                                                     item.pubDate = moment( new Date( item.pubDate ) ).toDate();
 
-                                                    if ( item.no_image ) {
-                                                        if ( item.title == 'Publipostage' ) {
-                                                            item.image =  'app/node_modules/laclasse-common-client/images/11_publipostage.svg';
-                                                        } else {
-                                                            item.image = _(RANDOM_IMAGES).sample();
-                                                        }
+                                                    if ( item.title === 'Publipostage' ) {
+                                                        item.image =  'app/node_modules/laclasse-common-client/images/11_publipostage.svg';
+                                                    } else if ( _(item.image).isNull() ) {
+                                                        item.image = _(RANDOM_IMAGES).sample();
                                                     }
 
                                                     return item;
