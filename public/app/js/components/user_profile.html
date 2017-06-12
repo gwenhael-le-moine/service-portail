@@ -122,7 +122,8 @@
                                ng:model="$ctrl.password.new1"
                                zxcvbn="passwordStrength"
                                zx-min-score="2">
-                        <div class="password-strength">
+                        <div class="password-strength"
+                             ng:if="$ctrl.dirty.password">
                             <label>Qualité du mot de passe :</label>
                             <uib-progressbar max="5" value="passwordStrength.score + 1"
                                              type="{{ ( passwordStrength.score < 2 ) ? 'danger' : ( ( passwordStrength.score < 3 ) ? 'warning' : ( ( passwordStrength.score < 4 ) ? 'primary' : 'success' ) ) }}">
@@ -136,10 +137,10 @@
                             </uib-progressbar>
                         </div>
                     </div>
-                    <div class="form-group col-md-6 col-xs-12">
+                    <div class="form-group col-md-6 col-xs-12"
+                         ng:class="{'has-error': $ctrl.password.new1 !== $ctrl.password.new2 }">
                         <label for="newpasswd2">Confirmer le nouveau mot de passe :</label>
                         <input type="password" class="form-control" id="newpasswd2"
-                               ng:change="$ctrl.mark_as_dirty( 'password' )"
                                ng:model="$ctrl.password.new2">
                     </div>
                 </div>

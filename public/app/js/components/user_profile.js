@@ -7,7 +7,7 @@ angular.module( 'portailApp' )
                   controller: [ '$rootScope', 'toastr', 'currentUser', 'APP_PATH', 'Utils', 'User',
                                 function( $rootScope, toastr, currentUser, APP_PATH, Utils, User ) {
                                     var ctrl = this;
-                                    var dirty = {};
+                                    ctrl.dirty = {};
 
                                     ctrl.prefix = APP_PATH;
                                     ctrl.groups = [ { ouvert: true,
@@ -24,7 +24,7 @@ angular.module( 'portailApp' )
                                     };
 
                                     ctrl.mark_as_dirty = function( key ) {
-                                        dirty[ key ] = true;
+                                        ctrl.dirty[ key ] = true;
                                     };
 
                                     ctrl.filter_emails = function() {
@@ -35,13 +35,13 @@ angular.module( 'portailApp' )
 
                                     ctrl.fermer = function( sauvegarder ) {
                                         if ( sauvegarder
-                                             && !_(dirty).isEmpty()
+                                             && !_(ctrl.dirty).isEmpty()
                                              && ( _(ctrl.password.new1).isEmpty()
                                                   || ( !_(ctrl.password.new1).isEmpty()
                                                        && ( ctrl.password.new1 === ctrl.password.new2 ) ) ) ) {
                                             var mod_user = {};
 
-                                            _(dirty).keys().forEach( function( key ) {
+                                            _(ctrl.dirty).keys().forEach( function( key ) {
                                                 mod_user[ key ] = ctrl.user[ key ];
                                             } );
 
