@@ -4,13 +4,12 @@ angular.module( 'portailApp' )
     .factory( 'Flux',
               [ '$resource', 'URL_ENT',
                 function( $resource, URL_ENT ) {
-                    return $resource( URL_ENT + '/api/portail/flux/:id',
+                    return $resource( URL_ENT + '/api/structures/:structure_id/flux/:id',
                                       { id: '@id',
-                                        etab_code_uai: '@etab_code_uai',
+                                        structure_id: '@structure_id',
                                         nb: '@nb',
-                                        icon: '@icon',
-                                        flux: '@flux',
-                                        title: '@title' },
+                                        url: '@url',
+                                        name: '@name' },
                                       { get: { isArray: true },
                                         update: { method: 'PUT' } } );
                 } ] );
