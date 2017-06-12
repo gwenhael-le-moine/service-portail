@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h3 class="modal-title">Ajouter une case</h3>
+    <h3 class="modal-title">Ajouter une tuile</h3>
 </div>
 <div class="modal-body available-apps">
     <ul>
@@ -14,7 +14,7 @@
                ng:style="{'background-color': tile.color }">
                 <img draggable="false" class="icone" ng:src="{{prefix}}/{{tile.icon}}"
                      ng:if="tile.icon"/>
-                <span class="app-name" ng:cloak>{{ tile.libelle }}</span>
+                <span class="app-name" ng:cloak>{{ tile.name }}</span>
                 <label ng:if="tile.application_id == 'PRONOTE'">lien <input type="text" ng:model="tile.url" ng:click="keep_tile_selected( $event, tile )"/></label>
             </a>
 

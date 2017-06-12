@@ -8,9 +8,7 @@ angular.module( 'portailApp' )
                                     var ctrl = this;
 
                                     ctrl.$onInit = function() {
-                                        currentUser.get().then( function( response ) {
-                                            var user = new User( response.data );
-
+                                        currentUser.get().then( function( user ) {
                                             ctrl.help_links = _(CONFIG.help_links)
                                                 .select( function( link ) {
                                                     return !_(user.profiles).isEmpty() && _(link.profils).includes( user.active_profile().type );

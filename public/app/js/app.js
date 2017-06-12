@@ -15,7 +15,7 @@ angular.module( 'portailApp', [ 'ngResource',
                                 'toastr' ] )
     .config( [ '$stateProvider', '$urlRouterProvider', '$locationProvider', 'APP_PATH',
                function ( $stateProvider, $urlRouterProvider, $locationProvider, APP_PATH ) {
-                   $locationProvider.html5Mode(true);
+                   // $locationProvider.html5Mode(true);
 
                    $stateProvider
                        .state( 'portail',

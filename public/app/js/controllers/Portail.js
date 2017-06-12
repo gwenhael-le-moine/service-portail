@@ -6,33 +6,33 @@ angular.module( 'portailApp' )
                    function( $scope, $sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Apps, APP_PATH, User ) {
                        var ctrl = $scope;
 
-                       currentUser.get().then( function( response ) {
-                           ctrl.current_user = new User( response.data );
+                       currentUser.get().then( function( user ) {
+                           ctrl.current_user = user;
 
                            ctrl.prefix = APP_PATH;
                            ctrl.COULEURS = COULEURS;
 
                            ctrl.tiles_templates = { app: 'app/views/tile_app.html',
-                                                      back: 'app/views/tile_app.html',
-                                                      regroupement: 'app/views/tile_regroupement.html',
-                                                      eleve: 'app/views/tile_eleve.html',
-                                                      rn: 'app/views/tile_rn.html',
-                                                      ccn: 'app/views/tile_ccn.html' };
+                                                    back: 'app/views/tile_app.html',
+                                                    regroupement: 'app/views/tile_regroupement.html',
+                                                    eleve: 'app/views/tile_eleve.html',
+                                                    rn: 'app/views/tile_rn.html',
+                                                    ccn: 'app/views/tile_ccn.html' };
                            ctrl.filter_criteria = {};
 
                            var go_to_root_tile = {
-                               index: 0,
-                               taxonomy: 'back',
-                               name: '↰ Retour',
-                               description: 'Retour',
-                               color: 'gris3',
-                               action: function() {
-                                   ctrl.tree = ctrl.apps;
-                                   ctrl.parent = null;
-                               }
-                           };
+                                                             index: 0,
+                                                             taxonomy: 'back',
+                                                             name: '↰ Retour',
+                                                             description: 'Retour',
+                                                             color: 'gris3',
+                                                             action: function() {
+                                                                 ctrl.tree = ctrl.apps;
+                                                                 ctrl.parent = null;
+                                                             }
+                                                         };
 
-                           var tool_tile = function( node ) {
+                                                         var tool_tile = function( node ) {
                                var go_to_parent_tile = function( parent ) {
                                    var back_to_parent = angular.copy( go_to_root_tile );
                                    back_to_parent.action = parent.action;
@@ -50,30 +50,30 @@ angular.module( 'portailApp' )
                                    CCNUM: { action: function() {
                                        if ( ctrl.modification ) { return; }
                                        ctrl.tree = { configurable: false,
-                                                       filter: default_filter,
-                                                       aside_template: 'app/views/aside_CCNUM.html',
-                                                       tiles: Utils.pad_tiles_tree( [ go_to_root_tile ]
-                                                                                    .concat( CCN.query()
-                                                                                             .map( function( ccn, index ) {
-                                                                                                 ccn.taxonomy = 'ccn';
-                                                                                                 ccn.index = index + 1;
+                                                     filter: default_filter,
+                                                     aside_template: 'app/views/aside_CCNUM.html',
+                                                     tiles: Utils.pad_tiles_tree( [ go_to_root_tile ]
+                                                                                  .concat( CCN.query()
+                                                                                           .map( function( ccn, index ) {
+                                                                                               ccn.taxonomy = 'ccn';
+                                                                                               ccn.index = index + 1;
 
-                                                                                                 if ( _(ccn).has('leaves') ) {
-                                                                                                     ccn.action = function() {
-                                                                                                         ctrl.tree = { configurable: false,
-                                                                                                                         filter: default_filter,
-                                                                                                                         aside_template: 'app/views/aside_CCNUM_archives.html',
-                                                                                                                         tiles: [ go_to_parent_tile( node ) ].concat( ccn.leaves.map( function( ccn, index ) {
-                                                                                                                             ccn.taxonomy = 'ccn';
-                                                                                                                             ccn.index = index + 1;
+                                                                                               if ( _(ccn).has('leaves') ) {
+                                                                                                   ccn.action = function() {
+                                                                                                       ctrl.tree = { configurable: false,
+                                                                                                                     filter: default_filter,
+                                                                                                                     aside_template: 'app/views/aside_CCNUM_archives.html',
+                                                                                                                     tiles: [ go_to_parent_tile( node ) ].concat( ccn.leaves.map( function( ccn, index ) {
+                                                                                                                         ccn.taxonomy = 'ccn';
+                                                                                                                         ccn.index = index + 1;
 
-                                                                                                                             return ccn;
-                                                                                                                         } ) ) };
-                                                                                                         ctrl.parent = ccn;
-                                                                                                     };
-                                                                                                 }
-                                                                                                 return ccn;
-                                                                                             } ) ) ) };
+                                                                                                                         return ccn;
+                                                                                                                     } ) ) };
+                                                                                                       ctrl.parent = ccn;
+                                                                                                   };
+                                                                                               }
+                                                                                               return ccn;
+                                                                                           } ) ) ) };
                                        ctrl.parent = node;
                                    }
                                           },
@@ -81,79 +81,79 @@ angular.module( 'portailApp' )
                                        if ( ctrl.modification ) { return; }
                                        currentUser.ressources().then( function ( response ) {
                                            ctrl.tree = { configurable: false,
-                                                           filter: default_filter,
-                                                           aside_template: 'app/views/aside_RN.html',
-                                                           tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( rn, index ) {
-                                                               rn.taxonomy = 'rn';
-                                                               rn.index = index + 1;
-                                                               rn.icon = '/app/node_modules/laclasse-common-client/images/' + rn.icon;
-                                                               rn.color = CASES[ index % 16 ].couleur;
-                                                               rn.action = function() { Utils.log_and_open_link( 'GAR', rn.url ); };
+                                                         filter: default_filter,
+                                                         aside_template: 'app/views/aside_RN.html',
+                                                         tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( rn, index ) {
+                                                             rn.taxonomy = 'rn';
+                                                             rn.index = index + 1;
+                                                             rn.icon = '/app/node_modules/laclasse-common-client/images/' + rn.icon;
+                                                             rn.color = CASES[ index % 16 ].couleur;
+                                                             rn.action = function() { Utils.log_and_open_link( 'GAR', rn.url ); };
 
-                                                               return rn;
-                                                           } ) ) ) };
+                                                             return rn;
+                                                         } ) ) ) };
                                            ctrl.parent = node;
                                        } );
                                    }
-                                        },
-                                   TROMBI: { action: function() {
-                                       if ( ctrl.modification ) { return; }
-                                       ctrl.filter_criteria = { show_classes: true,
-                                                                  show_groupes_eleves: true,
-                                                                  text: '' };
+                                        }  // ,
+                                   // TROMBI: { action: function() {
+                                   //     if ( ctrl.modification ) { return; }
+                                   //     ctrl.filter_criteria = { show_classes: true,
+                                   //                                show_groupes_eleves: true,
+                                   //                                text: '' };
 
-                                       currentUser.regroupements().then( function ( response ) {
-                                           ctrl.tree = { configurable: false,
-                                                           filter: function() {
-                                                               return function( tile ) {
-                                                                   return tile.taxonomy === 'back'
-                                                                       || ( tile.taxonomy !== 'regroupement'
-                                                                            || ( _(ctrl.filter_criteria).has('show_classes') && ctrl.filter_criteria.show_classes && tile.type === 'classe' )
-                                                                            || ( _(ctrl.filter_criteria).has('show_groupes_eleves') && ctrl.filter_criteria.show_groupes_eleves && tile.type === 'groupe_eleve' ) )
-                                                                       && ( !_(tile).has('name')
-                                                                            || _(ctrl.filter_criteria.text).isEmpty()
-                                                                            || tile.name.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() ) );
-                                                               };
-                                                           },
-                                                           aside_template: 'app/views/aside_TROMBI_regroupements.html',
-                                                           tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( regroupement, index ) {
-                                                               regroupement.taxonomy = 'regroupement';
-                                                               regroupement.index = index + 1;
-                                                               regroupement.color = regroupement.type === 'classe' ? 'vert' : 'bleu';
-                                                               regroupement.color += index % 2 == 0 ? '' : '-moins';
-                                                               regroupement.action = function() {
-                                                                   ctrl.filter_criteria.text = '';
+                                   //     currentUser.regroupements().then( function ( response ) {
+                                   //         ctrl.tree = { configurable: false,
+                                   //                         filter: function() {
+                                   //                             return function( tile ) {
+                                   //                                 return tile.taxonomy === 'back'
+                                   //                                     || ( tile.taxonomy !== 'regroupement'
+                                   //                                          || ( _(ctrl.filter_criteria).has('show_classes') && ctrl.filter_criteria.show_classes && tile.type === 'classe' )
+                                   //                                          || ( _(ctrl.filter_criteria).has('show_groupes_eleves') && ctrl.filter_criteria.show_groupes_eleves && tile.type === 'groupe_eleve' ) )
+                                   //                                     && ( !_(tile).has('name')
+                                   //                                          || _(ctrl.filter_criteria.text).isEmpty()
+                                   //                                          || tile.name.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() ) );
+                                   //                             };
+                                   //                         },
+                                   //                         aside_template: 'app/views/aside_TROMBI_regroupements.html',
+                                   //                         tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( regroupement, index ) {
+                                   //                             regroupement.taxonomy = 'regroupement';
+                                   //                             regroupement.index = index + 1;
+                                   //                             regroupement.color = regroupement.type === 'classe' ? 'vert' : 'bleu';
+                                   //                             regroupement.color += index % 2 == 0 ? '' : '-moins';
+                                   //                             regroupement.action = function() {
+                                   //                                 ctrl.filter_criteria.text = '';
 
-                                                                   currentUser.eleves_regroupement( regroupement.id )
-                                                                       .then( function( response ) {
-                                                                           ctrl.tree = { configurable: false,
-                                                                                           filter: function() {
-                                                                                               return function( tile ) {
-                                                                                                   return tile.taxonomy !== 'eleve'
-                                                                                                       || _(ctrl.filter_criteria.text).isEmpty()
-                                                                                                       || tile.nom.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() )
-                                                                                                       || tile.prenom.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() );
-                                                                                               };
-                                                                                           },
-                                                                                           aside_template: 'app/views/aside_TROMBI_people.html',
-                                                                                           tiles: Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.map( function( eleve, index ) {
-                                                                                               eleve.taxonomy = 'eleve';
-                                                                                               eleve.index = index + 1;
-                                                                                               eleve.color = 'jaune';
-                                                                                               eleve.color += index % 2 == 0 ? '' : '-moins';
+                                   //                                 currentUser.eleves_regroupement( regroupement.id )
+                                   //                                     .then( function( response ) {
+                                   //                                         ctrl.tree = { configurable: false,
+                                   //                                                         filter: function() {
+                                   //                                                             return function( tile ) {
+                                   //                                                                 return tile.taxonomy !== 'eleve'
+                                   //                                                                     || _(ctrl.filter_criteria.text).isEmpty()
+                                   //                                                                     || tile.nom.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() )
+                                   //                                                                     || tile.prenom.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() );
+                                   //                                                             };
+                                   //                                                         },
+                                   //                                                         aside_template: 'app/views/aside_TROMBI_people.html',
+                                   //                                                         tiles: Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.map( function( eleve, index ) {
+                                   //                                                             eleve.taxonomy = 'eleve';
+                                   //                                                             eleve.index = index + 1;
+                                   //                                                             eleve.color = 'jaune';
+                                   //                                                             eleve.color += index % 2 == 0 ? '' : '-moins';
 
-                                                                                               return eleve;
-                                                                                           } ) ) ) };
-                                                                           ctrl.parent = node;
-                                                                       } );
-                                                               };
+                                   //                                                             return eleve;
+                                   //                                                         } ) ) ) };
+                                   //                                         ctrl.parent = node;
+                                   //                                     } );
+                                   //                             };
 
-                                                               return regroupement;
-                                                           } ) ) ) };
-                                           ctrl.parent = node;
-                                       } );
-                                   }
-                                           }
+                                   //                             return regroupement;
+                                   //                         } ) ) ) };
+                                   //         ctrl.parent = node;
+                                   //     } );
+                                   // }
+                                   //         }
                                };
 
                                node.configure = false;
@@ -223,8 +223,8 @@ angular.module( 'portailApp' )
                                        apps = Utils.pad_tiles_tree( apps );
 
                                        ctrl.apps = { configurable: true,
-                                                       aside_template: 'app/views/aside_news.html',
-                                                       tiles: apps };
+                                                     aside_template: 'app/views/aside_news.html',
+                                                     tiles: apps };
 
                                        go_to_root_tile.action();
                                    }

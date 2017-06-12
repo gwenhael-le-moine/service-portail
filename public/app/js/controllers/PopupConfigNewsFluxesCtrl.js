@@ -2,22 +2,13 @@
 
 angular.module( 'portailApp' )
     .controller( 'PopupConfigNewsFluxesCtrl',
-                 [ '$scope', '$rootScope', '$uibModalInstance', 'currentUser', 'Flux', 'CONFIG',
-                   function( $scope, $rootScope, $uibModalInstance, currentUser, Flux, CONFIG ) {
+                 [ '$scope', '$uibModalInstance', 'currentUser', 'Flux', 'CONFIG',
+                   function( $scope, $uibModalInstance, currentUser, Flux, CONFIG ) {
                        var ctrl = $scope;
-
-                       currentUser.get( false ).then( function( user ) {
-                           Flux.get({ structure_id: user.active_profile().structure_id }).$promise
-                               .then( function( response ) {
-                                   ctrl.current_flux = _(response).map( function( flux ) {
-                                       flux.dirty = false;
-
-                                       return flux;
-                                   } );
-                           } );
-                       } );
+                       ctrl.$ctrl = ctrl;
 
                        ctrl.nb_articles = _.range( 1, 11 );
+                       ctrl.current_flux = [];
 
                        ctrl.delete = function( flux ) {
                            flux.$delete();
@@ -25,7 +16,7 @@ angular.module( 'portailApp' )
                        };
 
                        ctrl.save = function( flux ) {
-                           flux.structure_id = $rootScope.current_user.active_profile().structure_id;
+                           flux.structure_id = ctrl.user.active_profile().structure_id;
                            return _(flux).has( 'id' ) ? flux.$update() : flux.$save();
                        };
 
@@ -51,4 +42,21 @@ angular.module( 'portailApp' )
                        ctrl.close = function () {
                            $uibModalInstance.close();
                        };
+
+                       ctrl.$onInit = function() {
+                           currentUser.get( false ).then( function( user ) {
+                               ctrl.user = user;
+
+                               Flux.get({ structure_id: ctrl.user.active_profile().structure_id }).$promise
+                                   .then( function( response ) {
+                                       ctrl.current_flux.push( _(response).map( function( flux ) {
+                                           flux.dirty = false;
+
+                                           return flux;
+                                       } ) );
+                                   } );
+                           } );
+                       };
+
+                       ctrl.$onInit();
                    } ] );

@@ -11,9 +11,7 @@ angular.module( 'portailApp' )
                                         ctrl.iOS = ( navigator.userAgent.match( /iPad/i ) !== null ) || ( navigator.userAgent.match( /iPhone/i ) !== null );
                                         var apps_list = [];
 
-                                        currentUser.get().then( function( response ) {
-                                            var user =  new User( response.data );
-
+                                        currentUser.get().then( function( user ) {
                                             if ( _(user.profiles).isEmpty() ) {
                                                 apps_list = Apps.query_defaults().$promise;
                                             } else {

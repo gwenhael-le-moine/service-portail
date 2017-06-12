@@ -3,7 +3,7 @@
 </div>
 <div class="modal-body config-fluxes">
     <ul>
-        <li ng:repeat="flux in current_flux">
+        <li ng:repeat="flux in $ctrl.current_flux">
             <label>titre <input type="text"
                                 ng:model="flux.title"
                                 ng:change="dirtify( flux )" /></label>
@@ -17,10 +17,10 @@
 
             <div class="controls">
                 <button class="btn-default delete"
-                        ng:click="delete( flux )"><span class="glyphicon glyphicon-trash"></span></button>
+                        ng:click="$ctrl.delete( flux )"><span class="glyphicon glyphicon-trash"></span></button>
                 <button class="btn-primary save"
                         ng:if="flux.dirty"
-                        ng:click="save( flux )"><span class="glyphicon glyphicon-ok-sign"></span></button>
+                        ng:click="$ctrl.save( flux )"><span class="glyphicon glyphicon-ok-sign"></span></button>
             </div>
             <div class="clearfix"></div>
         </li>
@@ -28,11 +28,11 @@
     <div class="clearfix"></div>
 
     <button style="right: 4em;"
-            ng:click="add_default_flux()"><span class="glyphicon glyphicon-cloud-download"></span></button>
-    <button ng:click="add_flux()"><span class="glyphicon glyphicon-plus-sign"></span></button>
+            ng:click="$ctrl.add_default_flux()"><span class="glyphicon glyphicon-cloud-download"></span></button>
+    <button ng:click="$ctrl.add_flux()"><span class="glyphicon glyphicon-plus-sign"></span></button>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-default" ng:click="close()">
+    <button class="btn btn-default" ng:click="$ctrl.close()">
         <span class="glyphicon glyphicon-remove-sign"></span> Fermer
     </button>
 </div>

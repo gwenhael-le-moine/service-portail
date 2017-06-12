@@ -4,9 +4,9 @@ angular.module( 'portailApp' )
     .factory( 'Apps',
               [ '$resource', 'URL_ENT', 'CONFIG',
                 function( $resource, URL_ENT, CONFIG ) {
-                    return $resource( URL_ENT + '/api/structures/:etab_code_uai/tiles/:id',
+                    return $resource( URL_ENT + '/api/structures/:structure_id/tiles/:id',
                                       { id              : '@id',
-                                        structure_id    : '@etab_code_uai',
+                                        structure_id    : '@structure_id',
                                         application_id	: '@application_id',
                                         index		: '@index',
                                         type		: '@type',
@@ -18,8 +18,8 @@ angular.module( 'portailApp' )
                                       { update: { method: 'PUT' },
                                         query: { method: 'GET',
                                                  cache: false,
-                                                 url: URL_ENT + '/api/structures/:uai/tiles',
-                                                 params: { uai: '@uai' },
+                                                 url: URL_ENT + '/api/structures/:structure_id/tiles',
+                                                 params: { structure_id: '@structure_id' },
                                                  isArray: true,
                                                  transformResponse: function( response, _headers_getters ) {
                                                      return _(angular.fromJson( response ))

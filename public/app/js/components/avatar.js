@@ -110,8 +110,8 @@ angular.module( 'portailApp' )
 
                                     ctrl.$onInit = function() {
                                         currentUser.get()
-                                            .then( function( response ) {
-                                                ctrl.user = new User( response.data );
+                                            .then( function( user ) {
+                                                ctrl.user = user;
 
                                                 reset_new_avatar();
                                             } );

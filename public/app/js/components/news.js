@@ -43,8 +43,8 @@ angular.module( 'portailApp' )
                                     };
 
                                     ctrl.$onInit = function() {
-                                        currentUser.get().then( function( response ) {
-                                            ctrl.current_user = new User( response.data );
+                                        currentUser.get().then( function( user ) {
+                                            ctrl.current_user = user;
 
                                             ctrl.retrieve_news( false );
 
