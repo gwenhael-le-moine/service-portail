@@ -33,9 +33,10 @@ angular.module( 'portailApp' )
                     service.tiles = function() {
                         return service.get().then( function success( user ) {
                             if ( _(user.profiles).isEmpty() ) {
-                                return Tiles.query_defaults().$promise.then( function( tiles ) {
-                                    return $q.resolve( _(tiles).where( { application_id: 'MAIL' } ) );
-                                } );
+                                return Annuaire.query_applications()
+                                    .then( function( tiles ) {
+                                        return $q.resolve( _(tiles).where( { application_id: 'MAIL' } ) );
+                                    } );
                             } else {
                                 return Tiles.query( { structure_id: user.active_profile().structure_id } ).$promise;
                             }

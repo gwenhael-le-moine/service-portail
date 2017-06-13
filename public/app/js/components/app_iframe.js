@@ -4,8 +4,8 @@ angular.module( 'portailApp' )
     .component( 'appiframe',
                 { bindings: { appid: '<' },
                   templateUrl: 'app/js/components/app_iframe.html',
-                  controller: [ '$sce', 'Tiles', 'Utils', 'currentUser', 'User',
-                                function ( $sce, Tiles, Utils, currentUser, User ) {
+                  controller: [ '$sce', 'Tiles', 'Utils', 'currentUser', 'User', 'Annuaire',
+                                function ( $sce, Tiles, Utils, currentUser, User, Annuaire ) {
                                     var ctrl = this;
                                     ctrl.$onInit = function() {
                                         ctrl.iOS = ( navigator.userAgent.match( /iPad/i ) !== null ) || ( navigator.userAgent.match( /iPhone/i ) !== null );
@@ -13,7 +13,7 @@ angular.module( 'portailApp' )
 
                                         currentUser.get().then( function( user ) {
                                             if ( _(user.profiles).isEmpty() ) {
-                                                apps_list = Tiles.query_defaults().$promise;
+                                                apps_list = Annuaire.query_applications();
                                             } else {
                                                 apps_list = Tiles.query({ structure_id: user.active_profile().structure_id }).$promise;
                                             }

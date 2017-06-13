@@ -2,9 +2,9 @@
 
 angular.module( 'portailApp' )
     .controller( 'PopupAjoutTileCtrl',
-                 [ '$scope', '$uibModalInstance', 'APP_PATH', 'Tiles', 'RessourceNumerique', 'currentUser',
+                 [ '$scope', '$uibModalInstance', 'APP_PATH', 'Tiles', 'RessourceNumerique', 'currentUser', 'Annuaire',
                    'current_tiles',
-                   function( $scope, $uibModalInstance, APP_PATH, Tiles, RessourceNumerique, currentUser,
+                   function( $scope, $uibModalInstance, APP_PATH, Tiles, RessourceNumerique, currentUser, Annuaire,
                              current_tiles ) {
                        $scope.prefix = APP_PATH;
 
@@ -42,7 +42,7 @@ angular.module( 'portailApp' )
                            $uibModalInstance.dismiss();
                        };
 
-                       Tiles.query_defaults().$promise
+                       Annuaire.query_applications()
                            .then( function( response ) {
                                $scope.available_tiles = $scope.available_tiles.concat( _.chain( response )
                                                                                        .uniq( function( app ) { return app.application_id; } )

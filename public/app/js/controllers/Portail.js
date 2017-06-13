@@ -2,8 +2,8 @@
 
 angular.module( 'portailApp' )
     .controller( 'PortailCtrl',
-                 [ '$scope', '$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Tiles', 'APP_PATH', 'User',
-                   function( $scope, $sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Tiles, APP_PATH, User ) {
+                 [ '$scope', '$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Tiles', 'APP_PATH', 'User', 'Annuaire',
+                   function( $scope, $sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Tiles, APP_PATH, User, Annuaire ) {
                        var ctrl = $scope;
                        ctrl.$ctrl = ctrl;
 
@@ -200,7 +200,7 @@ angular.module( 'portailApp' )
                                var retrieve_tiles_tree = function() {
                                    currentUser.tiles().then( function( response ) {
                                        if ( _(response).isEmpty() ) {
-                                           Tiles.query_defaults().$promise
+                                           Annuaire.query_applications()
                                                .then( function( response ) {
                                                    $q.all( _.chain(response)
                                                            .where( { default: true } )
@@ -298,8 +298,7 @@ angular.module( 'portailApp' )
                                                     .map( function( tile ) {
                                                         switch( tile.taxonomy ) {
                                                         case 'app':
-                                                            return Tiles.delete({ id: tile.id,
-                                                                                  structure_id: ctrl.user.active_profile().structure_id }).$promise;
+                                                            return Tiles.delete({ id: tile.id }).$promise;
                                                         case 'rn':
                                                         default:
                                                             console.log(tile)
@@ -323,8 +322,7 @@ angular.module( 'portailApp' )
                                                                 .each( function( field ) {
                                                                     updated_fields[ field ] = tile[ field ];
                                                                 } );
-                                                            return Tiles.update( { id: tile.id,
-                                                                                   structure_id: ctrl.user.active_profile().structure_id }, updated_fields );
+                                                            return Tiles.update( { id: tile.id }, updated_fields );
                                                             break;
                                                         case 'rn':
                                                         default:
@@ -338,7 +336,8 @@ angular.module( 'portailApp' )
                                                     .map( function( tile ) {
                                                         switch( tile.taxonomy ) {
                                                         case 'app':
-                                                            return Tiles.save( { structure_id: ctrl.user.active_profile().structure_id }, tile ).$promise;
+                                                            tile.structure_id = ctrl.user.active_profile().structure_id;
+                                                            return Tiles.save( {}, tile ).$promise;
                                                         case 'rn':
                                                         default:
                                                             console.log(tile)
