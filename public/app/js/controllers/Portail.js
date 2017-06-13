@@ -86,9 +86,9 @@ angular.module( 'portailApp' )
                                                              rn.taxonomy = 'rn';
                                                              rn.index = index + 1;
                                                              rn.icon = APP_PATH + '/app/node_modules/laclasse-common-client/images/' + ( rn.type === 'MANUEL' ? '05_validationcompetences.svg' : ( rn.type === 'AUTRE' ? '07_blogs.svg' : '08_ressources.svg' ) );
-                                                             rn.color = CASES[ index % 16 ].couleur;
+                                                             rn.color = CASES[ index % 16 ].color;
                                                              rn.action = function() { Utils.log_and_open_link( 'GAR', rn.url ); };
-                                                             console.log(rn)
+
                                                              return rn;
                                                          } ) ) ) };
                                            ctrl.parent = node;
