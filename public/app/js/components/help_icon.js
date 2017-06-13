@@ -1,20 +1,19 @@
 'use strict';
 
 angular.module( 'portailApp' )
-    .component( 'helpicon',
-                { templateUrl: 'app/js/components/help_icon.html',
-                  controller: [ 'CONFIG', 'currentUser', 'User',
-                                function( CONFIG, currentUser, User ) {
+    .component( 'helpIcon',
+                { bindings: { user: '<' },
+                  templateUrl: 'app/js/components/help_icon.html',
+                  controller: [ 'CONFIG',
+                                function( CONFIG ) {
                                     var ctrl = this;
 
                                     ctrl.$onInit = function() {
-                                        currentUser.get().then( function( user ) {
-                                            ctrl.help_links = _(CONFIG.help_links)
-                                                .select( function( link ) {
-                                                    return !_(user.profiles).isEmpty()
-                                                        && _(link.profils).intersection( _(user.profiles).pluck('type') ).length > 0;
-                                                } );
-                                        } );
+                                        ctrl.help_links = _(CONFIG.help_links)
+                                            .select( function( link ) {
+                                                return !_(ctrl.user.profiles).isEmpty()
+                                                    && _(link.profils).intersection( _(ctrl.user.profiles).pluck('type') ).length > 0;
+                                            } );
                                     };
                                 } ]
                 } );

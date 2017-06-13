@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module( 'portailApp' )
-    .controller( 'PopupAjoutAppCtrl',
+    .controller( 'PopupAjoutTileCtrl',
                  [ '$scope', '$uibModalInstance', 'APP_PATH', 'Tiles', 'RessourceNumerique', 'currentUser',
                    'current_tiles',
                    function( $scope, $uibModalInstance, APP_PATH, Tiles, RessourceNumerique, currentUser,

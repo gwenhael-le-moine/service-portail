@@ -2,8 +2,8 @@
 
 angular.module( 'portailApp' )
     .service( 'currentUser',
-              [ '$rootScope', '$http', '$resource', '$q', 'URL_ENT', 'User', 'Apps', 'Annuaire',
-                function( $rootScope, $http, $resource, $q, URL_ENT, User, Apps, Annuaire ) {
+              [ '$http', '$resource', '$q', 'URL_ENT', 'User', 'Tiles', 'Annuaire',
+                function( $http, $resource, $q, URL_ENT, User, Tiles, Annuaire ) {
                     var service = this;
 
                     service.get = _.memoize( function( force_reload ) {
@@ -30,14 +30,14 @@ angular.module( 'portailApp' )
                         } );
                     };
 
-                    service.apps = function() {
+                    service.tiles = function() {
                         return service.get().then( function success( user ) {
                             if ( _(user.profiles).isEmpty() ) {
-                                return Apps.query_defaults().$promise.then( function( tiles ) {
+                                return Tiles.query_defaults().$promise.then( function( tiles ) {
                                     return $q.resolve( _(tiles).where( { application_id: 'MAIL' } ) );
                                 } );
                             } else {
-                                return Apps.query( { structure_id: user.active_profile().structure_id } ).$promise;
+                                return Tiles.query( { structure_id: user.active_profile().structure_id } ).$promise;
                             }
                         } );
                     };

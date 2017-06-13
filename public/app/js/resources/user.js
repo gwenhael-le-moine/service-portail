@@ -2,8 +2,8 @@
 
 angular.module( 'portailApp' )
     .factory( 'User',
-              [ '$resource', '$rootScope', 'URL_ENT',
-                function( $resource, $rootScope, URL_ENT ) {
+              [ '$resource', 'URL_ENT',
+                function( $resource, URL_ENT ) {
                     var User = $resource( URL_ENT + '/api/users/:id',
                                           { id: '@id',
                                             firstname: '@firstname',

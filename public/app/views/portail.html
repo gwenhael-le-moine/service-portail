@@ -1,56 +1,58 @@
 <div class="row portail">
     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 aside">
-        <helpicon class="btn-group hidden-xs help-icon"></helpicon>
+        <help-icon class="btn-group hidden-xs help-icon"
+                   user="$ctrl.user" ng:if="$ctrl.user"></help-icon>
 
         <logo class="col-xs-1 col-sm-1 col-md-6 col-lg-6 logolaclasse gris4"
-              user="current_user"></logo>
+              user="$ctrl.user"></logo>
 
-        <usertile user="current_user"></usertile>
+        <user-tile user="$ctrl.user"></user-tile>
 
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 hidden-xs hidden-sm aside-bottom"
-             ng:include="current_user.edit_profile ? 'app/views/aside_news.html' : tree.aside_template"></div>
+             ng:include="$ctrl.user.edit_profile ? 'app/views/aside_news.html' : $ctrl.tree.aside_template"></div>
     </div>
 
     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
         <div class="row user-profil"
-             ng:if="current_user.edit_profile">
-            <userprofile user="current_user"></userprofile>
+             ng:if="$ctrl.user.edit_profile">
+            <user-profile user="$ctrl.user"></user-profile>
         </div>
 
         <div class="row damier gris4"
-             ng:class="{'modification': modification}"
-             ng:if="!current_user.edit_profile">
+             ng:class="{'modification': $ctrl.modification}"
+             ng:if="!$ctrl.user.edit_profile">
 
-            <ul data-as-sortable="sortable_options"
-                data-is-disabled="!modification"
-                ng:model="tree.tiles">
+            <ul data-as-sortable="$ctrl.sortable_options"
+                data-is-disabled="!$ctrl.modification"
+                ng:model="$ctrl.tree.tiles">
 
-                <li class="col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case animate scale-fade-in {{tile.color}}"
+                <li ng:repeat="tile in $ctrl.tree.tiles | filter:$ctrl.tree.filter() | orderBy:'index'"
+                    class="col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case animate scale-fade-in {{tile.color}}"
                     data-as-sortable-item
-                    ng:class="{ 'empty hidden-xs': !tile.taxonomy }"
-                    ng:repeat="tile in tree.tiles | filter:tree.filter() | orderBy:'index'">
-                    <div ng:include="tiles_templates[ tile.taxonomy ]"></div>
+                    ng:class="{ 'empty hidden-xs': !tile.taxonomy }">
+                    <div ng:include="$ctrl.get_tile_template( tile.taxonomy )"></div>
                 </li>
             </ul>
 
             <!-- Mode normal -->
             <span class="hidden-xs hidden-sm floating-button toggle big off blanc"
-                  ng:if="tree.configurable && current_user.is_admin() && !modification"
-                  ng:click="edit_tiles()"></span>
+                  ng:if="$ctrl.tree.configurable && $ctrl.user.is_admin() && !$ctrl.modification"
+                  ng:click="$ctrl.edit_tiles()"></span>
 
             <!-- Mode modification -->
             <span class="hidden-xs hidden-sm floating-button toggle big on gris4"
-                  ng:if="modification"></span>
+                  ng:if="$ctrl.modification"></span>
             <span class="floating-button small cancel gris3"
-                  ng:if="modification"
-                  ng:click="exit_tiles_edition()"></span>
+                  ng:if="$ctrl.modification"
+                  ng:click="$ctrl.exit_tiles_edition()"></span>
             <span class="floating-button small save gris1"
-                  ng:if="modification"
-                  ng:click="save_tiles_edition()"></span>
+                  ng:if="$ctrl.modification"
+                  ng:click="$ctrl.save_tiles_edition()"></span>
 
             <span class="floating-button small action1 add-app gris1"
-                  ng:if="modification"
-                  ng:click="add_tile( tree.tiles )"></span>
+                  ng:if="$ctrl.modification"
+                  ng:click="$ctrl.add_tile( tree.tiles )"></span>
         </div>
+
     </div>
 </div>

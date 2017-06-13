@@ -1,11 +1,11 @@
 'use strict';
 
 angular.module( 'portailApp' )
-    .component( 'userprofile',
+    .component( 'userProfile',
                 { bindings: { user: '=' },
                   templateUrl: 'app/js/components/user_profile.html',
-                  controller: [ '$rootScope', 'toastr', 'currentUser', 'APP_PATH', 'Utils', 'User',
-                                function( $rootScope, toastr, currentUser, APP_PATH, Utils, User ) {
+                  controller: [ 'toastr', 'currentUser', 'APP_PATH', 'Utils', 'User',
+                                function( toastr, currentUser, APP_PATH, Utils, User ) {
                                     var ctrl = this;
                                     ctrl.dirty = {};
 
@@ -55,7 +55,6 @@ angular.module( 'portailApp' )
                                             if ( !_(mod_user).isEmpty() ) {
                                                 User.update( { id: ctrl.user.id }, mod_user ).$promise
                                                 .then( function success( response ) {
-                                                    $rootScope.current_user = new User( response );
                                                     toastr.success( 'Mise à jour effectuée.' );
                                                 },
                                                        function error( response ) {} );

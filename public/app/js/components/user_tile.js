@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module( 'portailApp' )
-    .component( 'usertile',
+    .component( 'userTile',
                 { bindings: { user: '=' },
                   templateUrl: 'app/js/components/user_tile.html',
                   controller: [ 'APP_PATH', 'URL_ENT',
