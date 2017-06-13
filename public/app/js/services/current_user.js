@@ -2,8 +2,8 @@
 
 angular.module( 'portailApp' )
     .service( 'currentUser',
-              [ '$rootScope', '$http', '$resource', '$q', 'URL_ENT', 'User', 'Apps',
-                function( $rootScope, $http, $resource, $q, URL_ENT, User, Apps ) {
+              [ '$rootScope', '$http', '$resource', '$q', 'URL_ENT', 'User', 'Apps', 'Annuaire',
+                function( $rootScope, $http, $resource, $q, URL_ENT, User, Apps, Annuaire ) {
                     var service = this;
 
                     service.get = _.memoize( function( force_reload ) {
@@ -23,23 +23,10 @@ angular.module( 'portailApp' )
 
                     service.ressources = function() {
                         return service.get().then( function success( user ) {
-                            return $http.get( URL_ENT + '/api/users/' + user.id + '/ressources' )
+                            return Annuaire.get_structure_resources( user.active_profile().structure_id )
                                 .then( function( response ) {
-                                    return _.chain(angular.fromJson( response.data ))
-                                        .select( function( rn ) {
-                                            var now = moment();
-                                            return rn.structure_id === $rootScope.current_user.active_profile().structure_id
-                                                && ( moment( rn.date_deb_abon).isBefore( now ) ) && ( moment( rn.date_fin_abon).isAfter( now ) );
-                                        } )
-                                        .map( function( rn ) {
-                                            return { nom: rn.lib,
-                                                     description: rn.nom_court,
-                                                     url: rn.url_access_get,
-                                                     icon: rn.type_ressource === 'MANUEL' ? '05_validationcompetences.svg' : ( rn.type_ressource === 'AUTRE' ? '07_blogs.svg' : '08_ressources.svg' ) };
-                                        } )
-                                        .value();
+                                    return response.data;
                                 } );
-
                         } );
                     };
 

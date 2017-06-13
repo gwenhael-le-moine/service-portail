@@ -29,13 +29,14 @@ angular.module( 'portailApp' )
 
                                     ctrl.filter_emails = function() {
                                         return function( email ) {
-                                            return ( ctrl.user.active_profile().type !== 'TUT' || email.type !== 'Ent' ) && _(email.asdress.match( email.user_id )).isNull();
+                                            return ( ctrl.user.active_profile().type !== 'TUT'
+                                                     || email.type !== 'Ent' )
+                                                && _(email.asdress.match( email.user_id )).isNull();
                                         };
                                     };
 
-                                    ctrl.fermer = function( sauvegarder ) {
-                                        if ( sauvegarder
-                                             && !_(ctrl.dirty).isEmpty()
+                                    ctrl.save = function() {
+                                        if ( !_(ctrl.dirty).isEmpty()
                                              && ( _(ctrl.password.new1).isEmpty()
                                                   || ( !_(ctrl.password.new1).isEmpty()
                                                        && ( ctrl.password.new1 === ctrl.password.new2 ) ) ) ) {
@@ -47,14 +48,18 @@ angular.module( 'portailApp' )
 
                                             if ( !_(ctrl.password.new1).isEmpty() ) {
                                                 mod_user.password = ctrl.password.new1;
+                                            } else {
+                                                delete mod_user.password;
                                             }
 
-                                            User.update( { id: ctrl.user.id }, mod_user ).$promise
+                                            if ( !_(mod_user).isEmpty() ) {
+                                                User.update( { id: ctrl.user.id }, mod_user ).$promise
                                                 .then( function success( response ) {
                                                     $rootScope.current_user = new User( response );
                                                     toastr.success( 'Mise à jour effectuée.' );
                                                 },
                                                        function error( response ) {} );
+                                            }
                                         }
                                     };
 

@@ -1,13 +1,13 @@
 <a href
    ng:click="tile.action()"
-   title="{{tile.description}}"
+   title="{{tile.name}}"
    target="_blank">
     <img draggable="false"
          class="icone"
-         ng:src="{{prefix}}{{ tile.icon }}"
+         ng:src="{{ tile.icon }}"
          ng:if="tile.icon">
     <span class="app-name">
-        {{tile.nom}}
+        {{tile.name}}
         <i class="glyphicon glyphicon-new-window" ng:if="tile.type === 'EXTERNAL'"></i>
     </span>
 </a>

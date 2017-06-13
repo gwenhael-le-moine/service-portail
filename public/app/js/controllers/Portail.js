@@ -20,19 +20,18 @@ angular.module( 'portailApp' )
                                                     ccn: 'app/views/tile_ccn.html' };
                            ctrl.filter_criteria = {};
 
-                           var go_to_root_tile = {
-                                                             index: 0,
-                                                             taxonomy: 'back',
-                                                             name: '↰ Retour',
-                                                             description: 'Retour',
-                                                             color: 'gris3',
-                                                             action: function() {
-                                                                 ctrl.tree = ctrl.apps;
-                                                                 ctrl.parent = null;
-                                                             }
-                                                         };
+                           var go_to_root_tile = { index: 0,
+                                                   taxonomy: 'back',
+                                                   name: '↰ Retour',
+                                                   description: 'Retour',
+                                                   color: 'gris3',
+                                                   action: function() {
+                                                       ctrl.tree = ctrl.apps;
+                                                       ctrl.parent = null;
+                                                   }
+                                                 };
 
-                                                         var tool_tile = function( node ) {
+                           var tool_tile = function( node ) {
                                var go_to_parent_tile = function( parent ) {
                                    var back_to_parent = angular.copy( go_to_root_tile );
                                    back_to_parent.action = parent.action;
@@ -86,10 +85,10 @@ angular.module( 'portailApp' )
                                                          tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( rn, index ) {
                                                              rn.taxonomy = 'rn';
                                                              rn.index = index + 1;
-                                                             rn.icon = '/app/node_modules/laclasse-common-client/images/' + rn.icon;
+                                                             rn.icon = APP_PATH + '/app/node_modules/laclasse-common-client/images/' + ( rn.type === 'MANUEL' ? '05_validationcompetences.svg' : ( rn.type === 'AUTRE' ? '07_blogs.svg' : '08_ressources.svg' ) );
                                                              rn.color = CASES[ index % 16 ].couleur;
                                                              rn.action = function() { Utils.log_and_open_link( 'GAR', rn.url ); };
-
+                                                             console.log(rn)
                                                              return rn;
                                                          } ) ) ) };
                                            ctrl.parent = node;

@@ -121,7 +121,7 @@
                                zxcvbn="passwordStrength"
                                zx-min-score="2">
                         <div class="password-strength"
-                             ng:if="$ctrl.dirty.password">
+                             ng:if="$ctrl.dirty.password && $ctrl.password.new1 !== ''">
                             <label>Qualité du mot de passe :</label>
                             <uib-progressbar max="5" value="passwordStrength.score + 1"
                                              type="{{ ( passwordStrength.score < 2 ) ? 'danger' : ( ( passwordStrength.score < 3 ) ? 'warning' : ( ( passwordStrength.score < 4 ) ? 'primary' : 'success' ) ) }}">
@@ -145,8 +145,7 @@
             </accordion-group>
 
             <footer>
-                <button ng:click="$ctrl.fermer( false )">Annuler</button>
-                <button ng:click="$ctrl.fermer( true )">Enregistrer</button>
+                <button ng:click="$ctrl.save()">Enregistrer</button>
             </footer>
         </accordion>
     </form>

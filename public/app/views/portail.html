@@ -25,7 +25,7 @@
                 data-is-disabled="!modification"
                 ng:model="tree.tiles">
 
-                <li class="col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case animate scale-fade-in {{tile.couleur}}"
+                <li class="col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case animate scale-fade-in {{tile.couleur}} {{tile.color}}"
                     data-as-sortable-item
                     ng:class="{ 'empty hidden-xs': !tile.taxonomy }"
                     ng:repeat="tile in tree.tiles | filter:tree.filter() | orderBy:'index'">
