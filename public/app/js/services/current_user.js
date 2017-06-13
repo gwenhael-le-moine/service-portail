@@ -43,29 +43,14 @@ angular.module( 'portailApp' )
                         } );
                     };
 
-                    // service.regroupements = function() {
-                    //     return service.get().then( function success( response ) {
-                    //         var user = new User( response.data );
-
-                    //         return user.then( function( user ) {
-                    //             console.log($http)
-                    //             console.log(user)
-                    //             $q.all( user.groups.map( function( group ) { return $http({ method: 'GET',
-                    //                                                                         url: URL_ENT + '/api/groups/' + group.group_id }); } ) )
-                    //                 .then( function( response ) {
-                    //                     console.log(response)
-                    //                 } );
-                    //         } );
-                    //     } );
-                    // };
-
-                    // service.eleves_regroupement = function( id ) {
-                    //     return $http.get( URL_ENT + '/api/app/regroupements/' + id )
-                    //         .then( function( response ) {
-                    //             return _(response.data.eleves)
-                    //                 .map( function( eleve ) {
-                    //                     eleve.avatar = URL_ENT + '/api/avatar/' + eleve.avatar;
-                    //                 } );
-                    //         } );
-                    // };
+                    service.regroupements = function() {
+                        return service.get().then( function success( user ) {
+                            return $q.all( user.groups.map( function( group ) {
+                                return $http.get( URL_ENT + '/api/groups/', { params: { id: group.group_id } } );
+                            } ) )
+                                .then( function( response ) {
+                                    return _.chain(response).pluck('data').flatten().value();
+                                } );
+                        } );
+                    };
                 } ] );
