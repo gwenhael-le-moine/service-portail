@@ -44,7 +44,7 @@ class SinatraApp < Sinatra::Base
 
     cache_control :no_cache
 
-    redirect "#{APP_PATH}/auth/cas/?url=#{URI.encode( request.path_info )}" unless env['rack.session'][:authenticated]
+    redirect "#{APP_PATH}/auth/cas/?url=#{request.env['REQUEST_PATH']}/" unless env['rack.session'][:authenticated]
   end
 
   register LaClasse::Routes::Auth
