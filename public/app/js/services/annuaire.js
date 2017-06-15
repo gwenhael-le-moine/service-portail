@@ -10,6 +10,10 @@ angular.module( 'portailApp' )
                         return $http.get( URL_ENT + '/api/structures/' + structure_id, { params: { expand: false } } );
                     } );
 
+                    service.get_structures = _.memoize( function( structures_ids ) {
+                        return $http.get( URL_ENT + '/api/structures/', { params: { 'id[]': structures_ids, expand: false } } );
+                    } );
+
                     service.get_structure_tiles = _.memoize( function( structure_id ) {
                         return $http.get( URL_ENT + '/api/tiles/', { params: { structure_id: structure_id } } );
                     } );

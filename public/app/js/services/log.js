@@ -12,7 +12,6 @@ angular.module( 'portailApp' )
                                               user_id: user.id,
                                               structure_id: user.active_profile() ? user.active_profile().structure_id : 'none',
                                               profil_id: user.active_profile() ? user.active_profile().type : 'none',
-                                              timestamp: Date.now(),
                                               url: _(url).isNull() ? APP_PATH + $state.current.url: url,
                                               parameters: _(params).isNull() ? _($state.params).map( function( value, key ) { return key + '=' + value; } ).join( '&' ) : params } );
                             } );

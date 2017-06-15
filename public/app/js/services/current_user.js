@@ -43,24 +43,37 @@ angular.module( 'portailApp' )
                         } );
                     };
 
-                    service.regroupements = function() {
+                    service.groups = function() {
                         return service.get().then( function success( user ) {
-                            return $q.all( user.groups.map( function( group ) {
-                                return $http.get( URL_ENT + '/api/groups/', { params: { id: group.group_id } } );
-                            } ) )
+                            var structures_ids = _.chain(user.profiles).pluck( 'structure_id' ).uniq().value();
+
+                            var structures = Annuaire.get_structures( structures_ids );
+                            var user_groups = $http.get( URL_ENT + '/api/groups/', { params: { 'id[]': _(user.groups).pluck('group_id') } } )
                                 .then( function( response ) {
-                                    return _.chain(response).pluck('data').flatten().value();
+                                    return response.data;
+                                } );
+                            var structures_groups = $q.resolve();
+
+                            if ( _.chain(user.profiles).pluck( 'type' ).intersection([ 'DIR', 'ADM', 'CPE' ]).value().length > 0 ) {
+                                structures_groups = $http.get( URL_ENT + '/api/groups/', { params: { 'structure_id[]': structures_ids } } )
+                                    .then( function( response ) {
+                                        return response.data;
+                                    } );
+                            }
+
+                            return $q.all([ user_groups, structures_groups, structures ])
+                                .then( function success( responses ) {
+                                    var structures = responses.pop().data;
+                                    return _.chain(responses)
+                                        .flatten()
+                                        .uniq('id')
+                                        .map( function( group ) {
+                                            group.structure = _(structures).findWhere({ id: group.structure_id });
+
+                                            return group;
+                                        } )
+                                        .value();
                                 } );
                         } );
                     };
-
-                    // service.eleves_regroupement = function( id ) {
-                    //     return $http.get( URL_ENT + '/api/app/regroupements/' + id )
-                    //         .then( function( response ) {
-                    //             return _(response.data.eleves)
-                    //                 .map( function( eleve ) {
-                    //                     eleve.avatar = URL_ENT + '/api/avatar/' + eleve.avatar;
-                    //                 } );
-                    //         } );
-                    // };
                 } ] );
