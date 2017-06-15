@@ -105,8 +105,9 @@ angular.module( 'portailApp' )
                                        TROMBI: { action: function() {
                                            if ( ctrl.modification ) { return; }
                                            ctrl.filter_criteria = { show_classes: true,
-                                                                      show_groupes_eleves: true,
-                                                                      text: '' };
+                                                                    show_groupes_eleves: true,
+                                                                    show_groupes_libres: true,
+                                                                    text: '' };
 
                                            currentUser.regroupements().then( function ( response ) {
                                                console.log(response)
@@ -116,44 +117,54 @@ angular.module( 'portailApp' )
                                                                          return tile.taxonomy === 'back'
                                                                              || ( tile.taxonomy !== 'regroupement'
                                                                                   || ( _(ctrl.filter_criteria).has('show_classes') && ctrl.filter_criteria.show_classes && tile.type === 'CLS' )
-                                                                                  || ( _(ctrl.filter_criteria).has('show_groupes_eleves') && ctrl.filter_criteria.show_groupes_eleves && tile.type === 'GRP' ) )
+                                                                                  || ( _(ctrl.filter_criteria).has('show_groupes_eleves') && ctrl.filter_criteria.show_groupes_eleves && tile.type === 'GRP' )
+                                                                                  || ( _(ctrl.filter_criteria).has('show_groupes_libres') && ctrl.filter_criteria.show_groupes_libres && tile.type === 'GPL' ) )
                                                                              && ( !_(tile).has('name')
                                                                                   || _(ctrl.filter_criteria.text).isEmpty()
                                                                                   || tile.name.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() ) );
                                                                      };
                                                                  },
                                                                  aside_template: 'app/views/aside_TROMBI_regroupements.html',
-                                                                 tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( regroupement, index ) {
-                                                                     regroupement.taxonomy = 'regroupement';
-                                                                     regroupement.index = index + 1;
-                                                                     regroupement.color = regroupement.type === 'CLS' ? 'vert' : 'bleu';
-                                                                     regroupement.color += index % 2 == 0 ? '' : '-moins';
-                                                                     regroupement.action = function() { // TODO: based on group.users
-                                                                         // ctrl.filter_criteria.text = '';
+                                                             tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( regroupement, index ) {
+                                                                 regroupement.taxonomy = 'regroupement';
+                                                                 regroupement.index = index + 1;
+                                                                 switch( regroupement.type ) {
+                                                                 case 'CLS':
+                                                                     regroupement.color = 'vert';
+                                                                     break;
+                                                                 case 'GRP':
+                                                                     regroupement.color = 'bleu';
+                                                                     break;
+                                                                 default:
+                                                                     regroupement.color = 'jaune';
+                                                                 }
+                                                                 regroupement.color += index % 2 == 0 ? '' : '-moins';
+                                                                 regroupement.action = function() { // TODO: based on group.users
+                                                                     ctrl.filter_criteria.text = '';
 
-                                                                         // currentUser.eleves_regroupement( regroupement.id )
-                                                                         //     .then( function( response ) {
-                                                                         //         ctrl.tree = { configurable: false,
-                                                                         //                         filter: function() {
-                                                                       //                             return function( tile ) {
-                                                                       //                                 return tile.taxonomy !== 'eleve'
-                                                                       //                                     || _(ctrl.filter_criteria.text).isEmpty()
-                                                                       //                                     || tile.nom.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() )
-                                                                       //                                     || tile.prenom.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() );
-                                                                       //                             };
-                                                                       //                         },
-                                                                       //                         aside_template: 'app/views/aside_TROMBI_people.html',
-                                                                       //                         tiles: Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.map( function( eleve, index ) {
-                                                                       //                             eleve.taxonomy = 'eleve';
-                                                                       //                             eleve.index = index + 1;
-                                                                       //                             eleve.color = 'jaune';
-                                                                       //                             eleve.color += index % 2 == 0 ? '' : '-moins';
+                                                                     Annuaire.get_users( _(regroupement.users).pluck( 'user_id' ) )
+                                                                         .then( function( response ) {
+                                                                             ctrl.tree = { configurable: false,
+                                                                                             filter: function() {
+                                                                                                 return function( tile ) {
+                                                                                                     return tile.taxonomy !== 'eleve'
+                                                                                                         || _(ctrl.filter_criteria.text).isEmpty()
+                                                                                                         || tile.lastname.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() )
+                                                                                                         || tile.firstname.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() );
+                                                                                                 };
+                                                                                             },
+                                                                                           aside_template: 'app/views/aside_TROMBI_people.html',
+                                                                                           tiles: Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.data.map( function( eleve, index ) {
+                                                                                               eleve.taxonomy = 'eleve';
+                                                                                               eleve.index = index + 1;
+                                                                                               eleve.color = 'jaune';
+                                                                                                 eleve.color += index % 2 == 0 ? '' : '-moins';
 
-                                                                       //                             return eleve;
-                                                                       //                         } ) ) ) };
-                                                                       //         ctrl.parent = node;
-                                                                       //     } );
-                                                                   };
+                                                                                                 return eleve;
+                                                                                             } ) ) ) };
+                                                                             ctrl.parent = node;
+                                                                         } );
+                                                                 };
 
                                                                    return regroupement;
                                                                } ) ) ) };

@@ -53,4 +53,14 @@ angular.module( 'portailApp' )
                                 } );
                         } );
                     };
+
+                    // service.eleves_regroupement = function( id ) {
+                    //     return $http.get( URL_ENT + '/api/app/regroupements/' + id )
+                    //         .then( function( response ) {
+                    //             return _(response.data.eleves)
+                    //                 .map( function( eleve ) {
+                    //                     eleve.avatar = URL_ENT + '/api/avatar/' + eleve.avatar;
+                    //                 } );
+                    //         } );
+                    // };
                 } ] );

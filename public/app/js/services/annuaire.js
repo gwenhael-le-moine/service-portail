@@ -50,4 +50,8 @@ angular.module( 'portailApp' )
                     service.get_resource = _.memoize( function( id ) {
                         return $http.get( URL_ENT + '/api/resources/' + id );
                     } );
+
+                    service.get_users = _.memoize( function( users_ids ) {
+                        return $http.get( URL_ENT + '/api/users/', { params: { 'id[]': users_ids } } );
+                    });
                 } ] );
