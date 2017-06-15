@@ -40,7 +40,7 @@ angular.module( 'portailApp' )
                     } );
 
                     service.get_structure_resources = _.memoize( function( structure_id ) {
-                        return $http.get( URL_ENT + '/api/resources/', { params: { structure_id: structure_id } } );
+                        return $http.get( URL_ENT + '/api/resources/', { params: { 'structures.structure_id': structure_id } } );
                     } );
 
                     service.get_profile_type = _.memoize( function( type ) {
