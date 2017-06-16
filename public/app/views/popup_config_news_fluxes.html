@@ -6,13 +6,13 @@
         <li ng:repeat="flux in $ctrl.current_flux">
             <label>titre <input type="text"
                                 ng:model="flux.name"
-                                ng:change="dirtify( flux )" /></label>
+                                ng:change="$ctrl.dirtify( flux )" /></label>
             <label>url <input type="text"
                               ng:model="flux.url"
-                              ng:change="dirtify( flux )" /></label>
-            <label>nombre d'articles à inclure <select ng:options="nb for nb in nb_articles"
+                              ng:change="$ctrl.dirtify( flux )" /></label>
+            <label>nombre d'articles à inclure <select ng:options="nb for nb in $ctrl.nb_articles"
                                                        ng:model="flux.nb"
-                                                       ng:change="dirtify( flux )" /></select>
+                                                       ng:change="$ctrl.dirtify( flux )" /></select>
             </label>
 
             <div class="controls">

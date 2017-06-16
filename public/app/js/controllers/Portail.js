@@ -291,7 +291,8 @@ angular.module( 'portailApp' )
                                ctrl.add_tile = function( tiles ) {
                                    $uibModal.open( { templateUrl: 'app/views/popup_ajout_tile.html',
                                                      controller: 'PopupAjoutTileCtrl',
-                                                     resolve: { current_tiles: function() { return tiles; } } } )
+                                                     resolve: { current_tiles: function() { return tiles; } },
+                                                     backdrop: 'static' } )
                                        .result.then( function success( new_tiles ) {
                                            $q.all( _(new_tiles).map( function( new_tile ) {
                                                var recipient_index = _(tiles).findIndex( function( tile ) { return !_(tile).has('taxonomy'); } );
