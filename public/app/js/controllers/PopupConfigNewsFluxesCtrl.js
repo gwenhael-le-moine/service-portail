@@ -49,11 +49,11 @@ angular.module( 'portailApp' )
 
                                Flux.get({ structure_id: ctrl.user.active_profile().structure_id }).$promise
                                    .then( function( response ) {
-                                       ctrl.current_flux.push( _(response).map( function( flux ) {
+                                       ctrl.current_flux = _(response).map( function( flux ) {
                                            flux.dirty = false;
 
                                            return flux;
-                                       } ) );
+                                       } );
                                    } );
                            } );
                        };
