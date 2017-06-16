@@ -109,12 +109,11 @@ angular.module( 'portailApp' )
                                     };
 
                                     ctrl.$onInit = function() {
-                                        currentUser.get()
-                                            .then( function( user ) {
-                                                ctrl.user = user;
+                                        currentUser.get( false ).then( function( user ) {
+                                            ctrl.user = user;
 
-                                                reset_new_avatar();
-                                            } );
+                                            reset_new_avatar();
+                                        } );
                                     };
                                 } ]
                 } );

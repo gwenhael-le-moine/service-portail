@@ -5,16 +5,21 @@ angular.module( 'portailApp' )
               [ '$http', '$resource', '$q', 'URL_ENT', 'User', 'Tiles', 'Annuaire',
                 function( $http, $resource, $q, URL_ENT, User, Tiles, Annuaire ) {
                     var service = this;
+                    var current_user = undefined;
 
-                    service.get = _.memoize( function( force_reload ) {
-                        return $http.get( URL_ENT + '/api/users/current' )
-                            .then( function( response ) {
-                                return new User( response.data );
-                            } );
-                    } );
+                    service.get = function( force_reload ) {
+                        if ( _(current_user).isUndefined() || force_reload ) {
+                            current_user = $http.get( URL_ENT + '/api/users/current' )
+                                .then( function( response ) {
+                                    return User.get({ id: response.data.id }).$promise;
+                                } );
+                        }
+
+                        return current_user;
+                    };
 
                     service.activate_profile = function( profile_id ) {
-                        return service.get().then( function success( user ) {
+                        return service.get( false ).then( function success( user ) {
                             return $http({ method: 'PUT',
                                            url: URL_ENT + '/api/users/' + user.id + '/profiles/' + profile_id,
                                            data: { active: true } } );
@@ -22,7 +27,7 @@ angular.module( 'portailApp' )
                     };
 
                     service.ressources = function() {
-                        return service.get().then( function success( user ) {
+                        return service.get( false ).then( function success( user ) {
                             return Annuaire.get_structure_resources( user.active_profile().structure_id )
                                 .then( function( response ) {
                                     return response.data;
@@ -31,7 +36,7 @@ angular.module( 'portailApp' )
                     };
 
                     service.tiles = function() {
-                        return service.get().then( function success( user ) {
+                        return service.get( false ).then( function success( user ) {
                             if ( _(user.profiles).isEmpty() ) {
                                 return Annuaire.query_applications()
                                     .then( function( tiles ) {
@@ -44,7 +49,7 @@ angular.module( 'portailApp' )
                     };
 
                     service.groups = function() {
-                        return service.get().then( function success( user ) {
+                        return service.get( false ).then( function success( user ) {
                             var structures_ids = _.chain(user.profiles).pluck( 'structure_id' ).uniq().value();
 
                             var structures = Annuaire.get_structures( structures_ids );
