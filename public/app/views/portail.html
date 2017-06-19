@@ -1,7 +1,8 @@
-<div class="row portail">
+<div class="row portail"
+     ng:if="$ctrl.user">
     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 aside">
         <help-icon class="btn-group hidden-xs help-icon"
-                   user="$ctrl.user" ng:if="$ctrl.user"></help-icon>
+                   user="$ctrl.user"></help-icon>
 
         <logo class="col-xs-1 col-sm-1 col-md-6 col-lg-6 logolaclasse gris4"
               user="$ctrl.user"></logo>
