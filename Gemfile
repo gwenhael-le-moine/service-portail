@@ -2,13 +2,14 @@
 
 source 'https://rubygems.org'
 
-gem 'omniauth'
-gem 'omniauth-cas'
+#gem 'omniauth'
+#gem 'omniauth-cas'
 gem 'puma'
 gem 'rack'
 gem 'rake'
 gem 'sinatra'
 gem 'sinatra-contrib'
+gem 'rest-client'
 
 group :development do
   gem 'capybara'
