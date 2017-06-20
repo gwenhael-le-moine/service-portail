@@ -45,6 +45,18 @@ angular.module( 'portailApp', [ 'ngResource',
                function( $httpProvider ) {
                    $httpProvider.defaults.useXDomain = true;
                    $httpProvider.defaults.withCredentials = true;
+
+                   $httpProvider.interceptors.push( [ '$q', '$window',
+                                                      function( $q, $window ) {
+                                                          return {
+                                                              'responseError': function( rejection ) {
+                                                                  if ( rejection.status === 401 ) {
+                                                                      $window.location.href = '/sso/login?ticket=false&service=' + encodeURIComponent( $window.location.href );
+                                                                  }
+                                                                  return rejection;
+                                                              }
+                                                          };
+                                                      } ] );
                }] )
     .run( [ '$rootScope', 'log',
             function( $rootScope, log ) {
