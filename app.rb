@@ -19,6 +19,10 @@ class SinatraApp < Sinatra::Base
     set :show_exceptions, false
   end
 
+  before do
+    expires 500, :public, :must_revalidate
+  end
+
   register Portail::Routes::Index
 
   register Portail::Routes::Stats
