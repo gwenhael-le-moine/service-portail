@@ -137,7 +137,6 @@ angular.module( 'statsApp',
                                                                           }
                                                                       } )
                                                                       .value() } ];
-                                                       console.log( ( ( moment() - started_at ) / 1000.0 ) + 's : extracted ' + key )
 
                                                        return data;
                                                    };
@@ -210,8 +209,6 @@ angular.module( 'statsApp',
                                                                               } ).value()
                                                                             } );
                                                    } );
-
-                                                   console.log( ( ( moment() - started_at ) / 1000.0 ) + 's : all data received and treated' )
                                                } );
                                        } );
                                };
