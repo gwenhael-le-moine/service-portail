@@ -101,7 +101,7 @@ angular.module( 'statsApp',
 
 
                            Annuaire.get_etablissements({}).then( function( response ) {
-                               $scope.labels.uai = _.chain(response.data).map( function( etab ) { return [ etab.code_uai, etab.nom ]; } ).object().value();
+                               $scope.labels.uai = _.chain(response.data).map( function( etab ) { return [ etab.code_uai, etab.nom + ' (' + etab.code_uai + ')' ]; } ).object().value();
 
                                Annuaire.get_stats( { from: $scope.debut.clone().toDate(),
                                                      until: $scope.fin.clone().toDate(),
