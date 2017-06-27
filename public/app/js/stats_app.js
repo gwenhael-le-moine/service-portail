@@ -100,7 +100,7 @@ angular.module( 'statsApp',
 
                                    $http.get( URL_ENT + '/api/structures', { params: { expand: false } } )
                                        .then( function( response ) {
-                                           ctrl.labels.structure_id = _.chain(response.data).map( function( etab ) { return [ etab.id, etab.name ]; } ).object().value();
+                                           ctrl.labels.structure_id = _.chain(response.data).map( function( etab ) { return [ etab.id, etab.name + ' (' + etab.id + ')' ]; } ).object().value();
 
                                            $http.get( URL_ENT + '/api/logs', { params: { 'timestamp>': ctrl.debut.clone().toDate(),
                                                                                          'timestamp<': ctrl.fin.clone().toDate(),
