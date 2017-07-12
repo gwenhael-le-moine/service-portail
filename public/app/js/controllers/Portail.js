@@ -222,38 +222,39 @@ angular.module( 'portailApp' )
                                        if ( _(response).isEmpty() ) {
                                            Annuaire.query_applications()
                                                .then( function( response ) {
-                                                   $q.all( _.chain(response)
-                                                           .where( { default: true } )
-                                                           .map( function( tile ) {
-                                                               tile.structure_id = ctrl.user.active_profile().structure_id;
-                                                               return Tiles.save( tile ).$promise;
-                                                           } ) )
-                                                       .then( retrieve_tiles_tree );
+                                                   response = _.chain(response)
+                                                       .where( { default: true } )
+                                                       .map( function( tile ) {
+                                                           tile.structure_id = ctrl.user.active_profile().structure_id;
+                                                           return Tiles.save( tile ).$promise;
+                                                       } );
+
+                                                   // $q.all( new_tiles )
+                                                   //     .then( retrieve_tiles_tree );
                                                } );
-                                       } else {
-                                           response.forEach( function( app ) { app.taxonomy = 'app'; } );
-
-                                           var tiles = _(response)
-                                               .select( function( app ) {
-                                                   var now = moment();
-                                                   var is_it_summer = now.month() > 7 && now.month() < 9;
-
-                                                   return ( !is_it_summer || app.summer )
-                                                       && ( !ctrl.user.profiles || !ctrl.user.active_profile() || ( ctrl.user.is_admin() || !_(app.hidden).includes( ctrl.user.active_profile().type ) ) )
-                                                       && ( app.application_id === 'MAIL' ? _.chain(ctrl.user.emails).pluck( 'type' ).includes( 'Ent' ).value() : true );
-                                               } )
-                                               .map( tool_tile );
-
-                                           tiles = Utils.fill_empty_tiles( tiles );
-                                           tiles = _(tiles).sortBy( function( tile ) { return tile.index; } );
-                                           tiles = Utils.pad_tiles_tree( tiles );
-
-                                           ctrl.tiles = { configurable: true,
-                                                          aside_template: 'app/views/aside_news.html',
-                                                          tiles: tiles };
-
-                                           go_to_root_tile.action();
                                        }
+                                       response.forEach( function( app ) { app.taxonomy = 'app'; } );
+
+                                       var tiles = _(response)
+                                           .select( function( app ) {
+                                               var now = moment();
+                                               var is_it_summer = now.month() > 7 && now.month() < 9;
+
+                                               return ( !is_it_summer || app.summer )
+                                                   && ( !ctrl.user.profiles || !ctrl.user.active_profile() || ( ctrl.user.is_admin() || !_(app.hidden).includes( ctrl.user.active_profile().type ) ) )
+                                                   && ( app.application_id === 'MAIL' ? _.chain(ctrl.user.emails).pluck( 'type' ).includes( 'Ent' ).value() : true );
+                                           } )
+                                           .map( tool_tile );
+
+                                       tiles = Utils.fill_empty_tiles( tiles );
+                                       tiles = _(tiles).sortBy( function( tile ) { return tile.index; } );
+                                       tiles = Utils.pad_tiles_tree( tiles );
+
+                                       ctrl.tiles = { configurable: true,
+                                                      aside_template: 'app/views/aside_news.html',
+                                                      tiles: tiles };
+
+                                       go_to_root_tile.action();
                                    } );
                                };
 
