@@ -7,7 +7,6 @@ angular.module( 'portailApp' )
                     return $resource( URL_ENT + '/api/flux/:id',
                                       { id: '@id',
                                         structure_id: '@structure_id',
-                                        nb: '@nb',
                                         url: '@url',
                                         name: '@name' },
                                       { get: { isArray: true },

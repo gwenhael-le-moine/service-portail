@@ -25,8 +25,7 @@ angular.module( 'portailApp' )
                        };
 
                        ctrl.add_flux = function() {
-                           ctrl.current_flux.push( new Flux( { nb: 1,
-                                                               name: '',
+                           ctrl.current_flux.push( new Flux( { name: '',
                                                                url: '',
                                                                icon: '' } ) );
                        };
