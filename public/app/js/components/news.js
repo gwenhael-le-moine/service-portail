@@ -13,7 +13,8 @@ angular.module( 'portailApp' )
                                     ctrl.retrieve_news = function( force_reload ) {
                                         var one_month_ago = moment().subtract( 1, 'months' ).toDate().toISOString();
 
-                                        $http.get( URL_ENT + '/api/users/' + ctrl.user.id + '/news?pubDate>=' + one_month_ago )
+                                        $http.get( URL_ENT + '/api/news', { params: { user_id: ctrl.user.id,
+                                                                                      'pubDate>': one_month_ago } } )
                                             .then( function( response ) {
                                                 ctrl.newsfeed = _(response.data).map( function( item, index ) {
                                                     item.trusted_content = $sce.trustAsHtml( item.description );
@@ -26,21 +27,21 @@ angular.module( 'portailApp' )
 
                                                 ctrl.carouselIndex = 0;
 
-                                                return $http.get( URL_ENT + '/api/structures/' + ctrl.user.active_profile().structure_id + '/rss?pubDate>=' + one_month_ago );
+                                                return $http.get( URL_ENT + '/api/structures/' + ctrl.user.active_profile().structure_id + '/rss', { params: { user_id: ctrl.user.id } } );
                                             })
-                                                   .then( function( response ) {
-                                                       ctrl.newsfeed = ctrl.newsfeed.concat( _(response.data).map( function( item, index ) {
-                                                           item.trusted_content = $sce.trustAsHtml( item.content );
-                                                           item.no_image = _(item.image).isNull();
-                                                           item.pubDate = moment( new Date( item.pubDate ) ).toDate();
+                                            .then( function( response ) {
+                                                ctrl.newsfeed = ctrl.newsfeed.concat( _(response.data).map( function( item, index ) {
+                                                    item.trusted_content = $sce.trustAsHtml( item.content );
+                                                    item.no_image = _(item.image).isNull();
+                                                    item.pubDate = moment( new Date( item.pubDate ) ).toDate();
 
-                                                           if ( _(item.image).isNull() ) {
-                                                               item.image = _(RANDOM_IMAGES).sample();
-                                                           }
+                                                    if ( _(item.image).isNull() ) {
+                                                        item.image = _(RANDOM_IMAGES).sample();
+                                                    }
 
-                                                           return item;
-                                                       }) );
-                                                   });
+                                                    return item;
+                                                }) );
+                                            });
                                     };
 
                                         ctrl.config_news_fluxes = function() {
@@ -57,7 +58,6 @@ angular.module( 'portailApp' )
                                                 ctrl.user = user;
 
                                                 ctrl.retrieve_news( false );
-
                                             } );
                                         };
                                 } ]
