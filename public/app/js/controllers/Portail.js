@@ -135,41 +135,41 @@ angular.module( 'portailApp' )
                                                              aside_template: 'app/views/aside_TROMBI_regroupements.html',
                                                              tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( regroupement, index ) {
                                                                  regroupement.taxonomy = 'regroupement';
-                                                                     regroupement.index = index + 1;
-                                                                     switch( regroupement.type ) {
-                                                                     case 'CLS':
-                                                                         regroupement.color = 'vert';
-                                                                         break;
-                                                                     case 'GRP':
-                                                                         regroupement.color = 'bleu';
-                                                                         break;
-                                                                     default:
-                                                                         regroupement.color = 'jaune';
-                                                                     }
-                                                                     regroupement.color += index % 2 == 0 ? '' : '-moins';
-                                                                     regroupement.action = function() { // TODO: based on group.users
-                                                                         ctrl.filter_criteria.text = '';
+                                                                 regroupement.index = index + 1;
+                                                                 switch( regroupement.type ) {
+                                                                 case 'CLS':
+                                                                     regroupement.color = 'vert';
+                                                                     break;
+                                                                 case 'GRP':
+                                                                     regroupement.color = 'bleu';
+                                                                     break;
+                                                                 default:
+                                                                     regroupement.color = 'jaune';
+                                                                 }
+                                                                 regroupement.color += index % 2 == 0 ? '' : '-moins';
+                                                                 regroupement.action = function() { // TODO: based on group.users
+                                                                     ctrl.filter_criteria.text = '';
 
-                                                                         Annuaire.get_users( _(regroupement.users).pluck( 'user_id' ) )
-                                                                             .then( function( response ) {
-                                                                                 ctrl.tree = { configurable: false,
-                                                                                               filter: function() {
-                                                                                                   return function( tile ) {
-                                                                                                       return tile.taxonomy !== 'eleve'
-                                                                                                           || _(ctrl.filter_criteria.text).isEmpty()
-                                                                                                           || tile.lastname.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() )
-                                                                                                           || tile.firstname.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() );
-                                                                                                   };
-                                                                                               },
-                                                                                               aside_template: 'app/views/aside_TROMBI_people.html',
-                                                                                               tiles: Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.data.map( function( eleve, index ) {
-                                                                                                   eleve.taxonomy = 'eleve';
-                                                                                                   eleve.index = index + 1;
-                                                                                                   eleve.color = 'jaune';
-                                                                                                   eleve.color += index % 2 == 0 ? '' : '-moins';
+                                                                     Annuaire.get_users( _(regroupement.users).pluck( 'user_id' ) )
+                                                                         .then( function( response ) {
+                                                                             ctrl.tree = { configurable: false,
+                                                                                           filter: function() {
+                                                                                               return function( tile ) {
+                                                                                                   return tile.taxonomy !== 'eleve'
+                                                                                                       || _(ctrl.filter_criteria.text).isEmpty()
+                                                                                                       || tile.lastname.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() )
+                                                                                                       || tile.firstname.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() );
+                                                                                               };
+                                                                                           },
+                                                                                           aside_template: 'app/views/aside_TROMBI_people.html',
+                                                                                           tiles: Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.data.map( function( eleve, index ) {
+                                                                                               eleve.taxonomy = 'eleve';
+                                                                                               eleve.index = index + 1;
+                                                                                               eleve.color = 'jaune';
+                                                                                               eleve.color += index % 2 == 0 ? '' : '-moins';
 
-                                                                                                   return eleve;
-                                                                                               } ) ) ) };
+                                                                                               return eleve;
+                                                                                           } ) ) ) };
                                                                              ctrl.parent = node;
                                                                          } );
                                                                  };
@@ -218,44 +218,31 @@ angular.module( 'portailApp' )
                                };
 
                                var retrieve_tiles_tree = function() {
-                                   currentUser.tiles().then( function( response ) {
-                                       if ( _(response).isEmpty() ) {
-                                           Annuaire.query_applications()
-                                               .then( function( response ) {
-                                                   response = _.chain(response)
-                                                       .where( { default: true } )
-                                                       .map( function( tile ) {
-                                                           tile.structure_id = ctrl.user.active_profile().structure_id;
-                                                           return Tiles.save( tile ).$promise;
-                                                       } );
+                                   currentUser.tiles()
+                                       .then( function( response ) {
+                                           response.forEach( function( app ) { app.taxonomy = 'app'; } );
 
-                                                   // $q.all( new_tiles )
-                                                   //     .then( retrieve_tiles_tree );
-                                               } );
-                                       }
-                                       response.forEach( function( app ) { app.taxonomy = 'app'; } );
+                                           var tiles = _(response)
+                                               .select( function( app ) {
+                                                   var now = moment();
+                                                   var is_it_summer = now.month() > 7 && now.month() < 9;
 
-                                       var tiles = _(response)
-                                           .select( function( app ) {
-                                               var now = moment();
-                                               var is_it_summer = now.month() > 7 && now.month() < 9;
+                                                   return ( !is_it_summer || app.summer )
+                                                       && ( !ctrl.user.profiles || !ctrl.user.active_profile() || ( ctrl.user.is_admin() || !_(app.hidden).includes( ctrl.user.active_profile().type ) ) )
+                                                       && ( app.application_id === 'MAIL' ? _.chain(ctrl.user.emails).pluck( 'type' ).includes( 'Ent' ).value() : true );
+                                               } )
+                                               .map( tool_tile );
 
-                                               return ( !is_it_summer || app.summer )
-                                                   && ( !ctrl.user.profiles || !ctrl.user.active_profile() || ( ctrl.user.is_admin() || !_(app.hidden).includes( ctrl.user.active_profile().type ) ) )
-                                                   && ( app.application_id === 'MAIL' ? _.chain(ctrl.user.emails).pluck( 'type' ).includes( 'Ent' ).value() : true );
-                                           } )
-                                           .map( tool_tile );
+                                           tiles = Utils.fill_empty_tiles( tiles );
+                                           tiles = _(tiles).sortBy( function( tile ) { return tile.index; } );
+                                           tiles = Utils.pad_tiles_tree( tiles );
 
-                                       tiles = Utils.fill_empty_tiles( tiles );
-                                       tiles = _(tiles).sortBy( function( tile ) { return tile.index; } );
-                                       tiles = Utils.pad_tiles_tree( tiles );
+                                           ctrl.tiles = { configurable: true,
+                                                          aside_template: 'app/views/aside_news.html',
+                                                          tiles: tiles };
 
-                                       ctrl.tiles = { configurable: true,
-                                                      aside_template: 'app/views/aside_news.html',
-                                                      tiles: tiles };
-
-                                       go_to_root_tile.action();
-                                   } );
+                                           go_to_root_tile.action();
+                                       } );
                                };
 
                                // Edition
