@@ -27,7 +27,7 @@ angular.module( 'portailApp' )
 
                                                 ctrl.carouselIndex = 0;
 
-                                                return $http.get( URL_ENT + '/api/structures/' + ctrl.user.active_profile().structure_id + '/rss', { params: { user_id: ctrl.user.id } } );
+                                                return $http.get( URL_ENT + '/api/structures/' + ctrl.user.active_profile().structure_id + '/rss', { params: { 'pubDate>': one_month_ago } } );
                                             })
                                             .then( function( response ) {
                                                 ctrl.newsfeed = ctrl.newsfeed.concat( _(response.data).map( function( item, index ) {
