@@ -97,7 +97,7 @@
               "default": false,
               "summer": true,
               "color": "#eb5454",
-              "icon": "app/node_modules/laclasse-common-client/images/04_notesabsences.svg",
+              "icon": "app/node_modules/laclasse-common-client/images/15_teleservices.svg",
               "index": 13 },
           "QUIZ": {
               "hidden": [],
