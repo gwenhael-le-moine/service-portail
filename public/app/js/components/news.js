@@ -11,42 +11,54 @@ angular.module( 'portailApp' )
                                     ctrl.newsfeed = [];
 
                                     ctrl.retrieve_news = function( force_reload ) {
-                                        $http.get( URL_ENT + '/api/users/' + ctrl.user.id + '/news' )
+                                        var one_month_ago = moment().subtract( 1, 'months' ).toDate().toISOString();
+
+                                        $http.get( URL_ENT + '/api/users/' + ctrl.user.id + '/news?pubDate>=' + one_month_ago )
                                             .then( function( response ) {
                                                 ctrl.newsfeed = _(response.data).map( function( item, index ) {
                                                     item.trusted_content = $sce.trustAsHtml( item.description );
                                                     item.no_image = _(item.image).isNull();
                                                     item.pubDate = moment( new Date( item.pubDate ) ).toDate();
-
-                                                    if ( item.title === 'Publipostage' ) {
-                                                        item.image =  'app/node_modules/laclasse-common-client/images/11_publipostage.svg';
-                                                    } else if ( _(item.image).isNull() ) {
-                                                        item.image = _(RANDOM_IMAGES).sample();
-                                                    }
+                                                    item.image =  'app/node_modules/laclasse-common-client/images/11_publipostage.svg';
 
                                                     return item;
                                                 });
 
                                                 ctrl.carouselIndex = 0;
-                                            });
+
+                                                return $http.get( URL_ENT + '/api/structures/' + ctrl.user.active_profile().structure_id + '/rss?pubDate>=' + one_month_ago );
+                                            })
+                                                   .then( function( response ) {
+                                                       ctrl.newsfeed = ctrl.newsfeed.concat( _(response.data).map( function( item, index ) {
+                                                           item.trusted_content = $sce.trustAsHtml( item.content );
+                                                           item.no_image = _(item.image).isNull();
+                                                           item.pubDate = moment( new Date( item.pubDate ) ).toDate();
+
+                                                           if ( _(item.image).isNull() ) {
+                                                               item.image = _(RANDOM_IMAGES).sample();
+                                                           }
+
+                                                           return item;
+                                                       }) );
+                                                   });
                                     };
 
-                                    ctrl.config_news_fluxes = function() {
-                                        $uibModal.open( { templateUrl: 'app/views/popup_config_news_fluxes.html',
-                                                          controller: 'PopupConfigNewsFluxesCtrl',
-                                                          backdrop: 'static'  } )
-                                            .result.then( function() {
-                                                ctrl.retrieve_news( true );
+                                        ctrl.config_news_fluxes = function() {
+                                            $uibModal.open( { templateUrl: 'app/views/popup_config_news_fluxes.html',
+                                                              controller: 'PopupConfigNewsFluxesCtrl',
+                                                              backdrop: 'static'  } )
+                                                .result.then( function() {
+                                                    ctrl.retrieve_news( true );
+                                                } );
+                                        };
+
+                                        ctrl.$onInit = function() {
+                                            currentUser.get( false ).then( function( user ) {
+                                                ctrl.user = user;
+
+                                                ctrl.retrieve_news( false );
+
                                             } );
-                                    };
-
-                                    ctrl.$onInit = function() {
-                                        currentUser.get( false ).then( function( user ) {
-                                            ctrl.user = user;
-
-                                            ctrl.retrieve_news( false );
-
-                                        } );
-                                    };
+                                        };
                                 } ]
                 } );
