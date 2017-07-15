@@ -117,16 +117,14 @@
   },
   "news_feed": [
       {
-          "nb": 1,
           "icon": "",
-          "flux": "http://ent-laclasse.blogs.laclasse.com/category/editos/feed/",
-          "title": "Editoriaux d'Erasme"
+          "url": "http://ent-laclasse.blogs.laclasse.com/category/editos/feed/",
+          "name": "Editoriaux d'Erasme"
       },
       {
-          "nb": 3,
           "icon": "",
-          "flux": "http://ent-laclasse.blogs.laclasse.com/feed/",
-          "title": "blog du projet ENT"
+          "url": "http://ent-laclasse.blogs.laclasse.com/feed/",
+          "name": "blog du projet ENT"
       }
   ],
   "help_links": [

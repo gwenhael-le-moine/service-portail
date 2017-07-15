@@ -32,9 +32,8 @@ angular.module( 'portailApp' )
 
                        ctrl.add_default_flux = function() {
                            _(CONFIG.news_feed).each( function( flux ) {
-                               ctrl.save( flux ).then( function( response ) {
-                                   ctrl.current_flux.push( response );
-                               } );
+                               ctrl.dirtify( flux );
+                               ctrl.current_flux.push( new Flux( flux ) );
                            } );
                        };
 
