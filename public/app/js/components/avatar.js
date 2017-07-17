@@ -9,10 +9,9 @@ angular.module( 'portailApp' )
                              } };
                 } )
     .component( 'avatar',
-                { bindings: { user: '=' },
-                  templateUrl: 'app/js/components/avatar.html',
-                  controller: [ 'currentUser', 'URL_ENT',
-                                function( currentUser, URL_ENT ) {
+                { templateUrl: 'app/js/components/avatar.html',
+                  controller: [ 'currentUser', 'URL_ENT', 'User',
+                                function( currentUser, URL_ENT, User ) {
                                     var ctrl = this;
 
                                     ctrl.URL_ENT = URL_ENT;
@@ -110,7 +109,11 @@ angular.module( 'portailApp' )
                                     };
 
                                     ctrl.$onInit = function() {
-                                        reset_new_avatar();
+                                        currentUser.get( false ).then( function( user ) {
+                                            ctrl.user = user;
+
+                                            reset_new_avatar();
+                                        } );
                                     };
                                 } ]
                 } );

@@ -1,13 +1,13 @@
 'use strict';
 
 angular.module( 'portailApp' )
-    .component( 'userprofile',
+    .component( 'userProfile',
                 { bindings: { user: '=' },
                   templateUrl: 'app/js/components/user_profile.html',
-                  controller: [ '$rootScope', 'currentUser', 'APP_PATH', 'Utils', 'User',
-                                function( $rootScope, currentUser, APP_PATH, Utils, User ) {
+                  controller: [ 'toastr', 'currentUser', 'APP_PATH', 'Utils', 'User',
+                                function( toastr, currentUser, APP_PATH, Utils, User ) {
                                     var ctrl = this;
-                                    var dirty = {};
+                                    ctrl.dirty = {};
 
                                     ctrl.prefix = APP_PATH;
                                     ctrl.groups = [ { ouvert: true,
@@ -21,42 +21,51 @@ angular.module( 'portailApp' )
                                     ctrl.open_datepicker = function( $event ) {
                                         $event.preventDefault();
                                         $event.stopPropagation();
-
-                                        ctrl.opened = true;
                                     };
 
                                     ctrl.mark_as_dirty = function( key ) {
-                                        dirty[ key ] = true;
+                                        ctrl.dirty[ key ] = true;
                                     };
 
                                     ctrl.filter_emails = function() {
                                         return function( email ) {
-                                            return ( ctrl.user.profil_actif.profil_id !== 'TUT' || email.type !== 'Ent' ) && _(email.adresse.match( email.user_id )).isNull();
+                                            return ( ctrl.user.active_profile().type !== 'TUT'
+                                                     || email.type !== 'Ent' )
+                                                && _(email.asdress.match( email.user_id )).isNull();
                                         };
                                     };
 
-                                    ctrl.fermer = function( sauvegarder ) {
-                                        if ( sauvegarder && !_(dirty).isEmpty() ) {
-                                            if ( _(ctrl.password.new1).isEmpty() || ( !_(ctrl.password.new1).isEmpty() && ( ctrl.password.new1 == ctrl.password.new2 ) ) ) {
-                                                var mod_user = {};
+                                    ctrl.save = function() {
+                                        if ( !_(ctrl.dirty).isEmpty()
+                                             && ( _(ctrl.password.new1).isEmpty()
+                                                  || ( !_(ctrl.password.new1).isEmpty()
+                                                       && ( ctrl.password.new1 === ctrl.password.new2 ) ) ) ) {
+                                            var mod_user = {};
 
-                                                _(dirty).keys().forEach( function( key ) {
-                                                    mod_user[ key ] = ctrl.user[ key ];
-                                                } );
+                                            _(ctrl.dirty).keys().forEach( function( key ) {
+                                                mod_user[ key ] = ctrl.user[ key ];
+                                            } );
 
-                                                if ( !_(ctrl.password.new1).isEmpty() ) {
-                                                    mod_user.password = ctrl.password.new1;
-                                                }
+                                            if ( !_(ctrl.password.new1).isEmpty() ) {
+                                                mod_user.password = ctrl.password.new1;
+                                            } else {
+                                                delete mod_user.password;
+                                            }
 
-                                                User.update( mod_user );
+                                            if ( !_(mod_user).isEmpty() ) {
+                                                User.update( { id: ctrl.user.id }, mod_user ).$promise
+                                                .then( function success( response ) {
+                                                    toastr.success( 'Mise à jour effectuée.' );
+                                                },
+                                                       function error( response ) {} );
                                             }
                                         }
                                     };
 
                                     ctrl.$onInit = function() {
-                                        ctrl.user.editable = _(ctrl.user.id_jointure_aaf).isNull();
+                                        ctrl.user.editable = _(ctrl.user.aaf_jointure_id).isNull();
 
-                                        ctrl.user.date_naissance = new Date( ctrl.user.date_naissance );
+                                        ctrl.user.birthdate = new Date( ctrl.user.birthdate );
                                     };
                                 } ]
                 } );

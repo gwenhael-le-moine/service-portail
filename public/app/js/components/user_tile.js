@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module( 'portailApp' )
-    .component( 'usertile',
+    .component( 'userTile',
                 { bindings: { user: '<' },
                   templateUrl: 'app/js/components/user_tile.html',
                   controller: [ 'APP_PATH', 'URL_ENT',
@@ -9,12 +9,15 @@ angular.module( 'portailApp' )
                                     var ctrl = this;
 
                                     ctrl.APP_PATH = APP_PATH;
-                                    ctrl.URL_ENT = URL_ENT;
 
                                     ctrl.change_password_message = 'Pensez à changer votre mot de passe...';
 
                                     ctrl.edit_profile = function() {
                                         ctrl.user.edit_profile = !ctrl.user.edit_profile;
+                                    };
+
+                                    ctrl.$onInit = function() {
+                                        ctrl.url_avatar = URL_ENT + '/' + ctrl.user.avatar;
                                     };
                                 } ]
                 } );

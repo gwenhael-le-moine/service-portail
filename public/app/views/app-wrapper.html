@@ -1,17 +1,18 @@
 <div id="app-wrapper">
     <div class="en-tete container gris4" role="navigation">
-        <logo class="petit logolaclasse gris4 pull-left"></logo>
+        <logo class="petit logolaclasse gris4 pull-left"
+              user="user"></logo>
 
         <span class="hidden-xs hidden-sm titre" ng:cloak>{{app.nom}}</span>
 
-        <usermenu user="current_user"></usermenu>
+        <usermenu user="user"></usermenu>
 
         <profilactif class="gris4 profil-select-wrapper"
-                     ng:if="current_user.profils"
-                     user="current_user"></profilactif>
+                     ng:if="user.profiles"
+                     user="user"></profilactif>
     </div>
 
     <appiframe appid="appid"
-               user="current_user"
+               user="user"
                class="appiframe"></appiframe>
 </div>

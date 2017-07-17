@@ -1,9 +1,9 @@
 <div ng:style="{ 'background-image': url( '{{tile.avatar}}' ) }">
     <a href
        ng:click="tile.action()"
-       title="{{tile.prenom + ' ' + tile.nom}}"
+       title="{{tile.firstname + ' ' + tile.lastname}}"
        target="_blank">
-        <h1>{{tile.nom}}</h1>
-        <h3>{{tile.prenom}}</h3>
+        <h1>{{tile.lastname}}</h1>
+        <h3>{{tile.firstname}}</h3>
     </a>
 </div>

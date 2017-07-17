@@ -2,51 +2,63 @@
 
 angular.module( 'portailApp' )
     .component( 'news',
-                { bindings: { user: '<',
-                              edition: '<' },
+                { bindings: { edition: '<' },
                   templateUrl: 'app/js/components/news.html',
-                  controller: [ '$sce', '$uibModal', 'news', 'APP_PATH', 'RANDOM_IMAGES',
-                                function( $sce, $uibModal, news, APP_PATH, RANDOM_IMAGES ) {
+                  controller: [ '$sce', '$uibModal', '$http', 'URL_ENT', 'RANDOM_IMAGES', 'currentUser',
+                                function( $sce, $uibModal, $http, URL_ENT, RANDOM_IMAGES, currentUser ) {
                                     var ctrl = this;
 
                                     ctrl.newsfeed = [];
 
                                     ctrl.retrieve_news = function( force_reload ) {
-                                        news.get( force_reload )
+                                        var one_month_ago = moment().subtract( 1, 'months' ).toDate().toISOString();
+
+                                        $http.get( URL_ENT + '/api/news', { params: { user_id: ctrl.user.id,
+                                                                                      'pubDate>': one_month_ago } } )
                                             .then( function( response ) {
                                                 ctrl.newsfeed = _(response.data).map( function( item, index ) {
-                                                    item.id = index;
-                                                    item.trusted_content = $sce.trustAsHtml( item.content );
+                                                    item.trusted_content = $sce.trustAsHtml( item.description );
                                                     item.no_image = _(item.image).isNull();
                                                     item.pubDate = moment( new Date( item.pubDate ) ).toDate();
-
-                                                    if ( item.no_image ) {
-                                                        if ( item.title == 'Publipostage' ) {
-                                                            item.image =  APP_PATH + '/app/node_modules/laclasse-common-client/images/11_publipostage.svg';
-                                                        } else if ( ctrl.user.profil_actif && !_(ctrl.user.profil_actif.etablissement_logo).isNull() ) {
-                                                            item.image = ctrl.user.profil_actif.etablissement_logo;
-                                                        } else {
-                                                            item.image = _(RANDOM_IMAGES).sample();
-                                                        }
-                                                    }
+                                                    item.image =  'app/node_modules/laclasse-common-client/images/11_publipostage.svg';
 
                                                     return item;
                                                 });
 
                                                 ctrl.carouselIndex = 0;
+
+                                                return $http.get( URL_ENT + '/api/structures/' + ctrl.user.active_profile().structure_id + '/rss', { params: { 'pubDate>': one_month_ago } } );
+                                            })
+                                            .then( function( response ) {
+                                                ctrl.newsfeed = ctrl.newsfeed.concat( _(response.data).map( function( item, index ) {
+                                                    item.trusted_content = $sce.trustAsHtml( item.content );
+                                                    item.no_image = _(item.image).isNull();
+                                                    item.pubDate = moment( new Date( item.pubDate ) ).toDate();
+
+                                                    if ( _(item.image).isNull() ) {
+                                                        item.image = _(RANDOM_IMAGES).sample();
+                                                    }
+
+                                                    return item;
+                                                }) );
                                             });
                                     };
 
-                                    ctrl.config_news_fluxes = function() {
-                                        $uibModal.open( { templateUrl: 'app/views/popup_config_news_fluxes.html',
-                                                          controller: 'PopupConfigNewsFluxesCtrl' } )
-                                            .result.then( function() {
-                                                ctrl.retrieve_news( true );
-                                            } );
-                                    };
+                                        ctrl.config_news_fluxes = function() {
+                                            $uibModal.open( { templateUrl: 'app/views/popup_config_news_fluxes.html',
+                                                              controller: 'PopupConfigNewsFluxesCtrl',
+                                                              backdrop: 'static'  } )
+                                                .result.then( function() {
+                                                    ctrl.retrieve_news( true );
+                                                } );
+                                        };
 
-                                    ctrl.$onInit = function() {
-                                        ctrl.retrieve_news( false );
-                                    };
+                                        ctrl.$onInit = function() {
+                                            currentUser.get( false ).then( function( user ) {
+                                                ctrl.user = user;
+
+                                                ctrl.retrieve_news( false );
+                                            } );
+                                        };
                                 } ]
                 } );

@@ -9,7 +9,7 @@ angular.module( 'portailApp' )
                         return tiles_tree.concat( _(CASES.slice( tiles_tree.length, CASES.length ))
                                                   .map( function( c, i ) {
                                                       return { index: i + tiles_tree.length,
-                                                               couleur: c.couleur + suffix };
+                                                               color: c.color + suffix };
                                                   } ) );
                     };
 
@@ -21,7 +21,7 @@ angular.module( 'portailApp' )
                             .difference( indexes )
                             .each( function( index ) {
                                 tiles_tree.push( { index: index,
-                                                   couleur: CASES[ index % CASES.length ].couleur + '-moins' } );
+                                                   color: CASES[ index % CASES.length ].color + '-moins' } );
                             } );
 
                         return tiles_tree;

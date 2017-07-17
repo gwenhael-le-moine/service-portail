@@ -2,86 +2,28 @@
 
 require 'rubygems'
 require 'bundler'
-require 'sinatra/json'
-require 'open-uri'
-require 'htmlentities'
-require 'uri'
-require 'json'
-require 'yaml'
-require 'date'
 
 Bundler.require( :default, ENV['RACK_ENV'].to_sym ) # require tout les gems définis dans Gemfile
 
 require 'tilt/erb'
 
-require 'laclasse/helpers/authentication'
-require 'laclasse/helpers/user'
-require 'laclasse/helpers/app_infos'
-
-require_relative './lib/helpers/config'
-require_relative './lib/helpers/provision'
-
+require_relative './config/init'
 require_relative './routes/index'
-require_relative './routes/auth'
-require_relative './routes/status'
-require_relative './routes/api/news'
-
 require_relative './routes/stats'
-
-# https://gist.github.com/chastell/1196800
-class Hash
-  def to_html
-    [ '<ul>',
-      map do |k, v|
-        [ "<li><strong>#{k}</strong> : ", v.respond_to?(:to_html) ? v.to_html : "<span>#{v}</span></li>" ]
-      end,
-      '</ul>' ].join
-  end
-end
 
 # Application Sinatra servant de base
 class SinatraApp < Sinatra::Base
-  configure do
-    set( :app_file, __FILE__ )
-    set( :root, APP_ROOT )
-    set( :public_folder, proc { File.join( root, 'public' ) } )
-    set( :inline_templates, true )
-    set( :protection, true )
-
-    settings.add_charset << 'application/json'
+  configure :production, :development do
+    set :protection, true
+    set :protection, except: :frame_options
+    set :show_exceptions, false
   end
 
-  configure :development do
-    # also_reload '/path/to/some/file'
-    # dont_reload '/path/to/other/file'
-  end
-
-  helpers Sinatra::Param
-
-  helpers Laclasse::Helpers::Authentication
-  helpers Laclasse::Helpers::User
-  helpers Laclasse::Helpers::AppInfos
-
-  helpers Portail::Helpers::Config
-  helpers Portail::Helpers::Provision
-
-  ##### routes #################################################################
-
-  before  do
-    pass if request.path =~ %r{#{APP_PATH}/(auth|login|status)/}
-
-    cache_control :no_cache
-
-    login!( request.path_info ) unless logged?
+  before do
+    expires 500, :public, :must_revalidate
   end
 
   register Portail::Routes::Index
-  register Portail::Routes::Status
+
   register Portail::Routes::Stats
-
-  register Portail::Routes::Auth
-
-  register Portail::Routes::Api::News
 end
-
-SinatraApp.run! if __FILE__ == $PROGRAM_NAME

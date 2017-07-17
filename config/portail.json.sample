@@ -97,7 +97,7 @@
               "default": false,
               "summer": true,
               "color": "#eb5454",
-              "icon": "app/node_modules/laclasse-common-client/images/04_notesabsences.svg",
+              "icon": "app/node_modules/laclasse-common-client/images/15_teleservices.svg",
               "index": 13 },
           "QUIZ": {
               "hidden": [],
@@ -117,16 +117,14 @@
   },
   "news_feed": [
       {
-          "nb": 1,
           "icon": "",
-          "flux": "http://ent-laclasse.blogs.laclasse.com/category/editos/feed/",
-          "title": "Editoriaux d'Erasme"
+          "url": "http://ent-laclasse.blogs.laclasse.com/category/editos/feed/",
+          "name": "Editoriaux d'Erasme"
       },
       {
-          "nb": 3,
           "icon": "",
-          "flux": "http://ent-laclasse.blogs.laclasse.com/feed/",
-          "title": "blog du projet ENT"
+          "url": "http://ent-laclasse.blogs.laclasse.com/feed/",
+          "name": "blog du projet ENT"
       }
   ],
   "help_links": [
