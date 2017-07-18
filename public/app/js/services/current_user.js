@@ -53,11 +53,12 @@ angular.module( 'portailApp' )
                             var structures_ids = _.chain(user.profiles).pluck( 'structure_id' ).uniq().value();
 
                             var structures = Annuaire.get_structures( structures_ids );
-                            var user_groups = $http.get( URL_ENT + '/api/groups/', { params: { 'id[]': _(user.groups).pluck('group_id') } } )
+                            var user_groups_ids = _(user.groups).pluck('group_id');
+                            var user_groups = _(user_groups_ids).isEmpty() ? $q.resolve([]) : $http.get( URL_ENT + '/api/groups/', { params: { 'id[]': user_groups_ids } } )
                                 .then( function( response ) {
                                     return response.data;
                                 } );
-                            var structures_groups = $q.resolve();
+                            var structures_groups = $q.resolve([]);
 
                             if ( _.chain(user.profiles).pluck( 'type' ).intersection([ 'DIR', 'ADM', 'CPE' ]).value().length > 0 ) {
                                 structures_groups = $http.get( URL_ENT + '/api/groups/', { params: { 'structure_id[]': structures_ids } } )
