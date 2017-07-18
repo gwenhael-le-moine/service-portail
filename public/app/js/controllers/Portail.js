@@ -146,7 +146,7 @@ angular.module( 'portailApp' )
                                                                  default:
                                                                      regroupement.color = 'jaune';
                                                                  }
-                                                                 regroupement.color += index % 2 == 0 ? '' : '-moins';
+                                                                 regroupement.color += index % 2 === 0 ? '' : '-moins';
                                                                  regroupement.action = function() { // TODO: based on group.users
                                                                      ctrl.filter_criteria.text = '';
 
@@ -166,7 +166,7 @@ angular.module( 'portailApp' )
                                                                                                eleve.taxonomy = 'eleve';
                                                                                                eleve.index = index + 1;
                                                                                                eleve.color = 'jaune';
-                                                                                               eleve.color += index % 2 == 0 ? '' : '-moins';
+                                                                                               eleve.color += index % 2 === 0 ? '' : '-moins';
 
                                                                                                return eleve;
                                                                                            } ) ) ) };
