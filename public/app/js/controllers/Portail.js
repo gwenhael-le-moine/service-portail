@@ -7,8 +7,8 @@ angular.module( 'portailApp' )
                        var ctrl = $scope;
                        ctrl.$ctrl = ctrl;
 
-                       currentUser.get( true ).
-                           then( function( user ) {
+                       currentUser.get( false )
+                           .then( function( user ) {
                                ctrl.user = user;
 
                                ctrl.prefix = APP_PATH;
