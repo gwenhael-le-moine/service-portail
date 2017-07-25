@@ -7,7 +7,7 @@ angular.module( 'portailApp' )
                        var ctrl = $scope;
                        ctrl.$ctrl = ctrl;
 
-                       currentUser.get( false )
+                       currentUser.get( true )
                            .then( function( user ) {
                                ctrl.user = user;
 

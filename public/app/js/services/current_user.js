@@ -11,7 +11,7 @@ angular.module( 'portailApp' )
                         if ( _(current_user).isUndefined() || force_reload ) {
                             current_user = $http.get( URL_ENT + '/api/users/current' )
                                 .then( function( response ) {
-                                    return User.get({ id: response.data.id }).$promise;
+                                    return new User( response.data );
                                 } );
                         }
 
