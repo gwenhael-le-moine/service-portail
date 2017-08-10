@@ -32,7 +32,7 @@ angular.module( 'portailApp', [ 'ngResource',
 
                                                    ctrl.appid = $stateParams.appid;
 
-                                                   currentUser.get( false ).then( function( user ) {
+                                                   currentUser.get( true ).then( function( user ) {
                                                        ctrl.user = user;
                                                    } );
                                                }
