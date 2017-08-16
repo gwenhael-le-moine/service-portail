@@ -10,7 +10,7 @@ angular.module( 'portailApp' )
                                              application_id	: '@application_id',
                                              index		: '@index',
                                              type		: '@type',
-                                             name		: '@libelle',
+                                             name		: '@name',
                                              description	: '@description',
                                              url		: '@url',
                                              icon		: '@icon',
