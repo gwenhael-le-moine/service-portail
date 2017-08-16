@@ -14,13 +14,13 @@ angular.module( 'portailApp' )
                        $scope.add_empty_link_tile = function() {
                            $scope.available_tiles.push( new Tiles( { creation: true,
                                                                      present: false,
-                                                                    type: 'EXTERNAL',
-                                                                    name: '',
-                                                                    description: '',
-                                                                    url: 'http://',
-                                                                    color: '',
-                                                                    selected: true,
-                                                                    taxonomy: 'app'} ) );
+                                                                     type: 'EXTERNAL',
+                                                                     name: '',
+                                                                     description: '',
+                                                                     url: 'http://',
+                                                                     color: '',
+                                                                     selected: true,
+                                                                     taxonomy: 'app'} ) );
                        };
 
                        $scope.keep_tile_selected = function( event, app ) {
