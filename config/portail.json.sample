@@ -1,10 +1,10 @@
-{ "closed_for_summer": false,
+{ "closed_for_summer": true,
   "apps": {
       "default": {
           "CTXT": {
               "hidden": [ "ACA", "COL", "ETA" ],
               "default": true,
-              "summer": true,
+              "summer": false,
               "color": "#1aa1cc",
               "icon": "app/node_modules/laclasse-common-client/images/03_cahierdetextes.svg",
               "index": 0 },
@@ -81,7 +81,7 @@
           "LPC": {
               "hidden": [  ],
               "default": false,
-              "summer": true,
+              "summer": false,
               "color": "#eb5454",
               "icon": "app/node_modules/laclasse-common-client/images/05_validationcompetences.svg",
               "index": 11 },

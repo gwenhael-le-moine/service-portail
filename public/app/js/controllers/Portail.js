@@ -225,7 +225,7 @@ angular.module( 'portailApp' )
                                            var tiles = _(response)
                                                .select( function( app ) {
                                                    var now = moment();
-                                                   var is_it_summer = now.month() > 7 && now.month() < 9;
+                                                   var is_it_summer = now.month() > 6 && now.month() < 9;
 
                                                    return ( !is_it_summer || app.summer )
                                                        && ( !ctrl.user.profiles || !ctrl.user.active_profile() || ( ctrl.user.is_admin() || !_(app.hidden).includes( ctrl.user.active_profile().type ) ) )
