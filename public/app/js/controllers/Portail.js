@@ -167,7 +167,7 @@ angular.module( 'portailApp' )
                                                                                                eleve.index = index + 1;
                                                                                                eleve.color = 'jaune';
                                                                                                eleve.color += index % 2 === 0 ? '' : '-moins';
-                                                                                               eleve.avatar = URL_ENT + eleve.avatar;
+                                                                                               eleve.avatar = ( _(eleve.avatar.match(/^(user|http)/)).isNull() ? URL_ENT  + '/': '' ) + eleve.avatar;
 
                                                                                                return eleve;
                                                                                            } ) ) ) };
