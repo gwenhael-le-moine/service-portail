@@ -4,8 +4,8 @@ angular.module( 'portailApp' )
     .component( 'news',
                 { bindings: { edition: '<' },
                   templateUrl: 'app/js/components/news.html',
-                  controller: [ '$sce', '$uibModal', '$http', 'URL_ENT', 'RANDOM_IMAGES', 'currentUser',
-                                function( $sce, $uibModal, $http, URL_ENT, RANDOM_IMAGES, currentUser ) {
+                  controller: [ '$sce', '$uibModal', '$http', '$q', 'URL_ENT', 'RANDOM_IMAGES', 'currentUser',
+                                function( $sce, $uibModal, $http, $q, URL_ENT, RANDOM_IMAGES, currentUser ) {
                                     var ctrl = this;
 
                                     ctrl.newsfeed = [];
@@ -27,7 +27,11 @@ angular.module( 'portailApp' )
 
                                                 ctrl.carouselIndex = 0;
 
-                                                return $http.get( URL_ENT + '/api/structures/' + ctrl.user.active_profile().structure_id + '/rss', { params: { 'pubDate>': one_month_ago } } );
+                                                if ( _(ctrl.user.profiles).isEmpty() ) {
+                                                    return $q.resolve({ data: [] });
+                                                } else {
+                                                    return $http.get( URL_ENT + '/api/structures/' + ctrl.user.active_profile().structure_id + '/rss', { params: { 'pubDate>': one_month_ago } } );
+                                                }
                                             })
                                             .then( function( response ) {
                                                 ctrl.newsfeed = ctrl.newsfeed.concat( _(response.data).map( function( item, index ) {

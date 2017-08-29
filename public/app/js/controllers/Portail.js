@@ -227,7 +227,10 @@ angular.module( 'portailApp' )
                                                    var now = moment();
                                                    var is_it_summer = now.month() > 6 && now.month() < 9;
 
-                                                   return ( !is_it_summer || ( app.summer || !_(['ELV', 'TUT']).includes( ctrl.user.active_profile().type ) ) )
+                                                   return ( !is_it_summer
+                                                            || ( app.summer
+                                                                 || ( !_(ctrl.user.profiles).isEmpty()
+                                                                      && !_(['ELV', 'TUT']).includes( ctrl.user.active_profile().type ) ) ) )
                                                        && ( !ctrl.user.profiles || !ctrl.user.active_profile() || ( ctrl.user.is_admin() || !_(app.hidden).includes( ctrl.user.active_profile().type ) ) )
                                                        && ( app.application_id === 'MAIL' ? _.chain(ctrl.user.emails).pluck( 'type' ).includes( 'Ent' ).value() : true );
                                                } )

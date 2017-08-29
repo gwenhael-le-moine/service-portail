@@ -38,8 +38,8 @@ angular.module( 'portailApp' )
 
                     User.prototype.is_admin = function() {
                         return ( _(this).has('super_admin') && this.super_admin )
-                            || !_.chain(this.profiles).findWhere({ structure_id: this.active_profile().structure_id, type: 'DIR' }).isUndefined().value()
-                            || !_.chain(this.profiles).findWhere({ structure_id: this.active_profile().structure_id, type: 'ADM' }).isUndefined().value();
+                            || ( !_(this.profiles).isEmpty() && ( !_.chain(this.profiles).findWhere({ structure_id: this.active_profile().structure_id, type: 'DIR' }).isUndefined().value()
+                                                                  || !_.chain(this.profiles).findWhere({ structure_id: this.active_profile().structure_id, type: 'ADM' }).isUndefined().value() ) );
                     };
 
                     return User;
