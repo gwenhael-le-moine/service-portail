@@ -108,6 +108,11 @@ angular.module( 'portailApp' )
                                             } );
                                     };
 
+                                    ctrl.delete = function() {
+                                        ctrl.user.avatar = 'empty';
+                                        ctrl.user.$update();
+                                    };
+
                                     ctrl.$onInit = function() {
                                         currentUser.get( false ).then( function( user ) {
                                             ctrl.user = user;

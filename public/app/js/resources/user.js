@@ -17,8 +17,6 @@ angular.module( 'portailApp' )
                                           },
                                           { get: { cache: false },
                                             update: { method: 'PUT' },
-                                            // delete_avatar: { method: 'DELETE',
-                                            //                  url: URL_ENT + '/api/users/' + UID + '/avatar' },
                                             upload_avatar: { method: 'POST',
                                                              url: URL_ENT + '/api/users/:id/upload/avatar',
                                                              transformRequest: function( request ) {
