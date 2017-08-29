@@ -40,7 +40,18 @@ angular.module( 'portailApp' )
                             if ( _(user.profiles).isEmpty() ) {
                                 return Annuaire.query_applications()
                                     .then( function( tiles ) {
-                                        return $q.resolve( _(tiles).where( { application_id: 'MAIL' } ) );
+                                        var no_profile_tiles = _.chain(tiles)
+                                            .select( function( tile ) {
+                                                return _(['MAIL', 'DOC']).includes( tile.application_id );
+                                            } )
+                                            .map( function( tile ) {
+                                                tile.summer = true;
+
+                                                return tile;
+                                            } )
+                                            .value();
+
+                                        return $q.resolve( no_profile_tiles );
                                     } );
                             } else {
                                 return Tiles.query( { structure_id: user.active_profile().structure_id } ).$promise;
