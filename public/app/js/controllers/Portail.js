@@ -2,8 +2,8 @@
 
 angular.module( 'portailApp' )
     .controller( 'PortailCtrl',
-                 [ '$scope', '$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Tiles', 'APP_PATH', 'User', 'Annuaire',
-                   function( $scope, $sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Tiles, APP_PATH, User, Annuaire ) {
+                 [ '$scope', '$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Tiles', 'APP_PATH', 'User', 'Annuaire', 'URL_ENT',
+                   function( $scope, $sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Tiles, APP_PATH, User, Annuaire, URL_ENT ) {
                        var ctrl = $scope;
                        ctrl.$ctrl = ctrl;
 
@@ -167,6 +167,7 @@ angular.module( 'portailApp' )
                                                                                                eleve.index = index + 1;
                                                                                                eleve.color = 'jaune';
                                                                                                eleve.color += index % 2 === 0 ? '' : '-moins';
+                                                                                               eleve.avatar = URL_ENT + eleve.avatar;
 
                                                                                                return eleve;
                                                                                            } ) ) ) };
