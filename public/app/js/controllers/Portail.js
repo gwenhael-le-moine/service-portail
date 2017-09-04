@@ -207,7 +207,7 @@ angular.module( 'portailApp' )
                                    } else {
                                        node.action = function() {
                                            if ( ctrl.modification ) { return; }
-                                           if ( !_(node.application_id).isNull() && node.application_id !== 'PRONOTE' ) {
+                                           if ( node.type !== 'EXTERNAL' && !_(node.application_id).isNull() && node.application_id !== 'PRONOTE' ) {
                                                $state.go( 'app', { appid: node.application_id } );
                                            } else {
                                                Utils.log_and_open_link( node.application_id === 'PRONOTE' ? 'PRONOTE' : 'EXTERNAL', node.url );
