@@ -59,6 +59,7 @@ angular.module( 'portailApp' )
                                                                                            };
                                                                                        } )
                                                                                        .value() );
+                               _($scope.available_tiles).each( function( tile ) { tile.selected = false; } );
                            } );
 
                        // RessourceNumerique.query().$promise
