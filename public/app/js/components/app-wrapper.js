@@ -3,14 +3,15 @@
 angular.module( 'portailApp' )
     .component( 'appWrapper',
                 { bindings: { appId: '<' },
-                  controller: [ '$scope', '$stateParams', 'currentUser',
-                                function( $scope, $stateParams, currentUser ) {
-                                    var ctrl = $scope;
+                  controller: [ '$stateParams', 'currentUser',
+                                function( $stateParams, currentUser ) {
+                                    var ctrl = this;
 
                                     ctrl.$onInit = function() {
-                                        currentUser.get( true ).then( function( user ) {
-                                            ctrl.user = user;
-                                        } );
+                                        currentUser.get( true )
+                                            .then( function( user ) {
+                                                ctrl.user = user;
+                                            } );
                                     };
                                 }
                               ],

@@ -3,9 +3,8 @@
 angular.module( 'portailApp' )
     .component( 'news',
                 { bindings: { edition: '<' },
-                  templateUrl: 'app/js/components/news.html',
-                  controller: [ '$sce', '$uibModal', '$http', '$q', 'URL_ENT', 'RANDOM_IMAGES', 'currentUser',
-                                function( $sce, $uibModal, $http, $q, URL_ENT, RANDOM_IMAGES, currentUser ) {
+                  controller: [ '$sce', 'Popups', '$http', '$q', 'URL_ENT', 'RANDOM_IMAGES', 'currentUser',
+                                function( $sce, Popups, $http, $q, URL_ENT, RANDOM_IMAGES, currentUser ) {
                                     var ctrl = this;
 
                                     ctrl.newsfeed = [];
@@ -49,20 +48,42 @@ angular.module( 'portailApp' )
                                     };
 
                                         ctrl.config_news_fluxes = function() {
-                                            $uibModal.open( { templateUrl: 'app/views/popup_config_news_fluxes.html',
-                                                              controller: 'PopupConfigNewsFluxesCtrl',
-                                                              backdrop: 'static'  } )
-                                                .result.then( function() {
-                                                    ctrl.retrieve_news( true );
-                                                } );
+                                            Popups.manage_fluxes( function() {
+                                                ctrl.retrieve_news( true );
+                                            }, function error() {} );
                                         };
 
-                                        ctrl.$onInit = function() {
-                                            currentUser.get( false ).then( function( user ) {
-                                                ctrl.user = user;
+                                    ctrl.$onInit = function() {
+                                        currentUser.get( false ).then( function( user ) {
+                                            ctrl.user = user;
 
-                                                ctrl.retrieve_news( false );
-                                            } );
-                                        };
-                                } ]
+                                            ctrl.retrieve_news( false );
+                                        } );
+                                    };
+                                } ],
+                  template: `
+<ul class="noir" rn-carousel rn-carousel-buffered rn-carousel-auto-slide="6" rn-carousel-index="$ctrl.carouselIndex">
+    <li ng:repeat="slide in $ctrl.newsfeed | orderBy:'pubDate':true" active="slide.active"
+        ng:class="{'publipostage': slide.title == 'Publipostage', 'no-image': slide.no_image}">
+        <div class="carousel-image"
+             ng:style="{'background-image': 'url(' + slide.image + ')'}"></div>
+        <div class="carousel-caption">
+            <span class="pub-date" ng:cloak>{{ slide.pubDate | date:'medium' }}</span>
+            <a href="{{ slide.link }}" target="_blank" ng:if="slide.link != 'notYetImplemented'">
+                <h6 ng:cloak>{{ slide.title }}</h6>
+            </a>
+            <h6 ng:if="slide.link == 'notYetImplemented'">{{ slide.title }}</h6>
+            <p ng:bind-html="slide.trusted_content"></p>
+        </div>
+    </li>
+    <div class="hidden-xs hidden-sm angular-carousel-indicators"
+         rn-carousel-indicators
+         slides="$ctrl.newsfeed"
+         rn-carousel-index="$ctrl.carouselIndex">
+    </div>
+    <span class="hidden-xs hidden-sm floating-button big toggle bouton-config-news blanc"
+          ng:if="$ctrl.user.is_admin() && $ctrl.edition"
+          ng:click="$ctrl.config_news_fluxes()"></span>
+</ul>
+`
                 } );

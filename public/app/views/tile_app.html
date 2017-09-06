@@ -8,15 +8,15 @@
          ng:style="{'background-color': tile.color}">
 
         <button class="btn btn-lg toggle-configure open-configure"
-                ng:if="modification"
+                ng:if="$ctrl.modification"
                 ng:click="tile.toggle_configure()">
             <span class="icone parametrer"></span>
         </button>
         <ng-color-picker class="couleurs"
                          ng:click="tile.is_dirty( 'color' )"
-                         ng:if="modification"
+                         ng:if="$ctrl.modification"
                          selected="tile.color"
-                         colors="COULEURS"></ng-color-picker>
+                         colors="$ctrl.COULEURS"></ng-color-picker>
 
         <div class="tile-icone"
            ng:click="tile.action()"
@@ -29,7 +29,7 @@
             </div>
             <img draggable="false"
                  class="icone"
-                 ng:src="{{prefix}}/{{ tile.icon }}"
+                 ng:src="{{$ctrl.prefix}}/{{ tile.icon }}"
                  ng:if="tile.icon">
             <span class="app-name">
                 {{tile.name}}
@@ -40,7 +40,7 @@
     </div>
 
     <div class="configure back blanc"
-         ng:if="modification">
+         ng:if="$ctrl.modification">
 
         <button class="btn btn-lg toggle-configure close-configure"
                 ng:click="tile.toggle_configure()">

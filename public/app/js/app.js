@@ -20,8 +20,7 @@ angular.module( 'portailApp', [ 'ngResource',
                    $stateProvider
                        .state( 'portail',
                                { url: '/',
-                                 templateUrl: 'app/views/portail.html',
-                                 controller: 'PortailCtrl' } )
+                                 component: 'portail' } )
                        .state( 'app',
                                { url: '/app/:appid',
                                  component: 'appWrapper',
