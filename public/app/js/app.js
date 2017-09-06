@@ -23,20 +23,11 @@ angular.module( 'portailApp', [ 'ngResource',
                                  templateUrl: 'app/views/portail.html',
                                  controller: 'PortailCtrl' } )
                        .state( 'app',
-                               { resolve: { prefix: function() { return APP_PATH; } },
-                                 url: '/app/:appid',
-                                 templateUrl: 'app/views/app-wrapper.html',
-                                 controller: [ '$scope', '$stateParams', 'currentUser',
-                                               function( $scope, $stateParams, currentUser ) {
-                                                   var ctrl = $scope;
-
-                                                   ctrl.appid = $stateParams.appid;
-
-                                                   currentUser.get( true ).then( function( user ) {
-                                                       ctrl.user = user;
-                                                   } );
-                                               }
-                                             ] } );
+                               { url: '/app/:appid',
+                                 component: 'appWrapper',
+                                 resolve: { appId: function( $transition$ ) {
+                                     return $transition$.params().appid;
+                                 } } } );
 
                    $urlRouterProvider.otherwise( '/' );
                }
