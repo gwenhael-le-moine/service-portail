@@ -23,8 +23,6 @@ angular.module( 'portailApp' )
 
         <span class="hidden-xs hidden-sm titre" ng:cloak>{{app.nom}}</span>
 
-        <usermenu user="$ctrl.user"></usermenu>
-
         <profilactif class="gris4 profil-select-wrapper"
                      ng:if="$ctrl.user.profiles"
                      user="$ctrl.user"></profilactif>
