@@ -6,11 +6,6 @@ angular.module( 'portailApp' )
                 function( Utils, currentUser ) {
                     var service = this;
 
-                    currentUser.get( false )
-                        .then( function( user ) {
-                            service.user = user;
-                        } );
-
                     service.query = function() {
                         var ccns = [ { nom: '14-18',
                                        description: '14-18',
@@ -122,14 +117,17 @@ angular.module( 'portailApp' )
                                                    titre: '',
                                                    action: function() { Utils.log_and_open_link( 'CCN', 'http://picture.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui' ); } } ] } ];
 
-                        if ( ['DIR', 'ENS', 'DOC'].includes( service.user.active_profile().type ) ) {
-                            ccns.push( { nom: 'Projets 2017-2018',
-                                         description: '',
-                                         icon: '/app/node_modules/laclasse-common-client/images/06_thematiques.svg',
-                                         color: 'bleu-plus',
-                                         action: function() { Utils.log_and_open_link( 'inscription_CCN', 'https://www.laclasse.com/portail/inscription_CCN/index.html' ); }
-                                       } );
-                        }
+                        currentUser.get( false )
+                            .then( function( user ) {
+                                if ( ['DIR', 'ENS', 'DOC'].includes( user.active_profile().type ) ) {
+                                    ccns.push( { nom: 'Projets 2017-2018',
+                                                 description: '',
+                                                 icon: '/app/node_modules/laclasse-common-client/images/06_thematiques.svg',
+                                                 color: 'bleu-plus',
+                                                 action: function() { Utils.log_and_open_link( 'inscription_CCN', 'https://www.laclasse.com/portail/inscription_CCN/index.html' ); }
+                                               } );
+                                }
+                            } );
 
                         return ccns;
                     };
