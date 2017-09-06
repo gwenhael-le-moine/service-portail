@@ -3,8 +3,8 @@
 angular.module( 'portailApp' )
     .component( 'appWrapper',
                 { bindings: { appId: '<' },
-                  controller: [ '$stateParams', 'currentUser', 'Annuaire', 'Tiles', 'Utils',
-                                function( $stateParams, currentUser, Annuaire, Tiles, Utils ) {
+                  controller: [ '$stateParams', '$sce', 'currentUser', 'Annuaire', 'Tiles', 'Utils',
+                                function( $stateParams, $sce, currentUser, Annuaire, Tiles, Utils ) {
                                     var ctrl = this;
 
                                     ctrl.$onInit = function() {
@@ -25,6 +25,8 @@ angular.module( 'portailApp' )
                                                     if ( _(ctrl.app).isUndefined() ) {
                                                         Utils.go_home();
                                                     }
+
+                                                    ctrl.app.url = $sce.trustAsResourceUrl( ctrl.app.url );
                                                 } );
                                             } );
                                     };

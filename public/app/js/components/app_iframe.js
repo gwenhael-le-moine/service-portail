@@ -3,14 +3,12 @@
 angular.module( 'portailApp' )
     .component( 'appiframe',
                 { bindings: { url: '<' },
-                  controller: [ '$sce',
-                                function( $sce ) {
-                                    var ctrl = this;
+                  controller: [ function() {
+                      var ctrl = this;
 
-                                    ctrl.$onInit = function() {
-                                        ctrl.iOS = ( navigator.userAgent.match( /iPad/i ) !== null ) || ( navigator.userAgent.match( /iPhone/i ) !== null );
-                                        ctrl.url = $sce.trustAsUrl( ctrl.url );
-                                    };
+                      ctrl.$onInit = function() {
+                          ctrl.iOS = ( navigator.userAgent.match( /iPad/i ) !== null ) || ( navigator.userAgent.match( /iPhone/i ) !== null );
+                      };
                   }
                               ],
                   template: `
