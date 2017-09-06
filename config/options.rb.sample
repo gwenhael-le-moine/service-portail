@@ -21,6 +21,6 @@ URL_ENT = 'http://localhost/annuaire'.freeze
 #
 # Configuration du service d'annuaire de l'ENT
 #
-ANNUAIRE = { url:                            'http://localhost/annuaire/api',
-             api_key:                        'LuydVroojySB1iZWxkUzTVi8jiVW3pgP1wHSv5opPJY=',
-             app_id:                         'PORTAIL' }.freeze
+ANNUAIRE = { url:     'http://localhost/annuaire/api',
+             api_key: 'LuydVroojySB1iZWxkUzTVi8jiVW3pgP1wHSv5opPJY=',
+             app_id:  'PORTAIL' }.freeze
