@@ -3,7 +3,6 @@
 angular.module( 'portailApp' )
     .component( 'userProfile',
                 { bindings: { user: '=' },
-                  templateUrl: 'app/js/components/user_profile.html',
                   controller: [ 'toastr', 'currentUser', 'APP_PATH', 'Utils', 'User',
                                 function( toastr, currentUser, APP_PATH, Utils, User ) {
                                     var ctrl = this;
@@ -67,5 +66,159 @@ angular.module( 'portailApp' )
 
                                         ctrl.user.birthdate = new Date( ctrl.user.birthdate );
                                     };
-                                } ]
+                                } ],
+                  template: `
+<header>
+    <h3>Profil utilisateur</h3>
+    <h1>{{$ctrl.user.firstname}} {{$ctrl.user.lastname}}</h1>
+</header>
+<div class="form">
+    <form>
+        <div class="avatar-container form-group col-md-4 col-xs-12 pull-right">
+            <label>Avatar :</label>
+            <avatar></avatar>
+        </div>
+
+        <accordion close-others="false" class="col-md-8 col-xs-12 pull-left">
+
+            <accordion-group data-is-open="$ctrl.groups[ 0 ].ouvert" ng:if="$ctrl.groups[ 0 ].enabled">
+                <accordion-heading>
+                    <span class="glyphicon" ng:class="{'glyphicon-chevron-down': $ctrl.groups[ 0 ].ouvert, 'glyphicon-chevron-right': !$ctrl.groups[ 0 ].ouvert}"></span> Informations
+                </accordion-heading>
+                <div class="row">
+
+                    <div class="form-group col-md-6 col-xs-12">
+                        <label for="nom">Nom :</label>
+                        <input type="text"
+                               id="nom"
+                               class="form-control"
+                               ng:disabled="!$ctrl.user.editable"
+                               ng:change="$ctrl.mark_as_dirty( 'lastname' )"
+                               ng:model="$ctrl.user.lastname">
+                    </div>
+                    <div class="form-group col-md-6 col-xs-12">
+                        <label for="prenom">Prénom :</label>
+                        <input type="text"
+                               id="prenom"
+                               class="form-control"
+                               ng:disabled="!$ctrl.user.editable"
+                               ng:change="$ctrl.mark_as_dirty( 'firstname' )"
+                               ng:model="$ctrl.user.firstname">
+                    </div>
+                    <div class="form-group col-md-6 col-xs-12">
+                        <label for="datenaissance">Date de naissance :</label>
+                        <input type="text"
+                               id="date_naissance"
+                               class="form-control"
+                               disabled
+                               value="{{$ctrl.user.birthdate | amDateFormat: 'LL'}}"
+                               ng:if="!$ctrl.user.editable" />
+                        <div uib-dropdown
+                             id="datenaissance"
+                             class="dropdown form-control date-naissance"
+                             ng:if="$ctrl.user.editable">
+                            <a uib-dropdown-toggle
+                               class="dropdown-toggle"
+                               role="button"
+                               data-toggle="uib-dropdown"
+                               data-target="#"
+                               href>{{$ctrl.user.birthdate | amDateFormat: 'LL'}}</a>
+                            <div uib-dropdown-menu
+                                 class="dropdown-menu"
+                                 role="menu"
+                                 ng:click="$event.stopImmediatePropagation()">
+                                <div uib-datepicker
+                                     datepicker-options="datepicker_options"
+                                     ng:disabled="!$ctrl.user.editable"
+                                     ng:change="$ctrl.mark_as_dirty( 'birthdate' )"
+                                     ng:model="$ctrl.user.birthdate"
+                                     ng:required="true">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6 col-xs-12">
+                        <label for="adresse">Adresse :</label>
+                        <input type="text"
+                               id="adresse"
+                               class="form-control"
+                               ng:disabled="!$ctrl.user.editable"
+                               ng:change="$ctrl.mark_as_dirty( 'address' )"
+                               ng:model="$ctrl.user.address">
+                    </div>
+                    <div class="form-group col-md-6 col-xs-12">
+                        <label for="codepostal">Code postal :</label>
+                        <input type="text"
+                               id="codepostal"
+                               class="form-control"
+                               ng:disabled="!$ctrl.user.editable"
+                               ng:change="$ctrl.mark_as_dirty( 'zip_code' )"
+                               ng:model="$ctrl.user.zip_code">
+                    </div>
+                    <div class="form-group col-md-6 col-xs-12">
+                        <label for="ville">Ville :</label>
+                        <input type="text"
+                               id="ville"
+                               class="form-control"
+                               ng:disabled="!$ctrl.user.editable"
+                               ng:change="$ctrl.mark_as_dirty( 'city' )"
+                               ng:model="$ctrl.user.city">
+                    </div>
+
+                    <div class="form-group col-md-6 col-xs-12"
+                         ng:repeat="email in $ctrl.user.emails | orderBy:'primary':true | filter:filter_emails()">
+                        <label for="courriel">Courriel <span ng:if="email.primary">principal</span> :</label>
+                        <input type="text"
+                               id="courriel"
+                               class="form-control"
+                               ng:disabled="true"
+                               ng:model="email.address">
+                    </div>
+                </div>
+
+            </accordion-group>
+
+            <accordion-group data-is-open="$ctrl.groups[ 1 ].ouvert" ng:if="$ctrl.groups[ 1 ].enabled">
+                <accordion-heading>
+                    <span class="glyphicon" ng:class="{'glyphicon-chevron-down': $ctrl.groups[ 1 ].ouvert, 'glyphicon-chevron-right': !$ctrl.groups[ 1 ].ouvert}"></span> Mot de passe<span style="font-weight: bold; color: rgba(235,84,84,0.75)" ng:if="$ctrl.user.default_password">, pensez à le changer...</span>
+                </accordion-heading>
+                <div class="row">
+                    <div class="form-group col-md-6 col-xs-12">
+                        <label for="newpasswd1">Nouveau mot de passe :</label>
+                        <input type="password" class="form-control" id="newpasswd1"
+                               ng:change="$ctrl.mark_as_dirty( 'password' )"
+                               ng:model="$ctrl.password.new1"
+                               zxcvbn="passwordStrength"
+                               zx-min-score="2">
+                        <div class="password-strength"
+                             ng:if="$ctrl.dirty.password && $ctrl.password.new1 !== ''">
+                            <label>Qualité du mot de passe :</label>
+                            <uib-progressbar max="5" value="passwordStrength.score + 1"
+                                             type="{{ ( passwordStrength.score < 2 ) ? 'danger' : ( ( passwordStrength.score < 3 ) ? 'warning' : ( ( passwordStrength.score < 4 ) ? 'primary' : 'success' ) ) }}">
+                                <span ng:switch="passwordStrength.score">
+                                    <span style="color:white; white-space:nowrap;" ng:switch-when="0">Trop faible</span>
+                                    <span style="color:white; white-space:nowrap;" ng:switch-when="1">Faible</span>
+                                    <span style="color:white; white-space:nowrap;" ng:switch-when="2">Moyen</span>
+                                    <span style="color:white; white-space:nowrap;" ng:switch-when="3">Bon</span>
+                                    <span style="color:white; white-space:nowrap;" ng:switch-when="4">Excellent</span>
+                                </span>
+                            </uib-progressbar>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6 col-xs-12"
+                         ng:class="{'has-error': $ctrl.password.new1 !== $ctrl.password.new2 }">
+                        <label for="newpasswd2">Confirmer le nouveau mot de passe :</label>
+                        <input type="password" class="form-control" id="newpasswd2"
+                               ng:model="$ctrl.password.new2">
+                    </div>
+                </div>
+            </accordion-group>
+
+            <footer>
+                <button ng:click="$ctrl.save()">Enregistrer</button>
+            </footer>
+        </accordion>
+    </form>
+</div>
+`
                 } );

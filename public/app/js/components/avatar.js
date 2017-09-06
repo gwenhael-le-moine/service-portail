@@ -9,8 +9,7 @@ angular.module( 'portailApp' )
                              } };
                 } )
     .component( 'avatar',
-                { templateUrl: 'app/js/components/avatar.html',
-                  controller: [ 'currentUser', 'URL_ENT', 'User',
+                { controller: [ 'currentUser', 'URL_ENT', 'User',
                                 function( currentUser, URL_ENT, User ) {
                                     var ctrl = this;
 
@@ -120,5 +119,25 @@ angular.module( 'portailApp' )
                                             reset_new_avatar();
                                         } );
                                     };
-                                } ]
+                                } ],
+                  template: `
+<div class="avatar">
+    <img draggable="false" class="svg"
+         ng:src="{{$ctrl.user.new_avatar.image ? $ctrl.user.new_avatar.image : $ctrl.URL_ENT + '/' + $ctrl.user.avatar}}" />
+    <button style="position: absolute; top: 0; right: 0;"
+            title="Supprimer l'avatar existant"
+            ng:if="!$ctrl.user.new_avatar.blob"
+            ng:click="$ctrl.delete()">
+        <span class="glyphicon glyphicon-remove"
+              style="color: red;" ></span>
+    </button>
+
+    <input type="file" file-changed="$ctrl.onChange" ng:if="!$ctrl.processing"/>
+    <span ng:if="$ctrl.processing"><i class="fa fa-spinner fa-pulse"></i> traitement</span>
+    <footer>
+        <button ng:disabled="!$ctrl.user.new_avatar.blob"
+                ng:click="$ctrl.upload_avatar()">Valider l'avatar</button>
+    </footer>
+</div>
+`
                 } );

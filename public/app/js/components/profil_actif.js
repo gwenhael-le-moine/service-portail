@@ -3,7 +3,6 @@
 angular.module( 'portailApp' )
     .component( 'profilactif',
                 { bindings: { user: '<' },
-                  templateUrl: 'app/js/components/profil_actif.html',
                   controller: [ 'Annuaire', '$state', '$stateParams', 'currentUser',
                                 function( Annuaire, $state, $stateParams, currentUser ) {
                                     var ctrl = this;
@@ -29,5 +28,12 @@ angular.module( 'portailApp' )
 
                                         ctrl.current_profile = ctrl.user.active_profile();
                                     };
-                                } ]
+                                } ],
+                  template: `
+<select ng:disabled="$ctrl.user.profiles.length <= 1"
+        ng:model="$ctrl.current_profile"
+        ng:change="$ctrl.apply_change()"
+        ng:options="profile as profile.structure.name + ' : ' + profile.profile.name group by profile.structure.name for profile in $ctrl.user.profiles track by profile.id" >
+</select>
+`
                 } );

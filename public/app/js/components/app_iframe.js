@@ -3,7 +3,6 @@
 angular.module( 'portailApp' )
     .component( 'appiframe',
                 { bindings: { appid: '<' },
-                  templateUrl: 'app/js/components/app_iframe.html',
                   controller: [ '$sce', 'Tiles', 'Utils', 'currentUser', 'User', 'Annuaire',
                                 function ( $sce, Tiles, Utils, currentUser, User, Annuaire ) {
                                     var ctrl = this;
@@ -33,5 +32,14 @@ angular.module( 'portailApp' )
                                         } );
                                     };
                                 }
-                              ]
+                              ],
+                  template: `
+<div class="iframe" ng:class="{'ios': $ctrl.iOS}">
+    <iframe id="iframe"
+            frameBorder="0"
+            scrolling="{{$ctrl.iOS ? 'no': 'yes'}}"
+            ng:src="{{$ctrl.app.url}}">
+    </iframe>
+</div>
+`
                 } );
