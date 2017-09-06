@@ -2,8 +2,8 @@
 
 angular.module( 'portailApp' )
     .component( 'portail',
-                { controller: [ '$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Tiles', 'APP_PATH', 'User', 'Annuaire', 'URL_ENT', 'Popups',
-                                function( $sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Tiles, APP_PATH, User, Annuaire, URL_ENT, Popups ) {
+                { controller: [ '$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Tiles', 'APP_PATH', 'APP_VERSION', 'User', 'Annuaire', 'URL_ENT', 'Popups',
+                                function( $sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Tiles, APP_PATH, APP_VERSION, User, Annuaire, URL_ENT, Popups ) {
                                     var ctrl = this;
 
                                     ctrl.$onInit = function() {
@@ -13,14 +13,15 @@ angular.module( 'portailApp' )
 
                                                 ctrl.prefix = APP_PATH;
                                                 ctrl.COULEURS = COULEURS;
+                                                ctrl.APP_VERSION = APP_VERSION;
 
                                                 ctrl.get_tile_template = function( taxonomy ) {
-                                                    var tiles_templates = { app: 'app/views/tile_app.html',
-                                                                            back: 'app/views/tile_app.html',
-                                                                            regroupement: 'app/views/tile_regroupement.html',
-                                                                            eleve: 'app/views/tile_eleve.html',
-                                                                            rn: 'app/views/tile_rn.html',
-                                                                            ccn: 'app/views/tile_ccn.html' };
+                                                    var tiles_templates = { app: 'app/views/tile_app.html?v=' + APP_VERSION,
+                                                                            back: 'app/views/tile_app.html?v=' + APP_VERSION,
+                                                                            regroupement: 'app/views/tile_regroupement.html?v=' + APP_VERSION,
+                                                                            eleve: 'app/views/tile_eleve.html?v=' + APP_VERSION,
+                                                                            rn: 'app/views/tile_rn.html?v=' + APP_VERSION,
+                                                                            ccn: 'app/views/tile_ccn.html?v=' + APP_VERSION };
 
                                                     return tiles_templates[ taxonomy ];
                                                 };
@@ -57,7 +58,7 @@ angular.module( 'portailApp' )
                                                             if ( ctrl.modification ) { return; }
                                                             ctrl.tree = { configurable: false,
                                                                           filter: default_filter,
-                                                                          aside_template: 'app/views/aside_CCNUM.html',
+                                                                          aside_template: 'app/views/aside_CCNUM.html?v=' + APP_VERSION,
                                                                           tiles: Utils.pad_tiles_tree( [ go_to_root_tile ]
                                                                                                        .concat( CCN.query()
                                                                                                                 .map( function( ccn, index ) {
@@ -68,7 +69,7 @@ angular.module( 'portailApp' )
                                                                                                                         ccn.action = function() {
                                                                                                                             ctrl.tree = { configurable: false,
                                                                                                                                           filter: default_filter,
-                                                                                                                                          aside_template: 'app/views/aside_CCNUM_archives.html',
+                                                                                                                                          aside_template: 'app/views/aside_CCNUM_archives.html?v=' + APP_VERSION,
                                                                                                                                           tiles: [ go_to_parent_tile( node ) ].concat( ccn.leaves.map( function( ccn, index ) {
                                                                                                                                               ccn.taxonomy = 'ccn';
                                                                                                                                               ccn.index = index + 1;
@@ -88,7 +89,7 @@ angular.module( 'portailApp' )
                                                             currentUser.ressources().then( function ( response ) {
                                                                 ctrl.tree = { configurable: false,
                                                                               filter: default_filter,
-                                                                              aside_template: 'app/views/aside_RN.html',
+                                                                              aside_template: 'app/views/aside_RN.html?v=' + APP_VERSION,
                                                                               tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( rn, index ) {
                                                                                   rn.taxonomy = 'rn';
                                                                                   rn.index = index + 1;
@@ -132,7 +133,7 @@ angular.module( 'portailApp' )
                                                                                                     || tile.structure.name.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() ) ) );
                                                                                   };
                                                                               },
-                                                                              aside_template: 'app/views/aside_TROMBI_regroupements.html',
+                                                                              aside_template: 'app/views/aside_TROMBI_regroupements.html?v=' + APP_VERSION,
                                                                               tiles: Utils.pad_tiles_tree( [ go_to_root_tile ].concat( response.map( function( regroupement, index ) {
                                                                                   regroupement.taxonomy = 'regroupement';
                                                                                   regroupement.index = index + 1;
@@ -161,7 +162,7 @@ angular.module( 'portailApp' )
                                                                                                                         || tile.firstname.toUpperCase().includes( ctrl.filter_criteria.text.toUpperCase() );
                                                                                                                 };
                                                                                                             },
-                                                                                                            aside_template: 'app/views/aside_TROMBI_people.html',
+                                                                                                            aside_template: 'app/views/aside_TROMBI_people.html?v=' + APP_VERSION,
                                                                                                             tiles: Utils.pad_tiles_tree( [ go_to_parent_tile( node ) ].concat( response.data.map( function( eleve, index ) {
                                                                                                                 eleve.taxonomy = 'eleve';
                                                                                                                 eleve.index = index + 1;
@@ -242,7 +243,7 @@ angular.module( 'portailApp' )
                                                             tiles = Utils.pad_tiles_tree( tiles );
 
                                                             ctrl.tiles = { configurable: true,
-                                                                           aside_template: 'app/views/aside_news.html',
+                                                                           aside_template: 'app/views/aside_news.html?v=' + APP_VERSION,
                                                                            tiles: tiles };
 
                                                             go_to_root_tile.action();
@@ -385,7 +386,7 @@ angular.module( 'portailApp' )
         <user-tile user="$ctrl.user"></user-tile>
 
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 hidden-xs hidden-sm aside-bottom"
-             ng:include="$ctrl.user.edit_profile ? 'app/views/aside_news.html' : $ctrl.tree.aside_template"></div>
+             ng:include="$ctrl.user.edit_profile ? 'app/views/aside_news.html?v=' + $ctrl.APP_VERSION : $ctrl.tree.aside_template"></div>
     </div>
 
     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
