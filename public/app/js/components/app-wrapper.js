@@ -3,14 +3,29 @@
 angular.module( 'portailApp' )
     .component( 'appWrapper',
                 { bindings: { appId: '<' },
-                  controller: [ '$stateParams', 'currentUser',
-                                function( $stateParams, currentUser ) {
+                  controller: [ '$stateParams', 'currentUser', 'Annuaire', 'Tiles', 'Utils',
+                                function( $stateParams, currentUser, Annuaire, Tiles, Utils ) {
                                     var ctrl = this;
 
                                     ctrl.$onInit = function() {
                                         currentUser.get( true )
                                             .then( function( user ) {
                                                 ctrl.user = user;
+                                                var apps_list;
+
+                                                if ( _(ctrl.user.profiles).isEmpty() ) {
+                                                    apps_list = Annuaire.query_applications();
+                                                } else {
+                                                    apps_list = Tiles.query({ structure_id: ctrl.user.active_profile().structure_id }).$promise;
+                                                }
+
+                                                apps_list.then( function ( response ) {
+                                                    ctrl.app = _(response).findWhere( { application_id: ctrl.appId } );
+
+                                                    if ( _(ctrl.app).isUndefined() ) {
+                                                        Utils.go_home();
+                                                    }
+                                                } );
                                             } );
                                     };
                                 }
@@ -21,15 +36,14 @@ angular.module( 'portailApp' )
         <logo class="petit logolaclasse gris4 pull-left"
               user="$ctrl.user"></logo>
 
-        <span class="hidden-xs hidden-sm titre" ng:cloak>{{app.nom}}</span>
+        <span class="hidden-xs hidden-sm titre" ng:cloak>{{$ctrl.app.name}}</span>
 
         <profilactif class="gris4 profil-select-wrapper"
                      ng:if="$ctrl.user.profiles"
                      user="$ctrl.user"></profilactif>
     </div>
 
-    <appiframe appid="$ctrl.appId"
-               user="$ctrl.user"
+    <appiframe url="$ctrl.app.url"
                class="appiframe"></appiframe>
 </div>
 `
