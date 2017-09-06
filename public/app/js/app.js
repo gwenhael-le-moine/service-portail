@@ -24,9 +24,10 @@ angular.module( 'portailApp', [ 'ngResource',
                        .state( 'app',
                                { url: '/app/:appid',
                                  component: 'appWrapper',
-                                 resolve: { appId: function( $transition$ ) {
-                                     return $transition$.params().appid;
-                                 } } } );
+                                 resolve: { appId: [ '$transition$',
+                                                     function( $transition$ ) {
+                                                         return $transition$.params().appid;
+                                                     } ] } } );
 
                    $urlRouterProvider.otherwise( '/' );
                }
