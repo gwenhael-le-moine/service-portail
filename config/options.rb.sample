@@ -3,17 +3,17 @@
 # development ou production
 ENV[ 'RACK_ENV' ] = 'development'
 
-# Chemin absolu de l'application sur le serveur
-APP_ROOT = File.expand_path( File.join( File.dirname( __FILE__ ), '..' ) )
-
 # Mapping HAProxy de l'application, ex : '/v3/docs'
 APP_PATH = '/portail'.freeze
+
+# Url de l'ENT
+URL_ENT = 'http://localhost/annuaire'.freeze
 
 # Langage par défaut de l'application
 LANG = 'fr'.freeze
 
+# Chemin absolu de l'application sur le serveur
+APP_ROOT = File.expand_path( File.join( File.dirname( __FILE__ ), '..' ) )
+
 #
 CACHE_BUSTER = Time.now.to_i.to_s
-
-# Url de l'ENT
-URL_ENT = 'http://localhost/annuaire'.freeze
