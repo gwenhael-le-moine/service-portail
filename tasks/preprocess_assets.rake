@@ -11,11 +11,8 @@ namespace :preprocess_assets do
     require_relative '../lib/uglify'
   end
 
-  desc 'Everything'
-  task all: [ :templates, :js, :css ]
-
   desc 'For development deployement'
-  task development: [ :templates, :css ]
+  task development: :production
 
   desc 'For production deployement'
   task production: [ :templates, :js, :css ]
