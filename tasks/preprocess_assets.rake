@@ -79,8 +79,16 @@ namespace :preprocess_assets do
         .write( uglified )
   end
 
+  desc 'Compile typescript files'
+  task :ts2js do
+    STDERR.puts 'Compiling Typescript files'
+    require_relative '../config/options'
+
+    puts `find #{APP_ROOT}/public/app/ -type f -name \\*.ts -not -path "#{APP_ROOT}/public/app/node_modules/*" -exec tsc --allowJs {} \\;`
+  end
+
   desc 'Minify JS using Uglifier'
-  task js: :load_config do
+  task js: [:load_config, :ts2js] do
     STDERR.puts 'Uglification of node_modules Javascript'
     uglified, source_map = Uglify.those_files_with_map( [ 'public/app/node_modules/underscore/underscore.js',
                                                           'public/app/node_modules/moment/moment.js',
