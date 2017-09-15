@@ -1,3 +1,4 @@
 .bundle/
 /config/options.rb
 /config/portail.json
+/public/app/js/templates/*.ts
