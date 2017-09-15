@@ -10,6 +10,9 @@ AllCops:
 Style/CommandLiteral:
   Enabled: false
 
+Style/SymbolArray:
+  Enabled: false
+
 Layout/SpaceInsideBrackets:
   Enabled: false
 

@@ -1,0 +1,19 @@
+'use strict';
+angular.module( 'portailApp' )
+  .run( [ '$templateCache',
+    function( $templateCache ) {
+      $templateCache.put( 'views/tile_ccn.html',
+                          `<a href
+   ng:click="tile.action()"
+   title="{{tile.description}}"
+   target="_blank">
+    <img draggable="false"
+         class="icone"
+         ng:src="{{$ctrl.prefix}}{{ tile.icon }}"
+         ng:if="tile.icon">
+    <span class="app-name">
+        {{tile.nom}}
+        <i class="glyphicon glyphicon-new-window" ng:if="tile.type === 'EXTERNAL'"></i>
+    </span>
+</a>
+` );     } ] );

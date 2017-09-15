@@ -61,58 +61,30 @@
         <!-- Placed at the end of the document so the pages load faster -->
 
 
-        <% if ENV['RACK_ENV'] == 'production' %>
-            <script src="app/node_modules/node_modules.min.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/portail.min.js?v=<%=CACHE_BUSTER%>"></script>
-        <% else %>
-            <script src="app/node_modules/underscore/underscore.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/node_modules/moment/moment.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/node_modules/moment/locale/fr.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/node_modules/zxcvbn/dist/zxcvbn.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/underscore/underscore.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/moment/moment.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/moment/locale/fr.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/zxcvbn/dist/zxcvbn.js?v=<%=CACHE_BUSTER%>"></script>
 
-            <script src="app/node_modules/angular/angular.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/node_modules/angular-i18n/angular-locale_fr-fr.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/node_modules/angular-resource/angular-resource.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/node_modules/angular-touch/angular-touch.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/node_modules/angular-ui-router/release/angular-ui-router.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/node_modules/angular-bootstrap-checkbox/angular-bootstrap-checkbox.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/node_modules/angular-animate/angular-animate.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/node_modules/angular-moment/angular-moment.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/node_modules/ng-sortable/dist/ng-sortable.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/node_modules/ng-color-picker/color-picker.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/node_modules/angular-carousel/dist/angular-carousel.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/node_modules/ng-fittext/src/ng-FitText.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/node_modules/angular-zxcvbn/dist/angular-zxcvbn.min.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/node_modules/angular-toastr/dist/angular-toastr.min.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/node_modules/angular-toastr/dist/angular-toastr.tpls.min.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/angular/angular.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/angular-i18n/angular-locale_fr-fr.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/angular-resource/angular-resource.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/angular-touch/angular-touch.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/angular-ui-router/release/angular-ui-router.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/angular-bootstrap-checkbox/angular-bootstrap-checkbox.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/angular-animate/angular-animate.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/angular-moment/angular-moment.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/ng-sortable/dist/ng-sortable.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/ng-color-picker/color-picker.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/angular-carousel/dist/angular-carousel.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/ng-fittext/src/ng-FitText.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/angular-zxcvbn/dist/angular-zxcvbn.min.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/angular-toastr/dist/angular-toastr.min.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/node_modules/angular-toastr/dist/angular-toastr.tpls.min.js?v=<%=CACHE_BUSTER%>"></script>
 
-            <script src="app/js/app.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/defaults.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="app/js/app.min.js?v=<%=CACHE_BUSTER%>"></script>
 
-            <script src="app/js/resources/user.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/resources/tiles.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/resources/flux.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/resources/ressources_numeriques.js?v=<%=CACHE_BUSTER%>"></script>
-
-            <script src="app/js/services/annuaire.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/services/current_user.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/services/utils.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/services/CCN.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/services/log.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/services/popups.js?v=<%=CACHE_BUSTER%>"></script>
-
-            <script src="app/js/components/portail.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/components/help_icon.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/components/logo.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/components/news.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/components/profil_actif.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/components/user_tile.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/components/user_profile.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/components/app-wrapper.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/components/app_iframe.js?v=<%=CACHE_BUSTER%>"></script>
-            <script src="app/js/components/avatar.js?v=<%=CACHE_BUSTER%>"></script>
-        <% end %>
         <script>
          angular.module( 'portailApp' )
                 .constant( 'CACHE_BUSTER', '<%=CACHE_BUSTER%>' )

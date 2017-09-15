@@ -18,5 +18,4 @@ group :development do
   gem 'rubocop'
   gem 'sass'
   gem 'therubyracer' # used when no node.js is install on computer
-  gem 'uglifier'
 end

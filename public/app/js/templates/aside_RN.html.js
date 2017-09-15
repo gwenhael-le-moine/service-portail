@@ -1,6 +1,0 @@
-'use strict';
-angular.module( 'portailApp' )
-  .run( [ '$templateCache',
-    function( $templateCache ) {
-      $templateCache.put( 'views/aside_RN.html',
-                          '<div class="laius"    <h2>{{parent.description}}</h2>    <br>    <p>        Retrouvez ici les ressources numériques que votre établissement a sélectionné pour vous. Ces ressources peuvent être des manuels scolaires en ligne, des dictionnaires, des sites proposant des ressources pour s\'entraîner, etc...    </p>    <p>        Si rien n\'est affiché dans cette page, c\'est que votre établissement n\'a pas encore activé les ressources numériques. Vous pouvez contacter un de vos administrateur de l\'ENT pour lui demander l\'activation de celles-ci.    </p></div>' );     } ] );
