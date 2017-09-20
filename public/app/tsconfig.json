@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "declaration": false,
+        "removeComments": true,
+        "sourceMap": false,
+        "outFile": "js/app.js",
+    },
+    "include": [
+        "ts/app.ts",
+        "ts/defaults.ts",
+        "ts/components/*.ts",
+        "ts/resources/*.ts",
+        "ts/services/*.ts",
+    ],
+}
