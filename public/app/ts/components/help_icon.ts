@@ -1,21 +1,22 @@
 'use strict';
 
 angular.module( 'portailApp' )
-    .component( 'helpIcon',
-                { bindings: { user: '<' },
-                  controller: [ 'CONFIG',
-                                function( CONFIG ) {
-                                    var ctrl = this;
+  .component( 'helpIcon',
+  {
+    bindings: { user: '<' },
+    controller: [ 'CONFIG',
+      function( CONFIG ) {
+        var ctrl = this;
 
-                                    ctrl.$onInit = function() {
-                                        ctrl.help_links = _(CONFIG.help_links)
-                                            .select( function( link ) {
-                                                return !_(ctrl.user.profiles).isEmpty()
-                                                    && _(link.profils).intersection( _(ctrl.user.profiles).pluck('type') ).length > 0;
-                                            } );
-                                    };
-                                } ],
-                  template: `
+        ctrl.$onInit = function() {
+          ctrl.help_links = _( CONFIG.help_links )
+            .select( function( link ) {
+              return !_( ctrl.user.profiles ).isEmpty()
+                && _( link.profils ).intersection( _( ctrl.user.profiles ).pluck( 'type' ) ).length > 0;
+            } );
+        };
+      }],
+    template: `
 <div uib-dropdown
      keyboard-nav
      ng:if="$ctrl.help_links.length > 0">
@@ -27,4 +28,4 @@ angular.module( 'portailApp' )
     </ul>
 </div>
 `
-                } );
+  } );

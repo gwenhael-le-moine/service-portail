@@ -1,25 +1,26 @@
 'use strict';
 
 angular.module( 'portailApp' )
-    .component( 'userTile',
-                { bindings: { user: '<' },
-                  controller: [ 'APP_PATH', 'URL_ENT',
-                                function( APP_PATH, URL_ENT ) {
-                                    var ctrl = this;
+  .component( 'userTile',
+  {
+    bindings: { user: '<' },
+    controller: [ 'APP_PATH', 'URL_ENT',
+      function( APP_PATH, URL_ENT ) {
+        var ctrl = this;
 
-                                    ctrl.APP_PATH = APP_PATH;
+        ctrl.APP_PATH = APP_PATH;
 
-                                    ctrl.change_password_message = 'Pensez à changer votre mot de passe...';
+        ctrl.change_password_message = 'Pensez à changer votre mot de passe...';
 
-                                    ctrl.edit_profile = function() {
-                                        ctrl.user.edit_profile = !ctrl.user.edit_profile;
-                                    };
+        ctrl.edit_profile = function() {
+          ctrl.user.edit_profile = !ctrl.user.edit_profile;
+        };
 
-                                    ctrl.$onInit = function() {
-                                        ctrl.url_avatar = URL_ENT + '/' + ctrl.user.avatar;
-                                    };
-                                } ],
-                  template: `
+        ctrl.$onInit = function() {
+          ctrl.url_avatar = URL_ENT + '/' + ctrl.user.avatar;
+        };
+      }],
+    template: `
 <div class="col-xs-11 col-sm-11 col-md-6 col-lg-6 user"
      ng:style="{ 'background-image': 'url(' + $ctrl.url_avatar + ')' }">
     <div class="user-info-bg">
@@ -38,4 +39,4 @@ angular.module( 'portailApp' )
     </div>
 </div>
 `
-                } );
+  } );

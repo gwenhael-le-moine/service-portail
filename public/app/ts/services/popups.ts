@@ -1,74 +1,77 @@
 'use strict';
 
 angular.module( 'portailApp' )
-    .service( 'Popups',
-              [ '$uibModal',
-                function( $uibModal ) {
-                    var Popups = this;
+  .service( 'Popups',
+  [ '$uibModal',
+    function( $uibModal ) {
+      var Popups = this;
 
-                    Popups.add_tiles = function( current_tiles, callback_success, callback_error ) {
-                        $uibModal.open( { controller: [ '$scope', '$uibModalInstance', 'APP_PATH', 'Tiles', 'currentUser', 'Annuaire',
-                                                        'current_tiles',
-                                                        function( $scope, $uibModalInstance, APP_PATH, Tiles, currentUser, Annuaire,
-                                                                  current_tiles ) {
-                                                            $scope.prefix = APP_PATH;
+      Popups.add_tiles = function( current_tiles, callback_success, callback_error ) {
+        $uibModal.open( {
+          controller: [ '$scope', '$uibModalInstance', 'APP_PATH', 'Tiles', 'currentUser', 'Annuaire',
+            'current_tiles',
+            function( $scope, $uibModalInstance, APP_PATH, Tiles, currentUser, Annuaire,
+              current_tiles ) {
+              $scope.prefix = APP_PATH;
 
-                                                            $scope.available_tiles = [];
-                                                            $scope.tiles_selected = false;
+              $scope.available_tiles = [];
+              $scope.tiles_selected = false;
 
-                                                            $scope.add_empty_link_tile = function() {
-                                                                $scope.available_tiles.push( new Tiles( { creation: true,
-                                                                                                          present: false,
-                                                                                                          type: 'EXTERNAL',
-                                                                                                          name: '',
-                                                                                                          description: '',
-                                                                                                          url: 'http://',
-                                                                                                          color: '',
-                                                                                                          selected: true,
-                                                                                                          taxonomy: 'app'} ) );
-                                                            };
+              $scope.add_empty_link_tile = function() {
+                $scope.available_tiles.push( new Tiles( {
+                  creation: true,
+                  present: false,
+                  type: 'EXTERNAL',
+                  name: '',
+                  description: '',
+                  url: 'http://',
+                  color: '',
+                  selected: true,
+                  taxonomy: 'app'
+                } ) );
+              };
 
-                                                            $scope.keep_tile_selected = function( event, app ) {
-                                                                app.selected = false; // opposite of what we want
-                                                                $scope.selected( app );
-                                                                event.stopImmediatePropagation();
-                                                            };
+              $scope.keep_tile_selected = function( event, app ) {
+                app.selected = false; // opposite of what we want
+                $scope.selected( app );
+                event.stopImmediatePropagation();
+              };
 
-                                                            $scope.selected = function( tile ) {
-                                                                tile.selected = !tile.selected;
-                                                                $scope.tiles_selected = _($scope.available_tiles).select( { selected: true } ).length > 0;
-                                                            };
+              $scope.selected = function( tile ) {
+                tile.selected = !tile.selected;
+                $scope.tiles_selected = _( $scope.available_tiles ).select( { selected: true } ).length > 0;
+              };
 
-                                                            $scope.ok = function () {
-                                                                $uibModalInstance.close( _($scope.available_tiles).select( { selected: true } ) );
-                                                            };
+              $scope.ok = function() {
+                $uibModalInstance.close( _( $scope.available_tiles ).select( { selected: true } ) );
+              };
 
-                                                            $scope.cancel = function () {
-                                                                $uibModalInstance.dismiss();
-                                                            };
+              $scope.cancel = function() {
+                $uibModalInstance.dismiss();
+              };
 
-                                                            Annuaire.query_applications()
-                                                                .then( function( response ) {
-                                                                    $scope.available_tiles = $scope.available_tiles.concat( _.chain( response )
-                                                                                                                            .uniq( function( app ) { return app.application_id; } )
-                                                                                                                            .each( function( app ) {
-                                                                                                                                app.taxonomy = 'app';
-                                                                                                                                app.available = function() {
-                                                                                                                                    return !_.chain(current_tiles)
-                                                                                                                                        .reject( function( a ) {
-                                                                                                                                            return a.to_delete;
-                                                                                                                                        } )
-                                                                                                                                        .pluck( 'application_id' )
-                                                                                                                                        .contains( app.application_id )
-                                                                                                                                        .value();
-                                                                                                                                };
-                                                                                                                            } )
-                                                                                                                            .value() );
-                                                                        _($scope.available_tiles).each( function( tile ) { tile.selected = false; } );
-                                                                    } );
-                                                            } ],
-                                          resolve: { current_tiles: function() { return current_tiles; } },
-                                          template: `
+              Annuaire.query_applications()
+                .then( function( response ) {
+                  $scope.available_tiles = $scope.available_tiles.concat( _.chain( response )
+                    .uniq( function( app ) { return app.application_id; } )
+                    .each( function( app ) {
+                      app.taxonomy = 'app';
+                      app.available = function() {
+                        return !_.chain( current_tiles )
+                          .reject( function( a ) {
+                            return a.to_delete;
+                          } )
+                          .pluck( 'application_id' )
+                          .contains( app.application_id )
+                          .value();
+                      };
+                    } )
+                    .value() );
+                  _( $scope.available_tiles ).each( function( tile ) { tile.selected = false; } );
+                } );
+            }],
+          resolve: { current_tiles: function() { return current_tiles; } },
+          template: `
 <div class="modal-header">
     <h3 class="modal-title">Ajouter une tuile</h3>
 </div>
@@ -114,12 +117,14 @@ angular.module( 'portailApp' )
     </button>
 </div>
 `,
-                                          backdrop: 'static' } )
-                            .result.then( callback_success, callback_error );
-                    };
+          backdrop: 'static'
+        } )
+          .result.then( callback_success, callback_error );
+      };
 
-                    Popups.manage_fluxes = function( callback_success, callback_error ) {
-                        $uibModal.open( { template: `
+      Popups.manage_fluxes = function( callback_success, callback_error ) {
+        $uibModal.open( {
+          template: `
 <div class="modal-header">
     <h3 class="modal-title">Gérer les flux RSS affichés sur le portail de l'établissement</h3>
 </div>
@@ -155,64 +160,67 @@ angular.module( 'portailApp' )
     </button>
 </div>
 `,
-                                          controller: [ '$scope', '$uibModalInstance', 'currentUser', 'Flux', 'CONFIG',
-                                                        function( $scope, $uibModalInstance, currentUser, Flux, CONFIG ) {
-                                                            var ctrl = $scope;
-                                                            ctrl.$ctrl = ctrl;
+          controller: [ '$scope', '$uibModalInstance', 'currentUser', 'Flux', 'CONFIG',
+            function( $scope, $uibModalInstance, currentUser, Flux, CONFIG ) {
+              var ctrl = $scope;
+              ctrl.$ctrl = ctrl;
 
-                                                            ctrl.nb_articles = _.range( 1, 11 );
-                                                            ctrl.current_flux = [];
+              ctrl.nb_articles = _.range( 1, 11 );
+              ctrl.current_flux = [];
 
-                                                            ctrl.delete = function( flux ) {
-                                                                flux.$delete();
-                                                                ctrl.current_flux = _(ctrl.current_flux).difference( [ flux ] );
-                                                            };
+              ctrl.delete = function( flux ) {
+                flux.$delete();
+                ctrl.current_flux = _( ctrl.current_flux ).difference( [ flux ] );
+              };
 
-                                                            ctrl.save = function( flux ) {
-                                                                flux.structure_id = ctrl.user.active_profile().structure_id;
-                                                                return _(flux).has( 'id' ) ? flux.$update() : flux.$save();
-                                                            };
+              ctrl.save = function( flux ) {
+                flux.structure_id = ctrl.user.active_profile().structure_id;
+                return _( flux ).has( 'id' ) ? flux.$update() : flux.$save();
+              };
 
-                                                            ctrl.dirtify = function( flux ) {
-                                                                flux.dirty = true;
-                                                            };
+              ctrl.dirtify = function( flux ) {
+                flux.dirty = true;
+              };
 
-                                                            ctrl.add_flux = function() {
-                                                                ctrl.current_flux.push( new Flux( { name: '',
-                                                                                                    url: '',
-                                                                                                    icon: '' } ) );
-                                                            };
+              ctrl.add_flux = function() {
+                ctrl.current_flux.push( new Flux( {
+                  name: '',
+                  url: '',
+                  icon: ''
+                } ) );
+              };
 
-                                                            ctrl.add_default_flux = function() {
-                                                                _(CONFIG.news_feed).each( function( flux ) {
-                                                                    ctrl.dirtify( flux );
-                                                                    ctrl.current_flux.push( new Flux( flux ) );
-                                                                } );
-                                                            };
+              ctrl.add_default_flux = function() {
+                _( CONFIG.news_feed ).each( function( flux ) {
+                  ctrl.dirtify( flux );
+                  ctrl.current_flux.push( new Flux( flux ) );
+                } );
+              };
 
-                                                            ctrl.close = function () {
-                                                                $uibModalInstance.close();
-                                                            };
+              ctrl.close = function() {
+                $uibModalInstance.close();
+              };
 
-                                                            ctrl.$onInit = function() {
-                                                                currentUser.get( false ).then( function( user ) {
-                                                                    ctrl.user = user;
+              ctrl.$onInit = function() {
+                currentUser.get( false ).then( function( user ) {
+                  ctrl.user = user;
 
-                                                                    Flux.get({ structure_id: ctrl.user.active_profile().structure_id }).$promise
-                                                                        .then( function( response ) {
-                                                                            ctrl.current_flux = _(response).map( function( flux ) {
-                                                                                flux.dirty = false;
+                  Flux.get( { structure_id: ctrl.user.active_profile().structure_id } ).$promise
+                    .then( function( response ) {
+                      ctrl.current_flux = _( response ).map( function( flux ) {
+                        flux.dirty = false;
 
-                                                                                return flux;
-                                                                            } );
-                                                                        } );
-                                                                } );
-                                                            };
+                        return flux;
+                      } );
+                    } );
+                } );
+              };
 
-                                                            ctrl.$onInit();
-                                                        } ],
-                                          backdrop: 'static'  } )
-                            .result.then( callback_success, callback_error );
-                    };
-                }
-              ] );
+              ctrl.$onInit();
+            }],
+          backdrop: 'static'
+        } )
+          .result.then( callback_success, callback_error );
+      };
+    }
+  ] );

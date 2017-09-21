@@ -14,14 +14,20 @@ angular.module('portailApp', ['ngResource',
     .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'APP_PATH',
     function ($stateProvider, $urlRouterProvider, $locationProvider, APP_PATH) {
         $stateProvider
-            .state('portail', { url: '/',
-            component: 'portail' })
-            .state('app', { url: '/app/:appid',
+            .state('portail', {
+            url: '/',
+            component: 'portail'
+        })
+            .state('app', {
+            url: '/app/:appid',
             component: 'appWrapper',
-            resolve: { appId: ['$transition$',
+            resolve: {
+                appId: ['$transition$',
                     function ($transition$) {
                         return $transition$.params().appid;
-                    }] } });
+                    }]
+            }
+        });
         $urlRouterProvider.otherwise('/');
     }
 ])
@@ -78,7 +84,8 @@ angular.module('portailApp')
             APP_PATH + '/app/node_modules/laclasse-common-client/images/random/20150204_152946.jpg'];
     }]);
 angular.module('portailApp')
-    .component('appWrapper', { bindings: { appId: '<' },
+    .component('appWrapper', {
+    bindings: { appId: '<' },
     controller: ['$stateParams', '$sce', 'currentUser', 'Annuaire', 'Tiles', 'Utils',
         function ($stateParams, $sce, currentUser, Annuaire, Tiles, Utils) {
             var ctrl = this;
@@ -107,7 +114,8 @@ angular.module('portailApp')
     template: "\n<div id=\"app-wrapper\">\n    <div class=\"en-tete container gris4\" role=\"navigation\">\n        <logo class=\"petit logolaclasse gris4 pull-left\"\n              user=\"$ctrl.user\"></logo>\n\n        <span class=\"hidden-xs hidden-sm titre\" ng:cloak>{{$ctrl.app.name}}</span>\n\n        <profilactif class=\"gris4 profil-select-wrapper\"\n                     ng:if=\"$ctrl.user.profiles\"\n                     user=\"$ctrl.user\"></profilactif>\n    </div>\n\n    <appiframe url=\"$ctrl.app.url\"\n               class=\"appiframe\"></appiframe>\n</div>\n"
 });
 angular.module('portailApp')
-    .component('appiframe', { bindings: { url: '<' },
+    .component('appiframe', {
+    bindings: { url: '<' },
     controller: [function () {
             var ctrl = this;
             ctrl.$onInit = function () {
@@ -119,12 +127,15 @@ angular.module('portailApp')
 });
 angular.module('portailApp')
     .directive('fileChanged', function () {
-    return { restrict: 'A',
+    return {
+        restrict: 'A',
         link: function (scope, element, attrs) {
             element.bind('change', scope.$eval(attrs.fileChanged));
-        } };
+        }
+    };
 })
-    .component('avatar', { controller: ['currentUser', 'URL_ENT', 'User',
+    .component('avatar', {
+    controller: ['currentUser', 'URL_ENT', 'User',
         function (currentUser, URL_ENT, User) {
             var ctrl = this;
             ctrl.URL_ENT = URL_ENT;
@@ -182,10 +193,12 @@ angular.module('portailApp')
                 processFile(event.target.files[0]);
             };
             var reset_new_avatar = function () {
-                ctrl.user.new_avatar = { image: null,
+                ctrl.user.new_avatar = {
+                    image: null,
                     blob: null,
                     width: 0,
-                    height: 0 };
+                    height: 0
+                };
             };
             ctrl.upload_avatar = function () {
                 ctrl.user.$upload_avatar()
@@ -207,7 +220,8 @@ angular.module('portailApp')
     template: "\n<div class=\"avatar\">\n    <img draggable=\"false\" class=\"svg\"\n         ng:src=\"{{$ctrl.user.new_avatar.image ? $ctrl.user.new_avatar.image : $ctrl.URL_ENT + '/' + $ctrl.user.avatar}}\" />\n    <button style=\"position: absolute; top: 0; right: 0;\"\n            title=\"Supprimer l'avatar existant\"\n            ng:if=\"!$ctrl.user.new_avatar.blob\"\n            ng:click=\"$ctrl.delete()\">\n        <span class=\"glyphicon glyphicon-remove\"\n              style=\"color: red;\" ></span>\n    </button>\n\n    <input type=\"file\" file-changed=\"$ctrl.onChange\" ng:if=\"!$ctrl.processing\"/>\n    <span ng:if=\"$ctrl.processing\"><i class=\"fa fa-spinner fa-pulse\"></i> traitement</span>\n    <footer>\n        <button ng:disabled=\"!$ctrl.user.new_avatar.blob\"\n                ng:click=\"$ctrl.upload_avatar()\">Valider l'avatar</button>\n    </footer>\n</div>\n"
 });
 angular.module('portailApp')
-    .component('helpIcon', { bindings: { user: '<' },
+    .component('helpIcon', {
+    bindings: { user: '<' },
     controller: ['CONFIG',
         function (CONFIG) {
             var ctrl = this;
@@ -222,7 +236,8 @@ angular.module('portailApp')
     template: "\n<div uib-dropdown\n     keyboard-nav\n     ng:if=\"$ctrl.help_links.length > 0\">\n    <a class=\"uib-dropdown-toggle\" uib-dropdown-toggle><h2>?</h2> </a>\n    <ul class=\"dropdown-menu\" uib-dropdown-menu role=\"menu\" aria-labelledby=\"simple-btn-keyboard-nav\">\n        <li ng:repeat=\"link in $ctrl.help_links\">\n            <a ng:href=\"{{link.url}}\" target=\"_blank\">{{link.title}}</a>\n        </li>\n    </ul>\n</div>\n"
 });
 angular.module('portailApp')
-    .component('logo', { bindings: { user: '=' },
+    .component('logo', {
+    bindings: { user: '=' },
     controller: ['Utils', 'APP_PATH',
         function (Utils, APP_PATH) {
             var ctrl = this;
@@ -238,15 +253,20 @@ angular.module('portailApp')
         '</a>'
 });
 angular.module('portailApp')
-    .component('news', { bindings: { edition: '<' },
+    .component('news', {
+    bindings: { edition: '<' },
     controller: ['$sce', 'Popups', '$http', '$q', 'URL_ENT', 'RANDOM_IMAGES', 'currentUser',
         function ($sce, Popups, $http, $q, URL_ENT, RANDOM_IMAGES, currentUser) {
             var ctrl = this;
             ctrl.newsfeed = [];
             ctrl.retrieve_news = function (force_reload) {
                 var one_month_ago = moment().subtract(1, 'months').toDate().toISOString();
-                $http.get(URL_ENT + '/api/news', { params: { user_id: ctrl.user.id,
-                        'pubDate>': one_month_ago } })
+                $http.get(URL_ENT + '/api/news', {
+                    params: {
+                        user_id: ctrl.user.id,
+                        'pubDate>': one_month_ago
+                    }
+                })
                     .then(function (response) {
                     ctrl.newsfeed = _(response.data).map(function (item, index) {
                         item.trusted_content = $sce.trustAsHtml(item.description);
@@ -290,7 +310,8 @@ angular.module('portailApp')
     template: "\n<ul class=\"noir\" rn-carousel rn-carousel-buffered rn-carousel-auto-slide=\"6\" rn-carousel-index=\"$ctrl.carouselIndex\">\n    <li ng:repeat=\"slide in $ctrl.newsfeed | orderBy:'pubDate':true\" active=\"slide.active\"\n        ng:class=\"{'publipostage': slide.title == 'Publipostage', 'no-image': slide.no_image}\">\n        <div class=\"carousel-image\"\n             ng:style=\"{'background-image': 'url(' + slide.image + ')'}\"></div>\n        <div class=\"carousel-caption\">\n            <span class=\"pub-date\" ng:cloak>{{ slide.pubDate | date:'medium' }}</span>\n            <a href=\"{{ slide.link }}\" target=\"_blank\" ng:if=\"slide.link != 'notYetImplemented'\">\n                <h6 ng:cloak>{{ slide.title }}</h6>\n            </a>\n            <h6 ng:if=\"slide.link == 'notYetImplemented'\">{{ slide.title }}</h6>\n            <p ng:bind-html=\"slide.trusted_content\"></p>\n        </div>\n    </li>\n    <div class=\"hidden-xs hidden-sm angular-carousel-indicators\"\n         rn-carousel-indicators\n         slides=\"$ctrl.newsfeed\"\n         rn-carousel-index=\"$ctrl.carouselIndex\">\n    </div>\n    <span class=\"hidden-xs hidden-sm floating-button big toggle bouton-config-news blanc\"\n          ng:if=\"$ctrl.user.is_admin() && $ctrl.edition\"\n          ng:click=\"$ctrl.config_news_fluxes()\"></span>\n</ul>\n"
 });
 angular.module('portailApp')
-    .component('portail', { controller: ['$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Tiles', 'APP_PATH', 'CACHE_BUSTER', 'User', 'Annuaire', 'URL_ENT', 'Popups',
+    .component('portail', {
+    controller: ['$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Tiles', 'APP_PATH', 'CACHE_BUSTER', 'User', 'Annuaire', 'URL_ENT', 'Popups',
         function ($sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Tiles, APP_PATH, CACHE_BUSTER, User, Annuaire, URL_ENT, Popups) {
             var ctrl = this;
             ctrl.$onInit = function () {
@@ -301,16 +322,19 @@ angular.module('portailApp')
                     ctrl.COULEURS = COULEURS;
                     ctrl.CACHE_BUSTER = CACHE_BUSTER;
                     ctrl.get_tile_template = function (taxonomy) {
-                        var tiles_templates = { app: 'app/views/tile_app.html?v=' + CACHE_BUSTER,
+                        var tiles_templates = {
+                            app: 'app/views/tile_app.html?v=' + CACHE_BUSTER,
                             back: 'app/views/tile_app.html?v=' + CACHE_BUSTER,
                             regroupement: 'app/views/tile_regroupement.html?v=' + CACHE_BUSTER,
                             eleve: 'app/views/tile_eleve.html?v=' + CACHE_BUSTER,
                             rn: 'app/views/tile_rn.html?v=' + CACHE_BUSTER,
-                            ccn: 'app/views/tile_ccn.html?v=' + CACHE_BUSTER };
+                            ccn: 'app/views/tile_ccn.html?v=' + CACHE_BUSTER
+                        };
                         return tiles_templates[taxonomy];
                     };
                     ctrl.filter_criteria = {};
-                    var go_to_root_tile = { index: 0,
+                    var go_to_root_tile = {
+                        index: 0,
                         taxonomy: 'back',
                         name: '← Retour',
                         description: 'Retour',
@@ -332,11 +356,13 @@ angular.module('portailApp')
                             };
                         };
                         var app_specific = {
-                            CCNUM: { action: function () {
+                            CCNUM: {
+                                action: function () {
                                     if (ctrl.modification) {
                                         return;
                                     }
-                                    ctrl.tree = { configurable: false,
+                                    ctrl.tree = {
+                                        configurable: false,
                                         filter: default_filter,
                                         aside_template: 'app/views/aside_CCNUM.html?v=' + CACHE_BUSTER,
                                         tiles: Utils.pad_tiles_tree([go_to_root_tile]
@@ -346,28 +372,33 @@ angular.module('portailApp')
                                             ccn.index = index + 1;
                                             if (_(ccn).has('leaves')) {
                                                 ccn.action = function () {
-                                                    ctrl.tree = { configurable: false,
+                                                    ctrl.tree = {
+                                                        configurable: false,
                                                         filter: default_filter,
                                                         aside_template: 'app/views/aside_CCNUM_archives.html?v=' + CACHE_BUSTER,
                                                         tiles: [go_to_parent_tile(node)].concat(ccn.leaves.map(function (ccn, index) {
                                                             ccn.taxonomy = 'ccn';
                                                             ccn.index = index + 1;
                                                             return ccn;
-                                                        })) };
+                                                        }))
+                                                    };
                                                     ctrl.parent = ccn;
                                                 };
                                             }
                                             return ccn;
-                                        }))) };
+                                        })))
+                                    };
                                     ctrl.parent = node;
                                 }
                             },
-                            GAR: { action: function () {
+                            GAR: {
+                                action: function () {
                                     if (ctrl.modification) {
                                         return;
                                     }
                                     currentUser.ressources().then(function (response) {
-                                        ctrl.tree = { configurable: false,
+                                        ctrl.tree = {
+                                            configurable: false,
                                             filter: default_filter,
                                             aside_template: 'app/views/aside_RN.html?v=' + CACHE_BUSTER,
                                             tiles: Utils.pad_tiles_tree([go_to_root_tile].concat(response.map(function (rn, index) {
@@ -377,19 +408,23 @@ angular.module('portailApp')
                                                 rn.color = CASES[index % 16].color;
                                                 rn.action = function () { Utils.log_and_open_link('GAR', rn.url); };
                                                 return rn;
-                                            }))) };
+                                            })))
+                                        };
                                         ctrl.parent = node;
                                     });
                                 }
                             },
-                            TROMBI: { action: function () {
+                            TROMBI: {
+                                action: function () {
                                     if (ctrl.modification) {
                                         return;
                                     }
-                                    ctrl.filter_criteria = { show_classes: true,
+                                    ctrl.filter_criteria = {
+                                        show_classes: true,
                                         show_groupes_eleves: true,
                                         show_groupes_libres: true,
-                                        text: '' };
+                                        text: ''
+                                    };
                                     ctrl.get_structure = function (structure_id) {
                                         return Annuaire.get_structure(structure_id)
                                             .then(function (response) {
@@ -397,7 +432,8 @@ angular.module('portailApp')
                                         });
                                     };
                                     currentUser.groups().then(function (response) {
-                                        ctrl.tree = { configurable: false,
+                                        ctrl.tree = {
+                                            configurable: false,
                                             filter: function () {
                                                 return function (tile) {
                                                     return tile.taxonomy === 'back'
@@ -432,7 +468,8 @@ angular.module('portailApp')
                                                     ctrl.filter_criteria.text = '';
                                                     Annuaire.get_users(_(regroupement.users).pluck('user_id'))
                                                         .then(function (response) {
-                                                        ctrl.tree = { configurable: false,
+                                                        ctrl.tree = {
+                                                            configurable: false,
                                                             filter: function () {
                                                                 return function (tile) {
                                                                     return tile.taxonomy !== 'eleve'
@@ -449,12 +486,14 @@ angular.module('portailApp')
                                                                 eleve.color += index % 2 === 0 ? '' : '-moins';
                                                                 eleve.avatar = (_(eleve.avatar.match(/^(user|http)/)).isNull() ? URL_ENT + '/' : '') + eleve.avatar;
                                                                 return eleve;
-                                                            }))) };
+                                                            })))
+                                                        };
                                                         ctrl.parent = node;
                                                     });
                                                 };
                                                 return regroupement;
-                                            }))) };
+                                            })))
+                                        };
                                         ctrl.parent = node;
                                     });
                                 }
@@ -513,9 +552,11 @@ angular.module('portailApp')
                             tiles = Utils.fill_empty_tiles(tiles);
                             tiles = _(tiles).sortBy(function (tile) { return tile.index; });
                             tiles = Utils.pad_tiles_tree(tiles);
-                            ctrl.tiles = { configurable: true,
+                            ctrl.tiles = {
+                                configurable: true,
                                 aside_template: 'app/views/aside_news.html?v=' + CACHE_BUSTER,
-                                tiles: tiles };
+                                tiles: tiles
+                            };
                             go_to_root_tile.action();
                         });
                     };
@@ -536,7 +577,8 @@ angular.module('portailApp')
                             tile.dirty.index = true;
                         });
                     };
-                    ctrl.sortable_options = { accept: function (sourceItemHandleScope, destSortableScope) { return true; },
+                    ctrl.sortable_options = {
+                        accept: function (sourceItemHandleScope, destSortableScope) { return true; },
                         longTouch: true,
                         itemMoved: sortable_callback,
                         orderChanged: sortable_callback,
@@ -544,7 +586,8 @@ angular.module('portailApp')
                         containerPositioning: 'relative',
                         additionalPlaceholderClass: 'col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case',
                         clone: false,
-                        allowDuplicates: false };
+                        allowDuplicates: false
+                    };
                     ctrl.add_tile = function (tiles) {
                         Popups.add_tiles(tiles, function success(new_tiles) {
                             $q.all(_(new_tiles).map(function (new_tile) {
@@ -628,7 +671,8 @@ angular.module('portailApp')
     template: "\n<div class=\"row portail\"\n     ng:if=\"$ctrl.user\">\n    <div class=\"col-xs-12 col-sm-12 col-md-4 col-lg-4 aside\">\n        <help-icon class=\"btn-group hidden-xs help-icon\"\n                   user=\"$ctrl.user\"></help-icon>\n\n        <logo class=\"col-xs-1 col-sm-1 col-md-6 col-lg-6 logolaclasse gris4\"\n              user=\"$ctrl.user\"></logo>\n\n        <user-tile user=\"$ctrl.user\"></user-tile>\n\n        <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12 hidden-xs hidden-sm aside-bottom\"\n             ng:include=\"$ctrl.user.edit_profile ? 'app/views/aside_news.html?v=' + $ctrl.CACHE_BUSTER : $ctrl.tree.aside_template\"></div>\n    </div>\n\n    <div class=\"col-xs-12 col-sm-12 col-md-8 col-lg-8\">\n        <div class=\"row user-profil\"\n             ng:if=\"$ctrl.user.edit_profile\">\n            <user-profile user=\"$ctrl.user\"></user-profile>\n        </div>\n\n        <div class=\"row damier gris4\"\n             ng:class=\"{'modification': $ctrl.modification}\"\n             ng:if=\"!$ctrl.user.edit_profile\">\n\n            <ul data-as-sortable=\"$ctrl.sortable_options\"\n                data-is-disabled=\"!$ctrl.modification\"\n                ng:model=\"$ctrl.tree.tiles\">\n\n                <li ng:repeat=\"tile in $ctrl.tree.tiles | filter:$ctrl.tree.filter() | orderBy:'index'\"\n                    class=\"col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case animate scale-fade-in {{tile.color}}\"\n                    data-as-sortable-item\n                    ng:class=\"{ 'empty hidden-xs': !tile.taxonomy }\">\n                    <div ng:include=\"$ctrl.get_tile_template( tile.taxonomy )\"></div>\n                </li>\n            </ul>\n\n            <!-- Mode normal -->\n            <span class=\"hidden-xs hidden-sm floating-button toggle big off blanc\"\n                  ng:if=\"$ctrl.tree.configurable && $ctrl.user.is_admin() && !$ctrl.modification\"\n                  ng:click=\"$ctrl.edit_tiles()\"></span>\n\n            <!-- Mode modification -->\n            <span class=\"hidden-xs hidden-sm floating-button toggle big on gris4\"\n                  ng:if=\"$ctrl.modification\"></span>\n            <span class=\"floating-button small cancel gris3\"\n                  ng:if=\"$ctrl.modification\"\n                  ng:click=\"$ctrl.exit_tiles_edition()\"></span>\n            <span class=\"floating-button small save gris1\"\n                  ng:if=\"$ctrl.modification\"\n                  ng:click=\"$ctrl.save_tiles_edition()\"></span>\n\n            <span class=\"floating-button small action1 add-app gris1\"\n                  ng:if=\"$ctrl.modification\"\n                  ng:click=\"$ctrl.add_tile( $ctrl.tree.tiles )\"></span>\n        </div>\n\n    </div>\n</div>\n"
 });
 angular.module('portailApp')
-    .component('profilactif', { bindings: { user: '<' },
+    .component('profilactif', {
+    bindings: { user: '<' },
     controller: ['Annuaire', '$state', '$stateParams', 'currentUser',
         function (Annuaire, $state, $stateParams, currentUser) {
             var ctrl = this;
@@ -655,18 +699,25 @@ angular.module('portailApp')
     template: "\n<select ng:disabled=\"$ctrl.user.profiles.length <= 1\"\n        ng:model=\"$ctrl.current_profile\"\n        ng:change=\"$ctrl.apply_change()\"\n        ng:options=\"profile as profile.structure.name + ' : ' + profile.profile.name group by profile.structure.name for profile in $ctrl.user.profiles track by profile.id\" >\n</select>\n"
 });
 angular.module('portailApp')
-    .component('userProfile', { bindings: { user: '=' },
+    .component('userProfile', {
+    bindings: { user: '=' },
     controller: ['toastr', 'currentUser', 'APP_PATH', 'Utils', 'User',
         function (toastr, currentUser, APP_PATH, Utils, User) {
             var ctrl = this;
             ctrl.dirty = {};
             ctrl.prefix = APP_PATH;
-            ctrl.groups = [{ ouvert: true,
-                    enabled: true },
-                { ouvert: true,
-                    enabled: true }];
-            ctrl.password = { new1: '',
-                new2: '' };
+            ctrl.groups = [{
+                    ouvert: true,
+                    enabled: true
+                },
+                {
+                    ouvert: true,
+                    enabled: true
+                }];
+            ctrl.password = {
+                new1: '',
+                new2: ''
+            };
             ctrl.open_datepicker = function ($event) {
                 $event.preventDefault();
                 $event.stopPropagation();
@@ -712,7 +763,8 @@ angular.module('portailApp')
     template: "\n<header>\n    <h3>Profil utilisateur</h3>\n    <h1>{{$ctrl.user.firstname}} {{$ctrl.user.lastname}}</h1>\n</header>\n<div class=\"form\">\n    <form>\n        <div class=\"avatar-container form-group col-md-4 col-xs-12 pull-right\">\n            <label>Avatar :</label>\n            <avatar></avatar>\n        </div>\n\n        <accordion close-others=\"false\" class=\"col-md-8 col-xs-12 pull-left\">\n\n            <accordion-group data-is-open=\"$ctrl.groups[ 0 ].ouvert\" ng:if=\"$ctrl.groups[ 0 ].enabled\">\n                <accordion-heading>\n                    <span class=\"glyphicon\" ng:class=\"{'glyphicon-chevron-down': $ctrl.groups[ 0 ].ouvert, 'glyphicon-chevron-right': !$ctrl.groups[ 0 ].ouvert}\"></span> Informations\n                </accordion-heading>\n                <div class=\"row\">\n\n                    <div class=\"form-group col-md-6 col-xs-12\">\n                        <label for=\"nom\">Nom :</label>\n                        <input type=\"text\"\n                               id=\"nom\"\n                               class=\"form-control\"\n                               ng:disabled=\"!$ctrl.user.editable\"\n                               ng:change=\"$ctrl.mark_as_dirty( 'lastname' )\"\n                               ng:model=\"$ctrl.user.lastname\">\n                    </div>\n                    <div class=\"form-group col-md-6 col-xs-12\">\n                        <label for=\"prenom\">Pr\u00E9nom :</label>\n                        <input type=\"text\"\n                               id=\"prenom\"\n                               class=\"form-control\"\n                               ng:disabled=\"!$ctrl.user.editable\"\n                               ng:change=\"$ctrl.mark_as_dirty( 'firstname' )\"\n                               ng:model=\"$ctrl.user.firstname\">\n                    </div>\n                    <div class=\"form-group col-md-6 col-xs-12\">\n                        <label for=\"datenaissance\">Date de naissance :</label>\n                        <input type=\"text\"\n                               id=\"date_naissance\"\n                               class=\"form-control\"\n                               disabled\n                               value=\"{{$ctrl.user.birthdate | amDateFormat: 'LL'}}\"\n                               ng:if=\"!$ctrl.user.editable\" />\n                        <div uib-dropdown\n                             id=\"datenaissance\"\n                             class=\"dropdown form-control date-naissance\"\n                             ng:if=\"$ctrl.user.editable\">\n                            <a uib-dropdown-toggle\n                               class=\"dropdown-toggle\"\n                               role=\"button\"\n                               data-toggle=\"uib-dropdown\"\n                               data-target=\"#\"\n                               href>{{$ctrl.user.birthdate | amDateFormat: 'LL'}}</a>\n                            <div uib-dropdown-menu\n                                 class=\"dropdown-menu\"\n                                 role=\"menu\"\n                                 ng:click=\"$event.stopImmediatePropagation()\">\n                                <div uib-datepicker\n                                     datepicker-options=\"datepicker_options\"\n                                     ng:disabled=\"!$ctrl.user.editable\"\n                                     ng:change=\"$ctrl.mark_as_dirty( 'birthdate' )\"\n                                     ng:model=\"$ctrl.user.birthdate\"\n                                     ng:required=\"true\">\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"form-group col-md-6 col-xs-12\">\n                        <label for=\"adresse\">Adresse :</label>\n                        <input type=\"text\"\n                               id=\"adresse\"\n                               class=\"form-control\"\n                               ng:disabled=\"!$ctrl.user.editable\"\n                               ng:change=\"$ctrl.mark_as_dirty( 'address' )\"\n                               ng:model=\"$ctrl.user.address\">\n                    </div>\n                    <div class=\"form-group col-md-6 col-xs-12\">\n                        <label for=\"codepostal\">Code postal :</label>\n                        <input type=\"text\"\n                               id=\"codepostal\"\n                               class=\"form-control\"\n                               ng:disabled=\"!$ctrl.user.editable\"\n                               ng:change=\"$ctrl.mark_as_dirty( 'zip_code' )\"\n                               ng:model=\"$ctrl.user.zip_code\">\n                    </div>\n                    <div class=\"form-group col-md-6 col-xs-12\">\n                        <label for=\"ville\">Ville :</label>\n                        <input type=\"text\"\n                               id=\"ville\"\n                               class=\"form-control\"\n                               ng:disabled=\"!$ctrl.user.editable\"\n                               ng:change=\"$ctrl.mark_as_dirty( 'city' )\"\n                               ng:model=\"$ctrl.user.city\">\n                    </div>\n\n                    <div class=\"form-group col-md-6 col-xs-12\"\n                         ng:repeat=\"email in $ctrl.user.emails | orderBy:'primary':true | filter:filter_emails()\">\n                        <label for=\"courriel\">Courriel <span ng:if=\"email.primary\">principal</span> :</label>\n                        <input type=\"text\"\n                               id=\"courriel\"\n                               class=\"form-control\"\n                               ng:disabled=\"true\"\n                               ng:model=\"email.address\">\n                    </div>\n                </div>\n\n            </accordion-group>\n\n            <accordion-group data-is-open=\"$ctrl.groups[ 1 ].ouvert\" ng:if=\"$ctrl.groups[ 1 ].enabled\">\n                <accordion-heading>\n                    <span class=\"glyphicon\" ng:class=\"{'glyphicon-chevron-down': $ctrl.groups[ 1 ].ouvert, 'glyphicon-chevron-right': !$ctrl.groups[ 1 ].ouvert}\"></span> Mot de passe<span style=\"font-weight: bold; color: rgba(235,84,84,0.75)\" ng:if=\"$ctrl.user.default_password\">, pensez \u00E0 le changer...</span>\n                </accordion-heading>\n                <div class=\"row\">\n                    <div class=\"form-group col-md-6 col-xs-12\">\n                        <label for=\"newpasswd1\">Nouveau mot de passe :</label>\n                        <input type=\"password\" class=\"form-control\" id=\"newpasswd1\"\n                               ng:change=\"$ctrl.mark_as_dirty( 'password' )\"\n                               ng:model=\"$ctrl.password.new1\"\n                               zxcvbn=\"passwordStrength\"\n                               zx-min-score=\"2\">\n                        <div class=\"password-strength\"\n                             ng:if=\"$ctrl.dirty.password && $ctrl.password.new1 !== ''\">\n                            <label>Qualit\u00E9 du mot de passe :</label>\n                            <uib-progressbar max=\"5\" value=\"passwordStrength.score + 1\"\n                                             type=\"{{ ( passwordStrength.score < 2 ) ? 'danger' : ( ( passwordStrength.score < 3 ) ? 'warning' : ( ( passwordStrength.score < 4 ) ? 'primary' : 'success' ) ) }}\">\n                                <span ng:switch=\"passwordStrength.score\">\n                                    <span style=\"color:white; white-space:nowrap;\" ng:switch-when=\"0\">Trop faible</span>\n                                    <span style=\"color:white; white-space:nowrap;\" ng:switch-when=\"1\">Faible</span>\n                                    <span style=\"color:white; white-space:nowrap;\" ng:switch-when=\"2\">Moyen</span>\n                                    <span style=\"color:white; white-space:nowrap;\" ng:switch-when=\"3\">Bon</span>\n                                    <span style=\"color:white; white-space:nowrap;\" ng:switch-when=\"4\">Excellent</span>\n                                </span>\n                            </uib-progressbar>\n                        </div>\n                    </div>\n                    <div class=\"form-group col-md-6 col-xs-12\"\n                         ng:class=\"{'has-error': $ctrl.password.new1 !== $ctrl.password.new2 }\">\n                        <label for=\"newpasswd2\">Confirmer le nouveau mot de passe :</label>\n                        <input type=\"password\" class=\"form-control\" id=\"newpasswd2\"\n                               ng:model=\"$ctrl.password.new2\">\n                    </div>\n                </div>\n            </accordion-group>\n\n            <footer>\n                <button ng:click=\"$ctrl.save()\">Enregistrer</button>\n            </footer>\n        </accordion>\n    </form>\n</div>\n"
 });
 angular.module('portailApp')
-    .component('userTile', { bindings: { user: '<' },
+    .component('userTile', {
+    bindings: { user: '<' },
     controller: ['APP_PATH', 'URL_ENT',
         function (APP_PATH, URL_ENT) {
             var ctrl = this;
@@ -730,27 +782,38 @@ angular.module('portailApp')
 angular.module('portailApp')
     .factory('Flux', ['$resource', 'URL_ENT',
     function ($resource, URL_ENT) {
-        return $resource(URL_ENT + '/api/flux/:id', { id: '@id',
+        return $resource(URL_ENT + '/api/flux/:id', {
+            id: '@id',
             structure_id: '@structure_id',
             url: '@url',
-            name: '@name' }, { get: { isArray: true },
-            update: { method: 'PUT' } });
+            name: '@name'
+        }, {
+            get: { isArray: true },
+            update: { method: 'PUT' }
+        });
     }]);
 angular.module('portailApp')
     .factory('RessourceNumerique', ['$resource', 'URL_ENT',
     function ($resource, URL_ENT) {
-        return $resource(URL_ENT + 'api/structures/:id/ressources/:ressource_id', { id: '@id',
+        return $resource(URL_ENT + 'api/structures/:id/ressources/:ressource_id', {
+            id: '@id',
             ressource_id: '@ressource_id',
             ressource_num_id: '@ressource_num_id',
             date_deb_abon: '@date_deb_abon',
-            date_fin_abon: '@date_fin_abon' }, { query_default: { methode: 'GET',
+            date_fin_abon: '@date_fin_abon'
+        }, {
+            query_default: {
+                methode: 'GET',
                 url: URL_ENT + 'api/ressources/',
-                isArray: true } });
+                isArray: true
+            }
+        });
     }]);
 angular.module('portailApp')
     .factory('Tiles', ['$resource', 'URL_ENT', 'CONFIG',
     function ($resource, URL_ENT, CONFIG) {
-        var Tile = $resource(URL_ENT + '/api/tiles/:id', { id: '@id',
+        var Tile = $resource(URL_ENT + '/api/tiles/:id', {
+            id: '@id',
             structure_id: '@structure_id',
             application_id: '@application_id',
             index: '@index',
@@ -759,8 +822,11 @@ angular.module('portailApp')
             description: '@description',
             url: '@url',
             icon: '@icon',
-            color: '@color' }, { update: { method: 'PUT' },
-            query: { method: 'GET',
+            color: '@color'
+        }, {
+            update: { method: 'PUT' },
+            query: {
+                method: 'GET',
                 cache: false,
                 isArray: true,
                 transformResponse: function (response, _headers_getters) {
@@ -773,13 +839,16 @@ angular.module('portailApp')
                             return app;
                         }
                     });
-                } } });
+                }
+            }
+        });
         return Tile;
     }]);
 angular.module('portailApp')
     .factory('User', ['$resource', 'URL_ENT',
     function ($resource, URL_ENT) {
-        var User = $resource(URL_ENT + '/api/users/:id', { id: '@id',
+        var User = $resource(URL_ENT + '/api/users/:id', {
+            id: '@id',
             firstname: '@firstname',
             lastname: '@lastname',
             gender: '@gender',
@@ -788,9 +857,11 @@ angular.module('portailApp')
             zip_code: '@zip_code',
             city: '@city',
             password: '@password'
-        }, { get: { cache: false },
+        }, {
+            get: { cache: false },
             update: { method: 'PUT' },
-            upload_avatar: { method: 'POST',
+            upload_avatar: {
+                method: 'POST',
                 url: URL_ENT + '/api/users/:id/upload/avatar',
                 transformRequest: function (request) {
                     var fd = new FormData();
@@ -799,7 +870,8 @@ angular.module('portailApp')
                     delete request.new_avatar;
                     return fd;
                 },
-                headers: { 'Content-Type': undefined } }
+                headers: { 'Content-Type': undefined }
+            }
         });
         User.prototype.active_profile = function () {
             return _(this.profiles).findWhere({ active: true });
@@ -816,119 +888,164 @@ angular.module('portailApp')
     function (Utils, currentUser) {
         var service = this;
         service.query = function () {
-            var ccns = [{ nom: '14-18',
+            var ccns = [{
+                    nom: '14-18',
                     description: '14-18',
                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_14-18.svg',
                     color: 'jaune',
-                    action: function () { Utils.log_and_open_link('CCN', 'http://14-18.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); } },
-                { nom: 'Zérogaspi',
+                    action: function () { Utils.log_and_open_link('CCN', 'http://14-18.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
+                },
+                {
+                    nom: 'Zérogaspi',
                     description: 'Zérogaspi',
                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_zero-gaspi.svg',
                     color: 'bleu',
-                    action: function () { Utils.log_and_open_link('CCN', 'http://zerogaspi.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); } },
-                { nom: 'AIR',
+                    action: function () { Utils.log_and_open_link('CCN', 'http://zerogaspi.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
+                },
+                {
+                    nom: 'AIR',
                     description: 'Assises du Roman',
                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_air-2014.svg',
                     color: 'jaune',
-                    action: function () { Utils.log_and_open_link('CCN', 'http://air.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); } },
-                { nom: 'Habiter',
+                    action: function () { Utils.log_and_open_link('CCN', 'http://air.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
+                },
+                {
+                    nom: 'Habiter',
                     description: 'Représentations cartographiques de l\'espace vécu',
                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_habiter.svg',
                     color: 'vert',
-                    action: function () { Utils.log_and_open_link('CCN', 'http://habiter.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); } },
-                { nom: 'Code',
+                    action: function () { Utils.log_and_open_link('CCN', 'http://habiter.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
+                },
+                {
+                    nom: 'Code',
                     description: 'Mener un projet de code créatif avec sa classe et réaliser un jeu en réseau',
                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_code.svg',
                     color: 'orange-brillant',
-                    action: function () { Utils.log_and_open_link('CCN', 'http://code.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); } },
-                { nom: 'Polar / Krimi',
+                    action: function () { Utils.log_and_open_link('CCN', 'http://code.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
+                },
+                {
+                    nom: 'Polar / Krimi',
                     description: 'Ecrire un roman illustré franco-allemand avec un auteur de polar et un illustrateur, en collaboration avec des collégiens allemands',
                     icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_krimi.svg',
                     color: 'bleu-fonce',
-                    action: function () { Utils.log_and_open_link('CCN', 'http://krimi.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); } },
-                { nom: 'Projets archivés',
+                    action: function () { Utils.log_and_open_link('CCN', 'http://krimi.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
+                },
+                {
+                    nom: 'Projets archivés',
                     description: 'Projets archivés',
                     icon: '/app/node_modules/laclasse-common-client/images/06_thematiques.svg',
                     color: 'gris1',
-                    leaves: [{ nom: 'Théâtre',
+                    leaves: [{
+                            nom: 'Théâtre',
                             description: 'Théâtre',
                             icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_theatre.svg',
                             color: 'rouge',
-                            action: function () { Utils.log_and_open_link('CCN', 'http://theatre.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); } },
-                        { nom: 'Philo',
+                            action: function () { Utils.log_and_open_link('CCN', 'http://theatre.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
+                        },
+                        {
+                            nom: 'Philo',
                             description: 'Philo',
                             action: function () { Utils.log_and_open_link('CCN', 'http://philo.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); },
                             icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_philo.svg',
-                            color: 'violet' },
-                        { color: 'gris2',
+                            color: 'violet'
+                        },
+                        {
+                            color: 'gris2',
                             icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_miam.svg',
                             nom: 'Miam',
                             titre: '',
-                            action: function () { Utils.log_and_open_link('CCN', 'http://miam.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); } },
-                        { color: 'bleu',
+                            action: function () { Utils.log_and_open_link('CCN', 'http://miam.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
+                        },
+                        {
+                            color: 'bleu',
                             icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_odysseespatiale.svg',
                             nom: 'Odyssée spatiale',
                             titre: '',
-                            action: function () { Utils.log_and_open_link('CCN', 'http://novaterra.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); } },
-                        { color: 'jaune',
+                            action: function () { Utils.log_and_open_link('CCN', 'http://novaterra.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
+                        },
+                        {
+                            color: 'jaune',
                             icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_archeologie.svg',
                             nom: 'Archéologie',
                             titre: '',
-                            action: function () { Utils.log_and_open_link('CCN', 'http://archeologies.laclasse.com/'); } },
-                        { color: 'orange',
+                            action: function () { Utils.log_and_open_link('CCN', 'http://archeologies.laclasse.com/'); }
+                        },
+                        {
+                            color: 'orange',
                             icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_bd.svg',
                             nom: 'BD',
                             titre: '',
-                            action: function () { Utils.log_and_open_link('CCN', 'http://bd.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); } },
-                        { color: 'violet',
+                            action: function () { Utils.log_and_open_link('CCN', 'http://bd.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
+                        },
+                        {
+                            color: 'violet',
                             icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_cine.svg',
                             nom: 'Ciné',
                             titre: '',
-                            action: function () { Utils.log_and_open_link('CCN', 'http://cine.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); } },
-                        { color: 'vert',
+                            action: function () { Utils.log_and_open_link('CCN', 'http://cine.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
+                        },
+                        {
+                            color: 'vert',
                             icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_cluemo.svg',
                             nom: 'Cluémo',
                             titre: '',
-                            action: function () { Utils.log_and_open_link('CCN', 'http://cluemo.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); } },
-                        { color: 'rouge',
+                            action: function () { Utils.log_and_open_link('CCN', 'http://cluemo.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
+                        },
+                        {
+                            color: 'rouge',
                             icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_etudiantsvoyageurs.svg',
                             nom: 'Etudiants voyageurs',
                             titre: '',
-                            action: function () { Utils.log_and_open_link('CCN', 'http://etudiantsvoyageurs.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); } },
-                        { color: 'vert',
+                            action: function () { Utils.log_and_open_link('CCN', 'http://etudiantsvoyageurs.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
+                        },
+                        {
+                            color: 'vert',
                             icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_finisterrae.svg',
                             nom: 'Finisterrae',
                             titre: '',
-                            action: function () { Utils.log_and_open_link('CCN', 'http://finisterrae.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); } },
-                        { color: 'gris4',
+                            action: function () { Utils.log_and_open_link('CCN', 'http://finisterrae.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
+                        },
+                        {
+                            color: 'gris4',
                             icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_dechetmatiere.svg',
                             nom: 'Le déchet matière',
                             titre: '',
-                            action: function () { Utils.log_and_open_link('CCN', 'http://ledechetmatiere.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); } },
-                        { color: 'violet',
+                            action: function () { Utils.log_and_open_link('CCN', 'http://ledechetmatiere.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
+                        },
+                        {
+                            color: 'violet',
                             icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_maisondeladanse.svg',
                             nom: 'Maison de la danse',
                             titre: '',
-                            action: function () { Utils.log_and_open_link('CCN', 'http://maisondeladanse.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); } },
-                        { color: 'bleu',
+                            action: function () { Utils.log_and_open_link('CCN', 'http://maisondeladanse.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
+                        },
+                        {
+                            color: 'bleu',
                             icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_musique.svg',
                             nom: 'Musique',
                             titre: '',
-                            action: function () { Utils.log_and_open_link('CCN', 'http://musique.laclasse.com/'); } },
-                        { color: 'jaune',
+                            action: function () { Utils.log_and_open_link('CCN', 'http://musique.laclasse.com/'); }
+                        },
+                        {
+                            color: 'jaune',
                             icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_science.svg',
                             nom: 'Science',
                             titre: '',
-                            action: function () { Utils.log_and_open_link('CCN', 'http://science.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); } },
-                        { color: 'orange',
+                            action: function () { Utils.log_and_open_link('CCN', 'http://science.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
+                        },
+                        {
+                            color: 'orange',
                             icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_picture.svg',
                             nom: 'Picture',
                             titre: '',
-                            action: function () { Utils.log_and_open_link('CCN', 'http://picture.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); } }] }];
+                            action: function () { Utils.log_and_open_link('CCN', 'http://picture.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
+                        }]
+                }];
             currentUser.get(false)
                 .then(function (user) {
                 if (['DIR', 'ENS', 'DOC'].includes(user.active_profile().type)) {
-                    ccns.push({ nom: 'Projets 2017-2018',
+                    ccns.push({
+                        nom: 'Projets 2017-2018',
                         description: '',
                         icon: '/app/node_modules/laclasse-common-client/images/06_thematiques.svg',
                         color: 'bleu-plus',
@@ -1006,9 +1123,11 @@ angular.module('portailApp')
         service.activate_profile = function (profile_id) {
             return service.get(false)
                 .then(function success(user) {
-                return $http({ method: 'PUT',
+                return $http({
+                    method: 'PUT',
                     url: URL_ENT + '/api/users/' + user.id + '/profiles/' + profile_id,
-                    data: { active: true } });
+                    data: { active: true }
+                });
             });
         };
         service.ressources = function () {
@@ -1081,12 +1200,14 @@ angular.module('portailApp')
         this.add = function (app, url, params) {
             currentUser.get(false)
                 .then(function (user) {
-                $http.post(URL_ENT + '/api/logs', { application_id: app,
+                $http.post(URL_ENT + '/api/logs', {
+                    application_id: app,
                     user_id: user.id,
                     structure_id: user.active_profile() ? user.active_profile().structure_id : 'none',
                     profil_id: user.active_profile() ? user.active_profile().type : 'none',
                     url: _(url).isNull() ? APP_PATH + $state.current.url : url,
-                    parameters: _(params).isNull() ? _($state.params).map(function (value, key) { return key + '=' + value; }).join('&') : params });
+                    parameters: _(params).isNull() ? _($state.params).map(function (value, key) { return key + '=' + value; }).join('&') : params
+                });
             });
         };
     }
@@ -1096,14 +1217,16 @@ angular.module('portailApp')
     function ($uibModal) {
         var Popups = this;
         Popups.add_tiles = function (current_tiles, callback_success, callback_error) {
-            $uibModal.open({ controller: ['$scope', '$uibModalInstance', 'APP_PATH', 'Tiles', 'currentUser', 'Annuaire',
+            $uibModal.open({
+                controller: ['$scope', '$uibModalInstance', 'APP_PATH', 'Tiles', 'currentUser', 'Annuaire',
                     'current_tiles',
                     function ($scope, $uibModalInstance, APP_PATH, Tiles, currentUser, Annuaire, current_tiles) {
                         $scope.prefix = APP_PATH;
                         $scope.available_tiles = [];
                         $scope.tiles_selected = false;
                         $scope.add_empty_link_tile = function () {
-                            $scope.available_tiles.push(new Tiles({ creation: true,
+                            $scope.available_tiles.push(new Tiles({
+                                creation: true,
                                 present: false,
                                 type: 'EXTERNAL',
                                 name: '',
@@ -1111,7 +1234,8 @@ angular.module('portailApp')
                                 url: 'http://',
                                 color: '',
                                 selected: true,
-                                taxonomy: 'app' }));
+                                taxonomy: 'app'
+                            }));
                         };
                         $scope.keep_tile_selected = function (event, app) {
                             app.selected = false;
@@ -1150,11 +1274,13 @@ angular.module('portailApp')
                     }],
                 resolve: { current_tiles: function () { return current_tiles; } },
                 template: "\n<div class=\"modal-header\">\n    <h3 class=\"modal-title\">Ajouter une tuile</h3>\n</div>\n<div class=\"modal-body available-apps\">\n    <ul>\n        <li class=\"new-app\"\n            ng:repeat=\"tile in available_tiles\"\n            ng:if=\"tile.available() || tile.creation\"\n            ng:class=\"{'selected': tile.selected, 'creation': tile.creation, 'pronote': tile.application_id == 'PRONOTE'}\"\n            ng:click=\"selected( tile )\">\n\n            <a ng:if=\"!tile.creation\"\n               title=\"{{ tile.description }}\"\n               ng:style=\"{'background-color': tile.color }\">\n                <img draggable=\"false\" class=\"icone\" ng:src=\"{{prefix}}/{{tile.icon}}\"\n                     ng:if=\"tile.icon\"/>\n                <span class=\"app-name\" ng:cloak>{{ tile.name }}</span>\n                <label ng:if=\"tile.application_id == 'PRONOTE'\">lien <input type=\"text\" ng:model=\"tile.url\" ng:click=\"keep_tile_selected( $event, tile )\"/></label>\n            </a>\n\n            <fieldset ng:if=\"tile.creation\">\n                <legend>lien libre</legend>\n\n                <label>libell\u00E9 <input type=\"text\" ng:model=\"tile.name\" ng:click=\"keep_tile_selected( $event, tile )\" /></label>\n                <label>lien <input type=\"text\" ng:model=\"tile.url\" ng:click=\"keep_tile_selected( $event, tile )\" /></label>\n            </fieldset>\n        </li>\n    </ul>\n    <div class=\"clearfix\"></div>\n</div>\n<div class=\"modal-footer\">\n    <button class=\"btn btn-primary pull-left\" ng:click=\"add_empty_link_tile()\">\n        <span class=\"glyphicon glyphicon-plus-sign\"></span> Ajouter un lien libre\n    </button>\n\n    <button class=\"btn btn-default\" ng:click=\"cancel()\">\n        <span class=\"glyphicon glyphicon-remove-sign\"></span> <span ng:if=\"tiles_selected\">Annuler</span><span ng:if=\"!tiles_selected\">Fermer</span>\n    </button>\n    <button class=\"btn btn-success\"\n            ng:click=\"ok()\"\n            ng:disabled=\"!tiles_selected\">\n        <span class=\"glyphicon glyphicon-ok-sign\"></span> Valider\n    </button>\n</div>\n",
-                backdrop: 'static' })
+                backdrop: 'static'
+            })
                 .result.then(callback_success, callback_error);
         };
         Popups.manage_fluxes = function (callback_success, callback_error) {
-            $uibModal.open({ template: "\n<div class=\"modal-header\">\n    <h3 class=\"modal-title\">G\u00E9rer les flux RSS affich\u00E9s sur le portail de l'\u00E9tablissement</h3>\n</div>\n<div class=\"modal-body config-fluxes\">\n    <ul>\n        <li ng:repeat=\"flux in $ctrl.current_flux\">\n            <label>titre <input type=\"text\"\n                                ng:model=\"flux.name\"\n                                ng:change=\"$ctrl.dirtify( flux )\" /></label>\n            <label>url <input type=\"text\"\n                              ng:model=\"flux.url\"\n                              ng:change=\"$ctrl.dirtify( flux )\" /></label>\n\n            <div class=\"controls\">\n                <button class=\"btn-default delete\"\n                        ng:click=\"$ctrl.delete( flux )\"><span class=\"glyphicon glyphicon-trash\"></span></button>\n                <button class=\"btn-primary save\"\n                        ng:if=\"flux.dirty\"\n                        ng:click=\"$ctrl.save( flux )\"><span class=\"glyphicon glyphicon-ok-sign\"></span></button>\n            </div>\n            <div class=\"clearfix\"></div>\n        </li>\n    </ul>\n    <div class=\"clearfix\"></div>\n\n    <button style=\"right: 4em;\"\n            ng:click=\"$ctrl.add_default_flux()\"><span class=\"glyphicon glyphicon-cloud-download\"></span></button>\n    <button ng:click=\"$ctrl.add_flux()\"><span class=\"glyphicon glyphicon-plus-sign\"></span></button>\n</div>\n<div class=\"modal-footer\">\n    <button class=\"btn btn-default\" ng:click=\"$ctrl.close()\">\n        <span class=\"glyphicon glyphicon-remove-sign\"></span> Fermer\n    </button>\n</div>\n",
+            $uibModal.open({
+                template: "\n<div class=\"modal-header\">\n    <h3 class=\"modal-title\">G\u00E9rer les flux RSS affich\u00E9s sur le portail de l'\u00E9tablissement</h3>\n</div>\n<div class=\"modal-body config-fluxes\">\n    <ul>\n        <li ng:repeat=\"flux in $ctrl.current_flux\">\n            <label>titre <input type=\"text\"\n                                ng:model=\"flux.name\"\n                                ng:change=\"$ctrl.dirtify( flux )\" /></label>\n            <label>url <input type=\"text\"\n                              ng:model=\"flux.url\"\n                              ng:change=\"$ctrl.dirtify( flux )\" /></label>\n\n            <div class=\"controls\">\n                <button class=\"btn-default delete\"\n                        ng:click=\"$ctrl.delete( flux )\"><span class=\"glyphicon glyphicon-trash\"></span></button>\n                <button class=\"btn-primary save\"\n                        ng:if=\"flux.dirty\"\n                        ng:click=\"$ctrl.save( flux )\"><span class=\"glyphicon glyphicon-ok-sign\"></span></button>\n            </div>\n            <div class=\"clearfix\"></div>\n        </li>\n    </ul>\n    <div class=\"clearfix\"></div>\n\n    <button style=\"right: 4em;\"\n            ng:click=\"$ctrl.add_default_flux()\"><span class=\"glyphicon glyphicon-cloud-download\"></span></button>\n    <button ng:click=\"$ctrl.add_flux()\"><span class=\"glyphicon glyphicon-plus-sign\"></span></button>\n</div>\n<div class=\"modal-footer\">\n    <button class=\"btn btn-default\" ng:click=\"$ctrl.close()\">\n        <span class=\"glyphicon glyphicon-remove-sign\"></span> Fermer\n    </button>\n</div>\n",
                 controller: ['$scope', '$uibModalInstance', 'currentUser', 'Flux', 'CONFIG',
                     function ($scope, $uibModalInstance, currentUser, Flux, CONFIG) {
                         var ctrl = $scope;
@@ -1173,9 +1299,11 @@ angular.module('portailApp')
                             flux.dirty = true;
                         };
                         ctrl.add_flux = function () {
-                            ctrl.current_flux.push(new Flux({ name: '',
+                            ctrl.current_flux.push(new Flux({
+                                name: '',
                                 url: '',
-                                icon: '' }));
+                                icon: ''
+                            }));
                         };
                         ctrl.add_default_flux = function () {
                             _(CONFIG.news_feed).each(function (flux) {
@@ -1200,7 +1328,8 @@ angular.module('portailApp')
                         };
                         ctrl.$onInit();
                     }],
-                backdrop: 'static' })
+                backdrop: 'static'
+            })
                 .result.then(callback_success, callback_error);
         };
     }
@@ -1212,8 +1341,10 @@ angular.module('portailApp')
             var suffix = '-moins';
             return tiles_tree.concat(_(CASES.slice(tiles_tree.length, CASES.length))
                 .map(function (c, i) {
-                return { index: i + tiles_tree.length,
-                    color: c.color + suffix };
+                return {
+                    index: i + tiles_tree.length,
+                    color: c.color + suffix
+                };
             }));
         };
         this.fill_empty_tiles = function (tiles_tree) {
@@ -1223,8 +1354,10 @@ angular.module('portailApp')
                 .range()
                 .difference(indexes)
                 .each(function (index) {
-                tiles_tree.push({ index: index,
-                    color: CASES[index % CASES.length].color + '-moins' });
+                tiles_tree.push({
+                    index: index,
+                    color: CASES[index % CASES.length].color + '-moins'
+                });
             });
             return tiles_tree;
         };
