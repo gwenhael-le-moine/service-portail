@@ -1093,15 +1093,15 @@ angular.module('portailApp')
                     .value();
             });
         });
-        service.get_structure_resources = _.memoize(function (structure_id) {
-            return $http.get(URL_ENT + '/api/resources/', { params: { 'structures.structure_id': structure_id } });
-        });
         service.get_profile_type = _.memoize(function (type) {
             return $http.get(URL_ENT + '/api/profiles_types/' + type);
         });
-        service.get_resource = _.memoize(function (id) {
+        service.get_structure_resources = function (structure_id) {
+            return $http.get(URL_ENT + '/api/resources/', { params: { 'structures.structure_id': structure_id } });
+        };
+        service.get_resource = function (id) {
             return $http.get(URL_ENT + '/api/resources/' + id);
-        });
+        };
         service.get_users = _.memoize(function (users_ids) {
             return $http.get(URL_ENT + '/api/users/', { params: { 'id[]': users_ids } });
         });
