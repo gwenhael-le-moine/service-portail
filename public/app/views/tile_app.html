@@ -36,8 +36,10 @@
                 <i class="glyphicon glyphicon-new-window"
                    ng:if="tile.type === 'EXTERNAL'"></i>
             </span>
-            <span class="counter"
-                  ng:if="tile.recent_mail">
+            <span class="counter label label-warning"
+                  style="position: absolute; top: 5px; right: 5px; height: 28px; width: unset; font-size: 20px; border-radius: 14px;"
+                  title="messages récents"
+                  ng:if="tile.notifications && tile.notifications.recent > 0">
                 {{tile.recent_mail.recent}}
             </span>
         </div>

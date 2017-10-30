@@ -360,8 +360,7 @@ angular.module('portailApp')
                                 modify: function (node) {
                                     currentUser.recent_mail()
                                         .then(function (response) {
-                                        console.log(response.data);
-                                        node.recent_mail = response.data;
+                                        node.notifications = response.data;
                                     });
                                     return node;
                                 }
