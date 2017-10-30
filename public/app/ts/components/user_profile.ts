@@ -188,6 +188,12 @@ angular.module('portailApp')
                                                                            ng:model="email.address">
                                                                   </div>
                                                                 </div>
+                                                                <div class="row">
+                                                                  <div class="form-group col-md-6 col-xs-12">
+                                                                    <label for="login">Rappel de votre identifiant :</label>
+                                                                    <span class="form-control" style="line-height: 34px; box-shadow: none;" disabled>{{$ctrl.user.login}}</span>
+                                                                  </div>
+                                                                </div>
 
                                                               </accordion-group>
 
