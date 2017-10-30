@@ -36,6 +36,10 @@
                 <i class="glyphicon glyphicon-new-window"
                    ng:if="tile.type === 'EXTERNAL'"></i>
             </span>
+            <span class="counter"
+                  ng:if="tile.recent_mail">
+                {{tile.recent_mail.recent}}
+            </span>
         </div>
     </div>
 

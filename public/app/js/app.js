@@ -356,6 +356,16 @@ angular.module('portailApp')
                             };
                         };
                         var app_specific = {
+                            MAIL: {
+                                modify: function (node) {
+                                    currentUser.recent_mail()
+                                        .then(function (response) {
+                                        console.log(response.data);
+                                        node.recent_mail = response.data;
+                                    });
+                                    return node;
+                                }
+                            },
                             CCNUM: {
                                 action: function () {
                                     if (ctrl.modification) {
@@ -530,6 +540,9 @@ angular.module('portailApp')
                                     Utils.log_and_open_link(node.application_id === 'PRONOTE' ? 'PRONOTE' : 'EXTERNAL', node.url);
                                 }
                             };
+                        }
+                        if (!_(app_specific[node.application_id]).isUndefined() && _(app_specific[node.application_id]).has('modify')) {
+                            node = app_specific[node.application_id].modify(node);
                         }
                         return node;
                     };
@@ -1199,6 +1212,12 @@ angular.module('portailApp')
                     })
                         .value();
                 });
+            });
+        };
+        service.recent_mail = function () {
+            return service.get(false)
+                .then(function success(user) {
+                return $http.get(URL_ENT + "/api/users/" + user.id + "/imapcheck");
             });
         };
     }]);
