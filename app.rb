@@ -8,8 +8,6 @@ Bundler.require( :default, ENV['RACK_ENV'].to_sym ) # require tout les gems déf
 require 'tilt/erb'
 
 require_relative './config/init'
-require_relative './routes/index'
-require_relative './routes/stats'
 
 # Application Sinatra servant de base
 class SinatraApp < Sinatra::Base
@@ -23,7 +21,11 @@ class SinatraApp < Sinatra::Base
     expires 500, :public, :must_revalidate
   end
 
-  register Portail::Routes::Index
+  get '/?' do
+    erb :app
+  end
 
-  register Portail::Routes::Stats
+  get '/stats/?' do
+    erb :stats, layout: false
+  end
 end
