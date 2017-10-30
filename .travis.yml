@@ -15,7 +15,7 @@ install:
 
 script:
   - "bundle exec rubocop -D"
-  - "bundle exec rake preprocess_assets:production"
+  - "bundle exec rake preprocess_assets"
 
 gemfile:
   - Gemfile
