@@ -215,7 +215,7 @@ angular.module('portailApp')
                 node.configure = false;
                 node.toggle_configure = function() {
                   ctrl.tree.tiles.forEach(function(tile) {
-                    tile.configure = tile.index === node.index ? !tile.configure : false;
+                    tile.configure = tile === node ? !tile.configure : false;
                   });
                 };
 
