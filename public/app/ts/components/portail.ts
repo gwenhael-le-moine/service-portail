@@ -5,7 +5,7 @@ angular.module('portailApp')
   {
     controller: ['$sce', '$state', '$uibModal', '$q', 'CASES', 'COULEURS', 'currentUser', 'Utils', 'CCN', 'Tiles', 'APP_PATH', 'CACHE_BUSTER', 'User', 'Annuaire', 'URL_ENT', 'Popups',
       function($sce, $state, $uibModal, $q, CASES, COULEURS, currentUser, Utils, CCN, Tiles, APP_PATH, CACHE_BUSTER, User, Annuaire, URL_ENT, Popups) {
-        var ctrl = this;
+        let ctrl = this;
 
         ctrl.$onInit = function() {
           currentUser.get(true)
@@ -17,7 +17,7 @@ angular.module('portailApp')
               ctrl.CACHE_BUSTER = CACHE_BUSTER;
 
               ctrl.get_tile_template = function(taxonomy) {
-                var tiles_templates = {
+                let tiles_templates = {
                   app: 'app/views/tile_app.html?v=' + CACHE_BUSTER,
                   back: 'app/views/tile_app.html?v=' + CACHE_BUSTER,
                   regroupement: 'app/views/tile_regroupement.html?v=' + CACHE_BUSTER,
@@ -31,7 +31,7 @@ angular.module('portailApp')
 
               ctrl.filter_criteria = {};
 
-              var go_to_root_tile = {
+              let go_to_root_tile = {
                 index: 0,
                 taxonomy: 'back',
                 name: '← Retour',
@@ -43,21 +43,21 @@ angular.module('portailApp')
                 }
               };
 
-              var tool_tile = function(node) {
-                var go_to_parent_tile = function(parent) {
-                  var back_to_parent = angular.copy(go_to_root_tile);
+              let tool_tile = function(node) {
+                let go_to_parent_tile = function(parent) {
+                  let back_to_parent = angular.copy(go_to_root_tile);
                   back_to_parent.action = parent.action;
 
                   return back_to_parent;
                 };
 
-                var default_filter = function() {
+                let default_filter = function() {
                   return function(tile) {
                     return true;
                   };
                 };
 
-                var app_specific = {
+                let app_specific = {
                   MAIL: {
                     modify: function(node) {
                       currentUser.recent_mail()
@@ -214,21 +214,23 @@ angular.module('portailApp')
 
                 node.configure = false;
                 node.toggle_configure = function() {
+                  if (node.configure) {
+                    node.update();
+                  }
+
                   ctrl.tree.tiles.forEach(function(tile) {
                     tile.configure = tile === node ? !tile.configure : false;
                   });
                 };
 
-                node.dirty = {};
-                node.is_dirty = function(field) {
-                  node.dirty[field] = true;
+                node.update = function() {
+                  Tiles.update(node);
                 };
 
-                node.to_delete = false;
                 node.remove = function() {
-                  node.to_delete = !node.to_delete;
-                  node.dirty = node.dirty || node.to_delete;
-                  node.configure = false;
+                  Tiles.delete(node).$promise.then(function(response) {
+                    retrieve_tiles_tree();
+                  });;
                 };
 
                 if (!_(app_specific[node.application_id]).isUndefined() && _(app_specific[node.application_id]).has('action')) {
@@ -251,15 +253,15 @@ angular.module('portailApp')
                 return node;
               };
 
-              var retrieve_tiles_tree = function() {
+              let retrieve_tiles_tree = function() {
                 currentUser.tiles()
                   .then(function(response) {
                     response.forEach(function(app) { app.taxonomy = 'app'; });
 
-                    var tiles = _(response)
+                    let tiles = _(response)
                       .select(function(app) {
-                        var now = moment();
-                        var is_it_summer = now.month() == 7;
+                        let now = moment();
+                        let is_it_summer = now.month() == 7;
 
                         return (!is_it_summer
                           || (app.summer
@@ -291,18 +293,12 @@ angular.module('portailApp')
                 ctrl.modification = true;
               };
 
-              ctrl.exit_tiles_edition = function() {
-                ctrl.modification = false;
-                retrieve_tiles_tree();
-              };
-
-              var sortable_callback = function(event) {
-                _(ctrl.tree.tiles).each(function(tile, i) {
+              let sortable_callback = function(event) {
+                _(ctrl.tree.tiles).map(function(tile, i) {
                   tile.index = i;
-                  if (!_(tile).has('dirty')) {
-                    tile.dirty = {};
+                  if (_(tile).has('id')) {
+                    tile.update();
                   }
-                  tile.dirty.index = true;
                 });
               };
               ctrl.sortable_options = {
@@ -320,87 +316,33 @@ angular.module('portailApp')
               ctrl.add_tile = function(tiles) {
                 Popups.add_tiles(tiles,
                   function success(new_tiles) {
-                    $q.all(_(new_tiles).map(function(new_tile) {
-                      var recipient_index = _(tiles).findIndex(function(tile) { return !_(tile).has('taxonomy'); });
+                    _(new_tiles).each(function(new_tile) {
+                      let recipient_index = _(tiles).findIndex(function(tile) { return !_(tile).has('taxonomy'); });
 
                       if (recipient_index === -1) {
                         recipient_index = tiles.length;
                         tiles.push({ index: recipient_index });
                       }
+                      new_tile.structure_id = ctrl.user.active_profile().structure_id;
 
-                      tiles[recipient_index] = tool_tile(new_tile);
-                      tiles[recipient_index].index = recipient_index;
-                      if (!_(new_tile).has('id')) {
-                        tiles[recipient_index].to_create = true;
-                      }
-                    }));
+                      Tiles.save({}, new_tile).$promise.then(function(response) {
+                        retrieve_tiles_tree();
+                        // tiles[recipient_index] = tool_tile(response);
+                        // console.log(tiles)
+                      });
+                    });
                   }, function error() { });
               };
 
-              ctrl.save_tiles_edition = function(should_save) {
-                var promises = [];
-
-                promises.concat(_.chain(ctrl.tree.tiles)
-                  .where({ to_delete: true })
-                  .map(function(tile) {
-                    switch (tile.taxonomy) {
-                      case 'app':
-                        return Tiles.delete({ id: tile.id }).$promise;
-                      case 'rn':
-                      default:
-                        console.log(tile)
-                        return null;
-                    }
-                  }));
-
-                promises.concat(_.chain(ctrl.tree.tiles)
-                  .select(function(tile) {
-                    return _(tile).has('id')
-                      && !_(tile).has('to_create')
-                      && _(tile).has('dirty')
-                      && !_(tile.dirty).isEmpty();
-                  })
-                  .map(function(tile) {
-                    switch (tile.taxonomy) {
-                      case 'app':
-                        var updated_fields = {};
-                        _.chain(tile.dirty)
-                          .keys()
-                          .each(function(field) {
-                            updated_fields[field] = tile[field];
-                          });
-                        return Tiles.update({ id: tile.id }, updated_fields);
-                      case 'rn':
-                      default:
-                        console.log(tile)
-                        return null;
-                    }
-                  }));
-
-                promises.concat(_.chain(ctrl.tree.tiles)
-                  .where({ to_create: true })
-                  .map(function(tile) {
-                    switch (tile.taxonomy) {
-                      case 'app':
-                        tile.structure_id = ctrl.user.active_profile().structure_id;
-                        return Tiles.save({}, tile).$promise;
-                      case 'rn':
-                      default:
-                        console.log(tile)
-                        return null;
-                    }
-                  }));
-
-                $q.all(promises).then(function(response) {
-                  ctrl.tree.tiles = Utils.fill_empty_tiles(_(ctrl.tree.tiles).reject(function(tile) { return tile.to_delete; }));
-                });
-
+              ctrl.exit_tiles_edition = function() {
                 ctrl.modification = false;
                 ctrl.tree.tiles.forEach(function(tile) {
                   if (_(tile).has('configure')) {
                     tile.configure = false;
                   }
                 });
+
+                retrieve_tiles_tree();
               };
 
               // Action!
@@ -411,62 +353,59 @@ angular.module('portailApp')
     template: `
 <div class="row portail"
      ng:if="$ctrl.user">
-    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 aside">
-        <help-icon class="btn-group hidden-xs help-icon"
-                   user="$ctrl.user"></help-icon>
+  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 aside">
+    <help-icon class="btn-group hidden-xs help-icon"
+               user="$ctrl.user"></help-icon>
 
-        <logo class="col-xs-1 col-sm-1 col-md-6 col-lg-6 logolaclasse gris4"
-              user="$ctrl.user"></logo>
+    <logo class="col-xs-1 col-sm-1 col-md-6 col-lg-6 logolaclasse gris4"
+          user="$ctrl.user"></logo>
 
-        <user-tile user="$ctrl.user"></user-tile>
+    <user-tile user="$ctrl.user"></user-tile>
 
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 hidden-xs hidden-sm aside-bottom"
-             ng:include="$ctrl.user.edit_profile ? 'app/views/aside_news.html?v=' + $ctrl.CACHE_BUSTER : $ctrl.tree.aside_template"></div>
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 hidden-xs hidden-sm aside-bottom"
+         ng:include="$ctrl.user.edit_profile ? 'app/views/aside_news.html?v=' + $ctrl.CACHE_BUSTER : $ctrl.tree.aside_template"></div>
+  </div>
+
+  <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+    <div class="row user-profil"
+         ng:if="$ctrl.user.edit_profile">
+      <user-profile user="$ctrl.user"></user-profile>
     </div>
 
-    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-        <div class="row user-profil"
-             ng:if="$ctrl.user.edit_profile">
-            <user-profile user="$ctrl.user"></user-profile>
-        </div>
+    <div class="row damier gris4"
+         ng:class="{'modification': $ctrl.modification}"
+         ng:if="!$ctrl.user.edit_profile">
 
-        <div class="row damier gris4"
-             ng:class="{'modification': $ctrl.modification}"
-             ng:if="!$ctrl.user.edit_profile">
+      <ul data-as-sortable="$ctrl.sortable_options"
+          data-is-disabled="!$ctrl.modification"
+          ng:model="$ctrl.tree.tiles">
 
-            <ul data-as-sortable="$ctrl.sortable_options"
-                data-is-disabled="!$ctrl.modification"
-                ng:model="$ctrl.tree.tiles">
+        <li ng:repeat="tile in $ctrl.tree.tiles | filter:$ctrl.tree.filter() | orderBy:'index' track by $index "
+            class="col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case animate scale-fade-in {{tile.color}}"
+            data-as-sortable-item
+            ng:class="{ 'empty hidden-xs': !tile.taxonomy }">
+          <div ng:include="$ctrl.get_tile_template( tile.taxonomy )"></div>
+        </li>
+      </ul>
 
-                <li ng:repeat="tile in $ctrl.tree.tiles | filter:$ctrl.tree.filter() | orderBy:'index'"
-                    class="col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case animate scale-fade-in {{tile.color}}"
-                    data-as-sortable-item
-                    ng:class="{ 'empty hidden-xs': !tile.taxonomy }">
-                    <div ng:include="$ctrl.get_tile_template( tile.taxonomy )"></div>
-                </li>
-            </ul>
+      <!-- Mode normal -->
+      <span class="hidden-xs hidden-sm floating-button toggle big off blanc"
+            ng:if="$ctrl.tree.configurable && $ctrl.user.is_admin() && !$ctrl.modification"
+            ng:click="$ctrl.edit_tiles()"></span>
 
-            <!-- Mode normal -->
-            <span class="hidden-xs hidden-sm floating-button toggle big off blanc"
-                  ng:if="$ctrl.tree.configurable && $ctrl.user.is_admin() && !$ctrl.modification"
-                  ng:click="$ctrl.edit_tiles()"></span>
+      <!-- Mode modification -->
+      <span class="hidden-xs hidden-sm floating-button toggle big on gris4"
+            ng:if="$ctrl.modification"></span>
+      <span class="floating-button small cancel gris3"
+            ng:if="$ctrl.modification"
+            ng:click="$ctrl.exit_tiles_edition()"></span>
 
-            <!-- Mode modification -->
-            <span class="hidden-xs hidden-sm floating-button toggle big on gris4"
-                  ng:if="$ctrl.modification"></span>
-            <span class="floating-button small cancel gris3"
-                  ng:if="$ctrl.modification"
-                  ng:click="$ctrl.exit_tiles_edition()"></span>
-            <span class="floating-button small save gris1"
-                  ng:if="$ctrl.modification"
-                  ng:click="$ctrl.save_tiles_edition()"></span>
-
-            <span class="floating-button small action1 add-app gris1"
-                  ng:if="$ctrl.modification"
-                  ng:click="$ctrl.add_tile( $ctrl.tree.tiles )"></span>
-        </div>
-
+      <span class="floating-button small action1 add-app gris1"
+            ng:if="$ctrl.modification"
+            ng:click="$ctrl.add_tile( $ctrl.tree.tiles )"></span>
     </div>
+
+  </div>
 </div>
 `
   });
