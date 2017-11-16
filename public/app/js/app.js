@@ -575,40 +575,6 @@ angular.module('portailApp')
                     ctrl.edit_tiles = function () {
                         ctrl.modification = true;
                     };
-                    var sortable_callback = function (event) {
-                        _(ctrl.tree.tiles).map(function (tile, i) {
-                            tile.index = i;
-                            if (_(tile).has('id')) {
-                                tile.update();
-                            }
-                        });
-                    };
-                    ctrl.sortable_options = {
-                        accept: function (sourceItemHandleScope, destSortableScope) { return true; },
-                        longTouch: true,
-                        itemMoved: sortable_callback,
-                        orderChanged: sortable_callback,
-                        containment: '.damier',
-                        containerPositioning: 'relative',
-                        additionalPlaceholderClass: 'col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case',
-                        clone: false,
-                        allowDuplicates: false
-                    };
-                    ctrl.add_tile = function (tiles) {
-                        Popups.add_tiles(tiles, function success(new_tiles) {
-                            _(new_tiles).each(function (new_tile) {
-                                var recipient_index = _(tiles).findIndex(function (tile) { return !_(tile).has('taxonomy'); });
-                                if (recipient_index === -1) {
-                                    recipient_index = tiles.length;
-                                    tiles.push({ index: recipient_index });
-                                }
-                                new_tile.structure_id = ctrl.user.active_profile().structure_id;
-                                Tiles.save({}, new_tile).$promise.then(function (response) {
-                                    retrieve_tiles_tree();
-                                });
-                            });
-                        }, function error() { });
-                    };
                     ctrl.exit_tiles_edition = function () {
                         ctrl.modification = false;
                         ctrl.tree.tiles.forEach(function (tile) {
@@ -618,11 +584,50 @@ angular.module('portailApp')
                         });
                         retrieve_tiles_tree();
                     };
+                    ctrl.sortable_options = {
+                        accept: function (sourceItemHandleScope, destSortableScope) { return true; },
+                        longTouch: true,
+                        dragEnd: function (event) {
+                            _(ctrl.tree.tiles).map(function (tile, i) {
+                                if (_(tile).has('id')) {
+                                    tile.index = i;
+                                    tile.update();
+                                }
+                            });
+                        },
+                        containment: '.damier',
+                        containerPositioning: 'relative',
+                        additionalPlaceholderClass: 'col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case',
+                        clone: false,
+                        allowDuplicates: false
+                    };
+                    ctrl.add_tile = function (tiles) {
+                        Popups.add_tiles(tiles, function success(new_tiles) {
+                            var recipients_indexes = _.chain(tiles).reject(function (tile) { return _(tile).has('taxonomy'); }).pluck('index').sort().value();
+                            _(new_tiles).each(function (new_tile) {
+                                new_tile.structure_id = ctrl.user.active_profile().structure_id;
+                                var index;
+                                if (recipients_indexes.length < 1) {
+                                    index = tiles.length;
+                                    tiles.push({ index: index });
+                                }
+                                else {
+                                    index = recipients_indexes.shift();
+                                }
+                                console.log(recipients_indexes);
+                                console.log(index);
+                                new_tile.index = index;
+                                Tiles.save({}, new_tile).$promise.then(function (response) {
+                                    retrieve_tiles_tree();
+                                });
+                            });
+                        }, function error() { });
+                    };
                     retrieve_tiles_tree();
                 });
             };
         }],
-    template: "\n<div class=\"row portail\"\n     ng:if=\"$ctrl.user\">\n  <div class=\"col-xs-12 col-sm-12 col-md-4 col-lg-4 aside\">\n    <help-icon class=\"btn-group hidden-xs help-icon\"\n               user=\"$ctrl.user\"></help-icon>\n\n    <logo class=\"col-xs-1 col-sm-1 col-md-6 col-lg-6 logolaclasse gris4\"\n          user=\"$ctrl.user\"></logo>\n\n    <user-tile user=\"$ctrl.user\"></user-tile>\n\n    <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12 hidden-xs hidden-sm aside-bottom\"\n         ng:include=\"$ctrl.user.edit_profile ? 'app/views/aside_news.html?v=' + $ctrl.CACHE_BUSTER : $ctrl.tree.aside_template\"></div>\n  </div>\n\n  <div class=\"col-xs-12 col-sm-12 col-md-8 col-lg-8\">\n    <div class=\"row user-profil\"\n         ng:if=\"$ctrl.user.edit_profile\">\n      <user-profile user=\"$ctrl.user\"></user-profile>\n    </div>\n\n    <div class=\"row damier gris4\"\n         ng:class=\"{'modification': $ctrl.modification}\"\n         ng:if=\"!$ctrl.user.edit_profile\">\n\n      <ul data-as-sortable=\"$ctrl.sortable_options\"\n          data-is-disabled=\"!$ctrl.modification\"\n          ng:model=\"$ctrl.tree.tiles\">\n\n        <li ng:repeat=\"tile in $ctrl.tree.tiles | filter:$ctrl.tree.filter() | orderBy:'index' track by $index \"\n            class=\"col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case animate scale-fade-in {{tile.color}}\"\n            data-as-sortable-item\n            ng:class=\"{ 'empty hidden-xs': !tile.taxonomy }\">\n          <div ng:include=\"$ctrl.get_tile_template( tile.taxonomy )\"></div>\n        </li>\n      </ul>\n\n      <!-- Mode normal -->\n      <span class=\"hidden-xs hidden-sm floating-button toggle big off blanc\"\n            ng:if=\"$ctrl.tree.configurable && $ctrl.user.is_admin() && !$ctrl.modification\"\n            ng:click=\"$ctrl.edit_tiles()\"></span>\n\n      <!-- Mode modification -->\n      <span class=\"hidden-xs hidden-sm floating-button toggle big on gris4\"\n            ng:if=\"$ctrl.modification\"></span>\n      <span class=\"floating-button small cancel gris3\"\n            ng:if=\"$ctrl.modification\"\n            ng:click=\"$ctrl.exit_tiles_edition()\"></span>\n\n      <span class=\"floating-button small action1 add-app gris1\"\n            ng:if=\"$ctrl.modification\"\n            ng:click=\"$ctrl.add_tile( $ctrl.tree.tiles )\"></span>\n    </div>\n\n  </div>\n</div>\n"
+    template: "\n<div class=\"row portail\"\n     ng:if=\"$ctrl.user\">\n  <div class=\"col-xs-12 col-sm-12 col-md-4 col-lg-4 aside\">\n    <help-icon class=\"btn-group hidden-xs help-icon\"\n               user=\"$ctrl.user\"></help-icon>\n\n    <logo class=\"col-xs-1 col-sm-1 col-md-6 col-lg-6 logolaclasse gris4\"\n          user=\"$ctrl.user\"></logo>\n\n<user-tile user=\"$ctrl.user\"></user-tile>\n\n<div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12 hidden-xs hidden-sm aside-bottom\"\n         ng:include=\"$ctrl.user.edit_profile ? 'app/views/aside_news.html?v=' + $ctrl.CACHE_BUSTER : $ctrl.tree.aside_template\"></div>\n  </div>\n\n  <div class=\"col-xs-12 col-sm-12 col-md-8 col-lg-8\">\n    <div class=\"row user-profil\"\n         ng:if=\"$ctrl.user.edit_profile\">\n      <user-profile user=\"$ctrl.user\"></user-profile>\n    </div>\n\n    <div class=\"row damier gris4\"\n         ng:class=\"{'modification': $ctrl.modification}\"\n         ng:if=\"!$ctrl.user.edit_profile\">\n\n      <ul data-as-sortable=\"$ctrl.sortable_options\"\n          data-is-disabled=\"!$ctrl.modification\"\n          ng:model=\"$ctrl.tree.tiles\">\n\n        <li ng:repeat=\"tile in $ctrl.tree.tiles | filter:$ctrl.tree.filter()\"\n            class=\"col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case animate scale-fade-in {{tile.color}}\"\n            data-as-sortable-item\n            ng:class=\"{ 'empty hidden-xs': !tile.taxonomy }\">\n          <div ng:include=\"$ctrl.get_tile_template( tile.taxonomy )\"></div>\n        </li>\n      </ul>\n\n      <!-- Mode normal -->\n      <span class=\"hidden-xs hidden-sm floating-button toggle big off blanc\"\n            ng:if=\"$ctrl.tree.configurable && $ctrl.user.is_admin() && !$ctrl.modification\"\n            ng:click=\"$ctrl.edit_tiles()\"></span>\n\n      <!-- Mode modification -->\n      <span class=\"hidden-xs hidden-sm floating-button toggle big on gris4\"\n            ng:if=\"$ctrl.modification\"></span>\n      <span class=\"floating-button small cancel gris3\"\n            ng:if=\"$ctrl.modification\"\n            ng:click=\"$ctrl.exit_tiles_edition()\"></span>\n\n      <span class=\"floating-button small action1 add-app gris1\"\n            ng:if=\"$ctrl.modification\"\n            ng:click=\"$ctrl.add_tile( $ctrl.tree.tiles )\"></span>\n    </div>\n\n  </div>\n</div>\n"
 });
 angular.module('portailApp')
     .component('profilactif', {

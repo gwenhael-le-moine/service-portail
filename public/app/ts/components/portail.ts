@@ -293,19 +293,28 @@ angular.module('portailApp')
                 ctrl.modification = true;
               };
 
-              let sortable_callback = function(event) {
-                _(ctrl.tree.tiles).map(function(tile, i) {
-                  tile.index = i;
-                  if (_(tile).has('id')) {
-                    tile.update();
+              ctrl.exit_tiles_edition = function() {
+                ctrl.modification = false;
+                ctrl.tree.tiles.forEach(function(tile) {
+                  if (_(tile).has('configure')) {
+                    tile.configure = false;
                   }
                 });
+
+                retrieve_tiles_tree();
               };
+
               ctrl.sortable_options = {
                 accept: function(sourceItemHandleScope, destSortableScope) { return true; },
                 longTouch: true,
-                itemMoved: sortable_callback,
-                orderChanged: sortable_callback,
+                dragEnd: function(event) {
+                  _(ctrl.tree.tiles).map(function(tile, i) {
+                    if (_(tile).has('id')) {
+                      tile.index = i;
+                      tile.update();
+                    }
+                  });
+                },
                 containment: '.damier',
                 containerPositioning: 'relative',
                 additionalPlaceholderClass: 'col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case',
@@ -316,33 +325,26 @@ angular.module('portailApp')
               ctrl.add_tile = function(tiles) {
                 Popups.add_tiles(tiles,
                   function success(new_tiles) {
-                    _(new_tiles).each(function(new_tile) {
-                      let recipient_index = _(tiles).findIndex(function(tile) { return !_(tile).has('taxonomy'); });
+                    let recipients_indexes = _.chain(tiles).reject(function(tile) { return _(tile).has('taxonomy'); }).pluck('index').sort().value();
 
-                      if (recipient_index === -1) {
-                        recipient_index = tiles.length;
-                        tiles.push({ index: recipient_index });
-                      }
+                    _(new_tiles).each(function(new_tile) {
                       new_tile.structure_id = ctrl.user.active_profile().structure_id;
+
+                      let index;
+                      if (recipients_indexes.length < 1) {
+                        index = tiles.length;
+                        tiles.push({ index: index });
+                      } else {
+                        index = recipients_indexes.shift();
+                      }
+
+                      new_tile.index = index;
 
                       Tiles.save({}, new_tile).$promise.then(function(response) {
                         retrieve_tiles_tree();
-                        // tiles[recipient_index] = tool_tile(response);
-                        // console.log(tiles)
                       });
                     });
                   }, function error() { });
-              };
-
-              ctrl.exit_tiles_edition = function() {
-                ctrl.modification = false;
-                ctrl.tree.tiles.forEach(function(tile) {
-                  if (_(tile).has('configure')) {
-                    tile.configure = false;
-                  }
-                });
-
-                retrieve_tiles_tree();
               };
 
               // Action!
@@ -360,9 +362,9 @@ angular.module('portailApp')
     <logo class="col-xs-1 col-sm-1 col-md-6 col-lg-6 logolaclasse gris4"
           user="$ctrl.user"></logo>
 
-    <user-tile user="$ctrl.user"></user-tile>
+<user-tile user="$ctrl.user"></user-tile>
 
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 hidden-xs hidden-sm aside-bottom"
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 hidden-xs hidden-sm aside-bottom"
          ng:include="$ctrl.user.edit_profile ? 'app/views/aside_news.html?v=' + $ctrl.CACHE_BUSTER : $ctrl.tree.aside_template"></div>
   </div>
 
@@ -380,7 +382,7 @@ angular.module('portailApp')
           data-is-disabled="!$ctrl.modification"
           ng:model="$ctrl.tree.tiles">
 
-        <li ng:repeat="tile in $ctrl.tree.tiles | filter:$ctrl.tree.filter() | orderBy:'index' track by $index "
+        <li ng:repeat="tile in $ctrl.tree.tiles | filter:$ctrl.tree.filter()"
             class="col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case animate scale-fade-in {{tile.color}}"
             data-as-sortable-item
             ng:class="{ 'empty hidden-xs': !tile.taxonomy }">
