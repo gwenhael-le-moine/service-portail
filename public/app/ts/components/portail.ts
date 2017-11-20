@@ -358,62 +358,60 @@ angular.module('portailApp')
             });
         };
       }],
-    template: `
-<div class="row portail"
-     ng:if="$ctrl.user">
-  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 aside">
-    <help-icon class="btn-group hidden-xs help-icon"
-               user="$ctrl.user"></help-icon>
+                                                      template: `
+                                                      <div class="row portail"
+                                                           ng:if="$ctrl.user">
+                                                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 aside">
+                                                          <help-icon class="btn-group hidden-xs help-icon"
+                                                                     user="$ctrl.user"></help-icon>
 
-    <logo class="col-xs-1 col-sm-1 col-md-6 col-lg-6 logolaclasse gris4"
-          user="$ctrl.user"></logo>
+                                                          <logo class="col-xs-1 col-sm-1 col-md-6 col-lg-6 logolaclasse gris4"
+                                                                user="$ctrl.user"></logo>
 
-<user-tile user="$ctrl.user"></user-tile>
+                                                          <user-tile user="$ctrl.user"></user-tile>
 
-<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 hidden-xs hidden-sm aside-bottom"
-         ng:include="$ctrl.user.edit_profile ? 'app/views/aside_news.html?v=' + $ctrl.CACHE_BUSTER : $ctrl.tree.aside_template"></div>
-  </div>
+                                                          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 hidden-xs hidden-sm aside-bottom"
+                                                               ng:include="$ctrl.user.edit_profile ? 'app/views/aside_news.html?v=' + $ctrl.CACHE_BUSTER : $ctrl.tree.aside_template"></div>
+                                                        </div>
 
-  <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-    <div class="row user-profil"
-         ng:if="$ctrl.user.edit_profile">
-      <user-profile user="$ctrl.user"></user-profile>
-    </div>
+                                                        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                                          <div class="row user-profil"
+                                                               ng:if="$ctrl.user.edit_profile">
+                                                            <user-profile user="$ctrl.user"></user-profile>
+                                                          </div>
 
-    <div class="row damier gris4"
-         ng:class="{'modification': $ctrl.modification}"
-         ng:if="!$ctrl.user.edit_profile">
+                                                          <div class="row damier gris4"
+                                                               ng:class="{'modification': $ctrl.modification}"
+                                                               ng:if="!$ctrl.user.edit_profile">
 
-      <ul data-as-sortable="$ctrl.sortable_options"
-          data-is-disabled="!$ctrl.modification"
-          ng:model="$ctrl.tree.tiles">
+                                                            <ul data-as-sortable="$ctrl.sortable_options"
+                                                                data-is-disabled="!$ctrl.modification"
+                                                                ng:model="$ctrl.tree.tiles">
 
-        <li ng:repeat="tile in $ctrl.tree.tiles | filter:$ctrl.tree.filter()"
-            class="col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case animate scale-fade-in {{tile.color}}"
-            data-as-sortable-item
-            ng:class="{ 'empty hidden-xs': !tile.taxonomy }">
-          <div ng:include="$ctrl.get_tile_template( tile.taxonomy )"></div>
-        </li>
-      </ul>
+                                                              <li ng:repeat="tile in $ctrl.tree.tiles | filter:$ctrl.tree.filter()"
+                                                                  class="col-xs-6 col-sm-4 col-md-3 col-lg-3 petite case animate scale-fade-in {{tile.color}}"
+                                                                  data-as-sortable-item
+                                                                  ng:class="{ 'empty hidden-xs': !tile.taxonomy }">
+                                                                <div ng:include="$ctrl.get_tile_template( tile.taxonomy )"></div>
+                                                              </li>
+                                                            </ul>
 
-      <!-- Mode normal -->
-      <span class="hidden-xs hidden-sm floating-button toggle big off blanc"
-            ng:if="$ctrl.tree.configurable && $ctrl.user.is_admin() && !$ctrl.modification"
-            ng:click="$ctrl.edit_tiles()"></span>
+                                                            <!-- Mode normal -->
+                                                            <span class="hidden-xs hidden-sm floating-button toggle big off blanc"
+                                                                  ng:if="$ctrl.tree.configurable && $ctrl.user.is_admin() && !$ctrl.modification"
+                                                                  ng:click="$ctrl.edit_tiles()"></span>
 
-      <!-- Mode modification -->
-      <span class="hidden-xs hidden-sm floating-button toggle big on gris4"
-            ng:if="$ctrl.modification"></span>
-      <span class="floating-button small cancel gris3"
-            ng:if="$ctrl.modification"
-            ng:click="$ctrl.exit_tiles_edition()"></span>
+                                                            <!-- Mode modification -->
+                                                            <span class="hidden-xs hidden-sm floating-button toggle big on gris4"
+                                                                  ng:if="$ctrl.modification"
+                                                                  ng:click="$ctrl.exit_tiles_edition()"></span>
 
-      <span class="floating-button small action1 add-app gris1"
-            ng:if="$ctrl.modification"
-            ng:click="$ctrl.add_tile( $ctrl.tree.tiles )"></span>
-    </div>
+                                                            <span class="floating-button small action1 add-app gris1"
+                                                                  ng:if="$ctrl.modification"
+                                                                  ng:click="$ctrl.add_tile( $ctrl.tree.tiles )"></span>
+                                                          </div>
 
-  </div>
-</div>
+                                                        </div>
+                                                      </div>
 `
   });

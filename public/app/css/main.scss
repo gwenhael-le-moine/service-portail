@@ -284,6 +284,9 @@ body {
     .floating-button.off {
         background-image: url('../node_modules/laclasse-common-client/images/icon_admin-outils-gris.svg');
     }
+    .floating-button.on {
+        background-image: url('../node_modules/laclasse-common-client/images/icon_admin-valider.svg');
+    }
     ul {
         height: 100%;
     }
