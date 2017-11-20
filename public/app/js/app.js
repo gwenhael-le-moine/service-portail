@@ -341,6 +341,15 @@ angular.module('portailApp')
                             ctrl.parent = null;
                         }
                     };
+                    var save_unsaved_tiles = function () {
+                        return $q.all(_.chain(ctrl.tree.tiles)
+                            .select(function (tile) { return _(tile).has('configure') && tile.configure; })
+                            .map(function (tile) {
+                            tile.configure = false;
+                            console.log(tile);
+                            return tile.update().$promise;
+                        }));
+                    };
                     var tool_tile = function (node) {
                         var go_to_parent_tile = function (parent) {
                             var back_to_parent = angular.copy(go_to_root_tile);
@@ -507,9 +516,7 @@ angular.module('portailApp')
                         };
                         node.configure = false;
                         node.toggle_configure = function () {
-                            if (node.configure) {
-                                node.update();
-                            }
+                            save_unsaved_tiles();
                             ctrl.tree.tiles.forEach(function (tile) {
                                 tile.configure = tile === node ? !tile.configure : false;
                             });
@@ -577,12 +584,10 @@ angular.module('portailApp')
                     };
                     ctrl.exit_tiles_edition = function () {
                         ctrl.modification = false;
-                        ctrl.tree.tiles.forEach(function (tile) {
-                            if (_(tile).has('configure')) {
-                                tile.configure = false;
-                            }
+                        save_unsaved_tiles()
+                            .then(function (responses) {
+                            retrieve_tiles_tree();
                         });
-                        retrieve_tiles_tree();
                     };
                     ctrl.sortable_options = {
                         accept: function (sourceItemHandleScope, destSortableScope) { return true; },
@@ -614,8 +619,6 @@ angular.module('portailApp')
                                 else {
                                     index = recipients_indexes.shift();
                                 }
-                                console.log(recipients_indexes);
-                                console.log(index);
                                 new_tile.index = index;
                                 Tiles.save({}, new_tile).$promise.then(function (response) {
                                     retrieve_tiles_tree();
