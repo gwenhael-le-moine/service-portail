@@ -47,9 +47,7 @@ angular.module('portailApp')
                 return $q.all(_.chain(ctrl.tree.tiles)
                   .select(function(tile) { return _(tile).has('configure') && tile.configure; })
                   .map(function(tile) {
-                    tile.configure = false;
-                    console.log(tile)
-                    return tile.update().$promise;
+                    return Tiles.update(tile).$promise;
                   }));
               };
 
@@ -224,11 +222,27 @@ angular.module('portailApp')
 
                 node.configure = false;
                 node.toggle_configure = function() {
+                  console.log('before')
+                  console.log(node.configure)
+
                   save_unsaved_tiles();
 
-                  ctrl.tree.tiles.forEach(function(tile) {
-                    tile.configure = tile === node ? !tile.configure : false;
-                  });
+                  console.log('after')
+                  console.log(node.configure)
+
+                  if (node.configure) {
+                    console.log('setting .configure to false')
+                    node.configure = false;
+                  } else {
+                    ctrl.tree.tiles.forEach(function(tile) {
+                      tile.configure = tile === node ? !tile.configure : false;
+                    });
+                    console.log('setting .configure to true')
+                    node.configure = true;
+                  }
+
+                  console.log('after bis')
+                  console.log(node.configure)
                 };
 
                 node.update = function() {
@@ -358,8 +372,8 @@ angular.module('portailApp')
             });
         };
       }],
-                                                      template: `
-                                                      <div class="row portail"
+    template: `
+<div class="row portail"
                                                            ng:if="$ctrl.user">
                                                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 aside">
                                                           <help-icon class="btn-group hidden-xs help-icon"
