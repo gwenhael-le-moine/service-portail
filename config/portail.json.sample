@@ -16,7 +16,7 @@
               "icon": "app/node_modules/laclasse-common-client/images/01_messagerie.svg",
               "index": 1 },
           "DOC": {
-              "hidden": [ "ETA", "COL" ],
+              "hidden": [],
               "default": true,
               "summer": false,
               "color": "#9c75ab",
