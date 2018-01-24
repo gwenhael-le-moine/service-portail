@@ -627,7 +627,7 @@ angular.module('portailApp')
                             _(ctrl.tree.tiles).map(function (tile, i) {
                                 if (_(tile).has('id')) {
                                     tile.index = i;
-                                    tile.update();
+                                    tile.update(["index"]);
                                 }
                             });
                         },
