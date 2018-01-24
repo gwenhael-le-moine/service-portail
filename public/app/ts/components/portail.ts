@@ -245,8 +245,28 @@ angular.module('portailApp')
                   console.log(node.configure)
                 };
 
-                node.update = function() {
-                  Tiles.update(node);
+                node.update = function(fields_to_update = undefined) {
+                  let tmp_node = {
+                    id: null,
+                    application_id: undefined
+                  };
+
+                  if (fields_to_update != undefined) {
+                    tmp_node.id = node.id;
+                    fields_to_update.forEach(function(field) {
+                      tmp_node[field] = node[field];
+                    });
+                  } else {
+                    tmp_node = angular.copy(node);
+                  }
+
+                  if (tmp_node.application_id != undefined) {
+                    tmp_node.application_id = tmp_node.application_id == "" ? null : tmp_node.application_id;
+                  }
+
+                  if (tmp_node.id != null) {
+                    Tiles.update(tmp_node);
+                  }
                 };
 
                 node.remove = function() {

@@ -533,8 +533,27 @@ angular.module('portailApp')
                             console.log('after bis');
                             console.log(node.configure);
                         };
-                        node.update = function () {
-                            Tiles.update(node);
+                        node.update = function (fields_to_update) {
+                            if (fields_to_update === void 0) { fields_to_update = undefined; }
+                            var tmp_node = {
+                                id: null,
+                                application_id: undefined
+                            };
+                            if (fields_to_update != undefined) {
+                                tmp_node.id = node.id;
+                                fields_to_update.forEach(function (field) {
+                                    tmp_node[field] = node[field];
+                                });
+                            }
+                            else {
+                                tmp_node = angular.copy(node);
+                            }
+                            if (tmp_node.application_id != undefined) {
+                                tmp_node.application_id = tmp_node.application_id == "" ? null : tmp_node.application_id;
+                            }
+                            if (tmp_node.id != null) {
+                                Tiles.update(tmp_node);
+                            }
                         };
                         node.remove = function () {
                             Tiles.delete(node).$promise.then(function (response) {
