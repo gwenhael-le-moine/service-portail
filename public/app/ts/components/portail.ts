@@ -222,49 +222,38 @@ angular.module('portailApp')
 
                 node.configure = false;
                 node.toggle_configure = function() {
-                  console.log('before')
-                  console.log(node.configure)
-
                   save_unsaved_tiles();
 
-                  console.log('after')
-                  console.log(node.configure)
-
                   if (node.configure) {
-                    console.log('setting .configure to false')
                     node.configure = false;
                   } else {
                     ctrl.tree.tiles.forEach(function(tile) {
                       tile.configure = tile === node ? !tile.configure : false;
                     });
-                    console.log('setting .configure to true')
                     node.configure = true;
                   }
-
-                  console.log('after bis')
-                  console.log(node.configure)
                 };
 
                 node.update = function(fields_to_update = undefined) {
-                  let tmp_node = {
-                    id: null,
-                    application_id: undefined
-                  };
+                  if (node.id != null) {
+                    let tmp_node = {
+                      id: null,
+                      application_id: undefined
+                    };
 
-                  if (fields_to_update != undefined) {
-                    tmp_node.id = node.id;
-                    fields_to_update.forEach(function(field) {
-                      tmp_node[field] = node[field];
-                    });
-                  } else {
-                    tmp_node = angular.copy(node);
-                  }
+                    if (fields_to_update != undefined) {
+                      tmp_node.id = node.id;
+                      fields_to_update.forEach(function(field) {
+                        tmp_node[field] = node[field];
+                      });
+                    } else {
+                      tmp_node = angular.copy(node);
+                    }
 
-                  if (tmp_node.application_id != undefined) {
-                    tmp_node.application_id = tmp_node.application_id == "" ? null : tmp_node.application_id;
-                  }
+                    if (tmp_node.application_id != undefined) {
+                      tmp_node.application_id = tmp_node.application_id == "" ? null : tmp_node.application_id;
+                    }
 
-                  if (tmp_node.id != null) {
                     Tiles.update(tmp_node);
                   }
                 };
@@ -280,7 +269,7 @@ angular.module('portailApp')
                 } else {
                   node.action = function() {
                     if (ctrl.modification) { return; }
-                    if (node.type !== 'EXTERNAL' && !_(node.application_id).isNull() && node.application_id !== 'PRONOTE') {
+                    if (node.type !== 'EXTERNAL' && !_(node.application_id).isNull() && node.application_id !== 'PRONOTE' && node.application_id !== 'TELESRV') {
                       $state.go('app', { appid: node.application_id });
                     } else {
                       Utils.log_and_open_link(node.application_id === 'PRONOTE' ? 'PRONOTE' : 'EXTERNAL', node.url);
