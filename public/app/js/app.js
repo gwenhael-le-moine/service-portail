@@ -46,15 +46,7 @@ angular.module('portailApp', ['ngResource',
                     }
                 };
             }]);
-    }])
-    .run(['$rootScope', 'log',
-    function ($rootScope, log) {
-        $rootScope.modification = false;
-        $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
-            log.add((toState.name == 'app') ? toParams.appid : 'PORTAIL', null, null);
-        });
-    }
-]);
+    }]);
 angular.module('portailApp')
     .constant('CASES', [{ color: 'bleu' },
     { color: 'jaune' },
@@ -86,8 +78,8 @@ angular.module('portailApp')
 angular.module('portailApp')
     .component('appWrapper', {
     bindings: { appId: '<' },
-    controller: ['$stateParams', '$sce', 'currentUser', 'Annuaire', 'Tiles', 'Utils',
-        function ($stateParams, $sce, currentUser, Annuaire, Tiles, Utils) {
+    controller: ['$stateParams', '$sce', 'currentUser', 'Annuaire', 'Tiles', 'Utils', 'log',
+        function ($stateParams, $sce, currentUser, Annuaire, Tiles, Utils, log) {
             var ctrl = this;
             ctrl.$onInit = function () {
                 currentUser.get(true)
@@ -105,6 +97,7 @@ angular.module('portailApp')
                         if (_(ctrl.app).isUndefined()) {
                             Utils.go_home();
                         }
+                        log.add(ctrl.appId, null, null);
                         ctrl.app.url = $sce.trustAsResourceUrl(ctrl.app.url);
                     });
                 });
@@ -514,45 +507,37 @@ angular.module('portailApp')
                         };
                         node.configure = false;
                         node.toggle_configure = function () {
-                            console.log('before');
-                            console.log(node.configure);
                             save_unsaved_tiles();
-                            console.log('after');
-                            console.log(node.configure);
                             if (node.configure) {
-                                console.log('setting .configure to false');
                                 node.configure = false;
                             }
                             else {
                                 ctrl.tree.tiles.forEach(function (tile) {
                                     tile.configure = tile === node ? !tile.configure : false;
                                 });
-                                console.log('setting .configure to true');
                                 node.configure = true;
                             }
-                            console.log('after bis');
-                            console.log(node.configure);
                         };
                         node.update = function (fields_to_update) {
                             if (fields_to_update === void 0) { fields_to_update = undefined; }
-                            var tmp_node = {
-                                id: null,
-                                application_id: undefined
-                            };
-                            if (fields_to_update != undefined) {
-                                tmp_node.id = node.id;
-                                fields_to_update.forEach(function (field) {
-                                    tmp_node[field] = node[field];
-                                });
-                            }
-                            else {
-                                tmp_node = angular.copy(node);
-                            }
-                            if (tmp_node.application_id != undefined) {
-                                tmp_node.application_id = tmp_node.application_id == "" ? null : tmp_node.application_id;
-                            }
-                            if (tmp_node.id != null) {
-                                Tiles.update(tmp_node);
+                            if (node.id != null) {
+                                var tmp_node_1 = {
+                                    id: null,
+                                    application_id: undefined
+                                };
+                                if (fields_to_update != undefined) {
+                                    tmp_node_1.id = node.id;
+                                    fields_to_update.forEach(function (field) {
+                                        tmp_node_1[field] = node[field];
+                                    });
+                                }
+                                else {
+                                    tmp_node_1 = angular.copy(node);
+                                }
+                                if (tmp_node_1.application_id != undefined) {
+                                    tmp_node_1.application_id = tmp_node_1.application_id == "" ? null : tmp_node_1.application_id;
+                                }
+                                Tiles.update(tmp_node_1);
                             }
                         };
                         node.remove = function () {
@@ -569,7 +554,7 @@ angular.module('portailApp')
                                 if (ctrl.modification) {
                                     return;
                                 }
-                                if (node.type !== 'EXTERNAL' && !_(node.application_id).isNull() && node.application_id !== 'PRONOTE') {
+                                if (node.type !== 'EXTERNAL' && !_(node.application_id).isNull() && node.application_id !== 'PRONOTE' && node.application_id !== 'TELESRV') {
                                     $state.go('app', { appid: node.application_id });
                                 }
                                 else {

@@ -1,35 +1,37 @@
 'use strict';
 
-angular.module( 'portailApp' )
-  .component( 'appWrapper',
+angular.module('portailApp')
+  .component('appWrapper',
   {
     bindings: { appId: '<' },
-    controller: [ '$stateParams', '$sce', 'currentUser', 'Annuaire', 'Tiles', 'Utils',
-      function( $stateParams, $sce, currentUser, Annuaire, Tiles, Utils ) {
+    controller: ['$stateParams', '$sce', 'currentUser', 'Annuaire', 'Tiles', 'Utils', 'log',
+      function($stateParams, $sce, currentUser, Annuaire, Tiles, Utils, log) {
         var ctrl = this;
 
         ctrl.$onInit = function() {
-          currentUser.get( true )
-            .then( function( user ) {
+          currentUser.get(true)
+            .then(function(user) {
               ctrl.user = user;
               var apps_list;
 
-              if ( _( ctrl.user.profiles ).isEmpty() ) {
+              if (_(ctrl.user.profiles).isEmpty()) {
                 apps_list = Annuaire.query_applications();
               } else {
-                apps_list = Tiles.query( { structure_id: ctrl.user.active_profile().structure_id } ).$promise;
+                apps_list = Tiles.query({ structure_id: ctrl.user.active_profile().structure_id }).$promise;
               }
 
-              apps_list.then( function( response ) {
-                ctrl.app = _( response ).findWhere( { application_id: ctrl.appId } );
+              apps_list.then(function(response) {
+                ctrl.app = _(response).findWhere({ application_id: ctrl.appId });
 
-                if ( _( ctrl.app ).isUndefined() ) {
+                if (_(ctrl.app).isUndefined()) {
                   Utils.go_home();
                 }
 
-                ctrl.app.url = $sce.trustAsResourceUrl( ctrl.app.url );
-              } );
-            } );
+                log.add(ctrl.appId, null, null);
+
+                ctrl.app.url = $sce.trustAsResourceUrl(ctrl.app.url);
+              });
+            });
         };
       }
     ],
@@ -50,4 +52,4 @@ angular.module( 'portailApp' )
                class="appiframe"></appiframe>
 </div>
 `
-  } );
+  });
