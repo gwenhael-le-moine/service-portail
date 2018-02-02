@@ -55,6 +55,7 @@ angular.module( 'portailApp' )
                   $scope.available_tiles = $scope.available_tiles.concat( _.chain( response )
                     .uniq( function( app ) { return app.application_id; } )
                     .each( function( app ) {
+                      delete app.id // In case it is still in the cached response
                       app.taxonomy = 'app';
                       app.available = function() {
                         return !_.chain( current_tiles )

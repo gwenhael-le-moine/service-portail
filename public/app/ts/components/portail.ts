@@ -354,7 +354,7 @@ angular.module('portailApp')
               ctrl.add_tile = function(tiles) {
                 Popups.add_tiles(tiles,
                   function success(new_tiles) {
-                    let recipients_indexes = _.chain(tiles).reject(function(tile) { return _(tile).has('taxonomy'); }).pluck('index').sort().value();
+                    let recipients_indexes = _.chain(tiles).reject(function(tile) { return _(tile).has('taxonomy'); }).pluck('index').value();
 
                     _(new_tiles).each(function(new_tile) {
                       new_tile.structure_id = ctrl.user.active_profile().structure_id;
