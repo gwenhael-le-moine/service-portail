@@ -134,54 +134,24 @@
           "profils": [ "ADM", "ACA", "COL", "DIR", "DOC", "ELV", "ENS", "ETA", "EVS", "TUT" ]
       },
       {
-          "title": "Tutoriel pour préparer la rentrée sur l'ENT",
-          "url": "http://ent-laclasse.blogs.laclasse.com/2016/06/28/principal-de-college-comment-preparer-la-rentree-sur-lent/",
-          "profils": [ "ADM", "DIR", "ENS", "DOC" ]
+          "title": "Teaser et flyer de laclasse.com",
+          "url": "http://ent-laclasse.blogs.laclasse.com/2017/03/31/teaser-de-laclasse-com/",
+          "profils": [ "ADM", "ACA", "COL", "DIR", "DOC", "ELV", "ENS", "ETA", "EVS", "TUT" ]
       },
       {
-          "title": "Tutoriel tuile 'Panneau d'Administration'",
-          "url": "http://ent-laclasse.blogs.laclasse.com/2016/07/08/administrer-son-etablissement/",
-          "profils": [ "ADM", "DIR", "ENS", "DOC" ]
+          "title": "Tutoriels de laclasse.com",
+          "url": "http://ent-laclasse.blogs.laclasse.com/category/tutoriel/",
+          "profils": [ "ADM", "ACA", "DIR", "ENS", "DOC", "ETA", "EVS" ]
       },
       {
-          "title": "Directeur ou enseignant d’école : les conseils pour démarrer sur Laclasse.com",
-          "url": "http://ent-laclasse.blogs.laclasse.com/2016/12/30/directeur-ou-enseignant-decole-les-conseils-pour-demarrer-sur-laclasse-com/",
-          "profils": [ "ADM", "DIR", "ENS", "DOC" ]
-      },
-      {
-          "title": "Ecole primaire : créer les classes et les comptes élèves par un import de fichier .csv",
-          "url": "http://ent-laclasse.blogs.laclasse.com/2017/01/02/ecole-primaire-creer-les-classes-et-les-comptes-eleves-par-un-import-de-fichier-csv/",
-          "profils": [ "ADM", "DIR", "ENS", "DOC" ]
-      },
-      {
-          "title": "Tutoriel 'Accès aux blogs'",
-          "url": "http://ent-laclasse.blogs.laclasse.com/2016/12/29/tutoriel-de-la-dane-sur-loutil-acces-aux-blogs/",
-          "profils": [ "ADM", "DIR", "ENS", "DOC" ]
-      },
-      {
-          "title": "Tutoriel 'Administrer son blog'",
-          "url": "http://ent-laclasse.blogs.laclasse.com/2016/08/29/pour-acceder-a-son-blog-et-ladministrer/",
-          "profils": [ "ADM", "DIR", "ENS", "DOC" ]
-      },
-      {
-          "title": "Paramétrer sa messagerie sur un logiciel de messagerie",
-          "url": "http://ent-laclasse.blogs.laclasse.com/2016/08/22/parametrer-son-adresse-mail-sur-un-logiciel-de-messagerie-thunderbird-outlooketc/",
-          "profils": [ "ADM", "DIR", "ENS", "DOC" ]
-      },
-      {
-          "title": "Communiquer les logins et mots de passes automatiques",
-          "url": "http://ent-laclasse.blogs.laclasse.com/2016/09/12/communiquer-les-logins-et-mots-de-passes-automatiques/",
-          "profils": [ "ADM", "DIR", "ENS", "DOC" ]
-      },
-      {
-          "title": "Formation de la DANE",
+          "title": "Tutoriels de la DANE",
           "url": "https://dane.ac-lyon.fr/spip/Formations-ENT-laclasse-com-Lyon",
-          "profils": [ "ADM", "DIR", "ENS", "DOC" ]
+          "profils": [ "ADM", "ACA", "DIR", "ENS", "DOC", "ETA", "EVS" ]
       },
       {
-          "title": "Problèmes connus",
-          "url": "http://ent-laclasse.blogs.laclasse.com/category/bugs/",
-          "profils": [ "ADM", "DIR", "ENS", "DOC" ]
+          "title": "Annonces techniques",
+          "url": "http://ent-laclasse.blogs.laclasse.com/category/annonces-techniques/",
+          "profils": [ "ADM", "ACA", "COL", "DIR", "DOC", "ELV", "ENS", "ETA", "EVS", "TUT" ]
       },
       {
           "title": "Charte d'utilisation",
