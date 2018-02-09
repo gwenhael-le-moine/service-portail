@@ -929,34 +929,6 @@ angular.module('portailApp')
                             action: function () { Utils.log_and_open_link('CCN', 'http://theatre.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
                         },
                         {
-                            nom: 'Philo',
-                            description: 'Philo',
-                            action: function () { Utils.log_and_open_link('CCN', 'http://philo.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); },
-                            icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_philo.svg',
-                            color: 'violet'
-                        },
-                        {
-                            color: 'gris2',
-                            icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_miam.svg',
-                            nom: 'Miam',
-                            titre: '',
-                            action: function () { Utils.log_and_open_link('CCN', 'http://miam.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
-                        },
-                        {
-                            color: 'bleu',
-                            icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_odysseespatiale.svg',
-                            nom: 'Odyssée spatiale',
-                            titre: '',
-                            action: function () { Utils.log_and_open_link('CCN', 'http://novaterra.laclasse.com/?url=spip.php%3Fpage%3Dsommaire&cicas=oui'); }
-                        },
-                        {
-                            color: 'jaune',
-                            icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_archeologie.svg',
-                            nom: 'Archéologie',
-                            titre: '',
-                            action: function () { Utils.log_and_open_link('CCN', 'http://archeologies.laclasse.com/'); }
-                        },
-                        {
                             color: 'orange',
                             icon: '/app/node_modules/laclasse-common-client/images/thematiques/icon_bd.svg',
                             nom: 'BD',
