@@ -240,7 +240,7 @@ angular.module('portailApp')
                 Utils.go_home();
             };
         }],
-    template: "\n<a ng:click=\"$ctrl.go_home()\">\n  <img draggable=\"false\" ng:src=\"{{$ctrl.prefix}}/app/node_modules/laclasse-common-client/images/logolaclasse.svg\" />\n<h3 class=\"hidden-xs hidden-sm ent-name\" style=\"/*background-image: url('/portail/app/node_modules/laclasse-common-client/images/grandlyon-logo-blanc.svg');background-size: contain;background-repeat: no-repeat;background-position-x: right;background-position-y: center; background-color: #da0000; background-blend-mode: overlay; width: 300px;height: 42px; text-align: left;margin-right: 0px;*/\">laclasse.com</h3>\n</a>\n"
+    template: "\n<a ng:click=\"$ctrl.go_home()\">\n  <img draggable=\"false\" ng:src=\"{{$ctrl.prefix}}/app/node_modules/laclasse-common-client/images/logolaclasse.svg\" />\n  <h3 class=\"hidden-xs hidden-sm ent-name\" style=\"/*background-image: url('/portail/app/node_modules/laclasse-common-client/images/grandlyon-logo-blanc.svg');background-size: contain;background-repeat: no-repeat;background-position-x: right;background-position-y: center; background-color: #da0000; background-blend-mode: overlay; width: 300px;height: 42px; text-align: left;margin-right: 0px;*/\">laclasse.com</h3>\n</a>\n"
 });
 angular.module('portailApp')
     .component('news', {

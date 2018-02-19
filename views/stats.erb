@@ -1,104 +1,53 @@
 <!DOCTYPE html>
 <html lang="fr">
     <head>
-            <meta charset="utf-8">
-            <meta http-equiv="content-language" content="fr">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-            <meta name="description" content="Portail Laclasse.com">
-            <meta name="author" content="">
+        <meta charset="utf-8">
+        <meta http-equiv="content-language" content="fr">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="description" content="Portail Laclasse.com">
+        <meta name="author" content="">
 
-            <link rel="apple-touch-icon" sizes="57x57" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/apple-icon-57x57.png">
-            <link rel="apple-touch-icon" sizes="60x60" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/apple-icon-60x60.png">
-            <link rel="apple-touch-icon" sizes="72x72" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/apple-icon-72x72.png">
-            <link rel="apple-touch-icon" sizes="76x76" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/apple-icon-76x76.png">
-            <link rel="apple-touch-icon" sizes="114x114" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/apple-icon-114x114.png">
-            <link rel="apple-touch-icon" sizes="120x120" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/apple-icon-120x120.png">
-            <link rel="apple-touch-icon" sizes="144x144" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/apple-icon-144x144.png">
-            <link rel="apple-touch-icon" sizes="152x152" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/apple-icon-152x152.png">
-            <link rel="apple-touch-icon" sizes="180x180" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/apple-icon-180x180.png">
-            <link rel="icon" type="image/png" sizes="192x192"  href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/android-icon-192x192.png">
-            <link rel="icon" type="image/png" sizes="32x32" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/favicon-32x32.png">
-            <link rel="icon" type="image/png" sizes="96x96" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/favicon-96x96.png">
-            <link rel="icon" type="image/png" sizes="16x16" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/favicon-16x16.png">
-            <link rel="manifest" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/manifest.json">
-            <meta name="msapplication-TileColor" content="#ffffff">
-            <meta name="msapplication-TileImage" content="node_modules/laclasse-common-client/favicon/ms-icon-144x144.png">
-            <meta name="theme-color" content="#ffffff">
+        <link rel="apple-touch-icon" sizes="57x57" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/favicon-16x16.png">
+        <link rel="manifest" href="<%=APP_PATH%>/app/node_modules/laclasse-common-client/favicon/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="node_modules/laclasse-common-client/favicon/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
 
-            <meta name="apple-mobile-web-app-capable" content="yes">
-            <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
 
-            <title><%= ENV[ 'RACK_ENV' ] == 'development' ? 'β' : '' %>Laclasse.com</title>
+        <title><%= ENV[ 'RACK_ENV' ] == 'development' ? 'β' : '' %>Laclasse.com</title>
 
-            <script type="text/javascript">
-             if ( top != self ) top.location.replace( location );
-            </script>
+        <script type="text/javascript">
+         if ( top != self ) top.location.replace( location );
+        </script>
 
-            <link href="<%=APP_PATH%>/app/node_modules/bootstrap/dist/css/bootstrap.min.css?v=<%=CACHE_BUSTER%>" rel="stylesheet" />
-            <link href="<%=APP_PATH%>/app/node_modules/font-awesome/css/font-awesome.min.css?v=<%=CACHE_BUSTER%>" rel="stylesheet" />
-            <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-            <!--[if lt IE 9]>
-                <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-                <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-            <![endif]-->
+        <link href="<%=APP_PATH%>/app/node_modules/bootstrap/dist/css/bootstrap.min.css?v=<%=CACHE_BUSTER%>" rel="stylesheet" />
+        <link href="<%=APP_PATH%>/app/node_modules/font-awesome/css/font-awesome.min.css?v=<%=CACHE_BUSTER%>" rel="stylesheet" />
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
     </head>
 
     <body>
 
-        <div class= "container" ng:app="statsApp" ng:controller="StatsCtrl" ng:strict-di>
-            <div ng:if="$ctrl.allowed">
-                <h2>
-                    <select ng:options="period_type.value as period_type.label for period_type in period_types.list"
-                            ng:model="period_types.selected"
-                            ng:change="reset_period()"></select>
-                    <button class="btn btn-lg" ng:click="reset_period()"> ✕ </button>
-                    <button class="btn btn-lg" ng:click="decr_period()"> < </button>
-                    <button class="btn btn-lg" ng:click="incr_period()"> > </button>
-                    {{ debut | amDateFormat:'dddd Do MMMM YYYY' }} - {{ fin | amDateFormat:'dddd Do MMMM YYYY' }}
-                </h2>
-
-                <div class="col-md-12"
-                     ng:repeat="(type, values) in stats">
-                    <div class="panel panel-default"
-                         ng:if="type === 'global'">
-                        <div class="panel-heading">{{types_labels[type]}}</div>
-                        <div class="panel-body">
-                            <uib-tabset>
-                                <uib-tab index="$index + 1"
-                                         ng:repeat="(key, stat) in values"
-                                         heading="{{stat[0].values.length}} {{types_labels[key]}}">
-                                    <nvd3 data="stat"
-                                          options="chart_options( key, stat )">
-                                    </nvd3>
-                                </uib-tab>
-                            </uib-tabset>
-                        </div>
-                    </div>
-
-                    <div class="panel panel-default"
-                         ng:if="type !== 'global'">
-                        <div class="panel-heading">Statistiques par {{types_labels[type]}}</div>
-                        <div class="panel-body">
-                            <uib-tabset>
-                                <uib-tab index="$index + 1"
-                                         ng:repeat="(key, value) in values"
-                                         heading="{{value[0].values.length}} {{labels[type][key]}}">
-                                    <uib-tabset>
-                                        <uib-tab index="$index + 1"
-                                                 ng:repeat="(subkey, stat) in value"
-                                                 heading="{{stat[0].values.length}} {{types_labels[subkey]}}">
-                                            <nvd3 data="stat"
-                                                  options="chart_options( subkey, stat )">
-                                            </nvd3>
-                                        </uib-tab>
-                                    </uib-tabset>
-                                </uib-tab>
-                            </uib-tabset>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="container" ng:app="statsApp" ng:strict-di>
+            <stats></stats>
         </div>
 
         <!-- Bootstrap core JavaScript
@@ -106,8 +55,7 @@
         <!-- Placed at the end of the document so the pages load faster -->
         <script src="<%=APP_PATH%>/app/node_modules/underscore/underscore-min.js?v=<%=CACHE_BUSTER%>"></script>
         <script src="<%=APP_PATH%>/app/node_modules/moment/min/moment-with-locales.min.js?v=<%=CACHE_BUSTER%>"></script>
-        <script src="<%=APP_PATH%>/app/node_modules/d3/build/d3.min.js?v=<%=CACHE_BUSTER%>"></script>
-        <script src="<%=APP_PATH%>/app/node_modules/d3-scale/build/d3-scale.min.js?v=<%=CACHE_BUSTER%>"></script>
+        <script src="<%=APP_PATH%>/app/node_modules/d3/d3.min.js?v=<%=CACHE_BUSTER%>"></script>
         <script src="<%=APP_PATH%>/app/node_modules/nvd3/build/nv.d3.min.js?v=<%=CACHE_BUSTER%>"></script>
 
         <script src="<%=APP_PATH%>/app/node_modules/angular/angular.js?v=<%=CACHE_BUSTER%>"></script>
