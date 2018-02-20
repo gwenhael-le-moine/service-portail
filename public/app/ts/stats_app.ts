@@ -93,7 +93,7 @@ angular.module('statsApp',
           };
 
           ctrl.retrieve_data = function(from) {
-            var started_at = moment();
+            let started_at = moment();
 
             ctrl.fin = ctrl.debut.clone().endOf(ctrl.period_types.selected);
 
@@ -127,121 +127,121 @@ angular.module('statsApp',
                     "structure_id[]": _.chain(ctrl.labels.structure_id)
                       .keys()
                       .reject(function(structure_id) {
-                        var ignored_structure_id = _(['0699990Z', '069BACAS', '069DANEZ']);
+                        let ignored_structure_id = _(['0699990Z', '069BACAS', '069DANEZ']);
                         return ignored_structure_id.contains(structure_id);
                       })
                       .value()
                   }
-                })
-                  .then(function(response) {
-                    var keys = ['structure_id', 'application_id', 'profil_id', 'week_day'];
+                         })
+                           .then(function(response) {
+                             let keys = ['structure_id', 'application_id', 'profil_id', 'week_day'];
 
-                    var stats_to_nvd3_data = function(key, values) {
-                      var data = [{
-                        key: key,
-                        values: _.chain(values).keys().map(function(subkey) {
-                          return {
-                            key: key,
-                            value: subkey,
-                            x: ctrl.labels[key][subkey],
-                            y: values[subkey]
-                          };
-                        })
-                          .sortBy(function(record) {
-                            switch (key) {
-                              case 'structure_id':
-                              case 'profil_id':
-                                return record.y * -1;
-                              case 'week_day':
-                                return true;
-                              default:
-                                return record.x;
-                            }
-                          })
-                          .value()
-                      }];
+                             let stats_to_nvd3_data = function(key, values) {
+                               let data = [{
+                                 key: key,
+                                 values: _.chain(values).keys().map(function(subkey) {
+                                   return {
+                                     key: key,
+                                     value: subkey,
+                                     x: ctrl.labels[key][subkey],
+                                     y: values[subkey]
+                                   };
+                                 })
+                                   .sortBy(function(record) {
+                                     switch (key) {
+                                     case 'structure_id':
+                                     case 'profil_id':
+                                       return record.y * -1;
+                                     case 'week_day':
+                                       return true;
+                                     default:
+                                       return record.x;
+                                     }
+                                   })
+                                   .value()
+                               }];
 
-                      return data;
-                    };
+                               return data;
+                             };
 
-                    var extract_stats = function(logs, keys) {
-                      return _.chain(keys)
-                        .map(function(key) {
-                          return [key, stats_to_nvd3_data(key, _(logs).countBy(key))];
-                        })
-                        .object()
-                        .value();
-                    };
+                             let extract_stats = function(logs, keys) {
+                               return _.chain(keys)
+                                 .map(function(key) {
+                                   return [key, stats_to_nvd3_data(key, _(logs).countBy(key))];
+                                 })
+                                 .object()
+                                 .value();
+                             };
 
-                    ctrl.logs = response.data;
-                    ctrl.filters = {};
+                             ctrl.logs = response.data;
+                             ctrl.filters = {};
 
-                    ctrl.stats = {};
-                    ctrl.stats.global = extract_stats(ctrl.logs, keys);
+                             ctrl.stats = {};
+                             ctrl.stats.global = extract_stats(ctrl.logs, keys);
 
-                    keys.forEach(function(key) {
-                      if (key !== 'week_day') {
-                        ctrl.stats[key] = _.chain(ctrl.stats.global[key][0].values)
-                          .pluck('value')
-                          .map(function(value) {
-                            return [value, extract_stats(_(ctrl.logs).select(function(logline) { return logline[key] === value; }),
-                              _(keys).difference([key]))];
-                          })
-                          .object()
-                          .value();
-                      }
-                    });
+                             keys.forEach(function(key) {
+                               if (key !== 'week_day') {
+                                 ctrl.stats[key] = _.chain(ctrl.stats.global[key][0].values)
+                                   .pluck('value')
+                                   .map(function(value) {
+                                     return [value, extract_stats(_(ctrl.logs).select(function(logline) { return logline[key] === value; }),
+                                                                  _(keys).difference([key]))];
+                                   })
+                                   .object()
+                                   .value();
+                               }
+                             });
 
-                    ctrl.stats.global.structure_id.push({
-                      key: 'utilisateurs uniques',
-                      values: _.chain(ctrl.logs)
-                        .groupBy(function(line) { return line.structure_id; })
-                        .map(function(loglines, structure_id) {
-                          return {
-                            key: 'utilisateurs uniques',
-                            x: ctrl.labels.structure_id[structure_id],
-                            y: _.chain(loglines).pluck('user_id').uniq().value().length
-                          };
-                        }).value()
-                    });
-                    ctrl.stats.global.structure_id.push({
-                      key: 'apps',
-                      values: _.chain(ctrl.logs)
-                        .groupBy(function(line) { return line.structure_id; })
-                        .map(function(loglines, structure_id) {
-                          return {
-                            key: 'apps',
-                            x: ctrl.labels.structure_id[structure_id],
-                            y: _.chain(loglines).pluck('application_id').uniq().value().length
-                          };
-                        }).value()
-                    });
-                    ctrl.stats.global.profil_id.push({
-                      key: 'utilisateurs uniques',
-                      values: _.chain(ctrl.logs)
-                        .groupBy(function(line) { return line.profil_id; })
-                        .map(function(loglines, profil_id) {
-                          return {
-                            key: 'utilisateurs uniques',
-                            x: ctrl.labels.profil_id[profil_id],
-                            y: _.chain(loglines).pluck('user_id').uniq().value().length
-                          };
-                        }).value()
-                    });
+                             ctrl.stats.global.structure_id.push({
+                               key: 'utilisateurs uniques',
+                               values: _.chain(ctrl.logs)
+                                 .groupBy(function(line) { return line.structure_id; })
+                                 .map(function(loglines, structure_id) {
+                                   return {
+                                     key: 'utilisateurs uniques',
+                                     x: ctrl.labels.structure_id[structure_id],
+                                     y: _.chain(loglines).pluck('user_id').uniq().value().length
+                                   };
+                                 }).value()
+                             });
+                             ctrl.stats.global.structure_id.push({
+                               key: 'apps',
+                               values: _.chain(ctrl.logs)
+                                 .groupBy(function(line) { return line.structure_id; })
+                                 .map(function(loglines, structure_id) {
+                                   return {
+                                     key: 'apps',
+                                     x: ctrl.labels.structure_id[structure_id],
+                                     y: _.chain(loglines).pluck('application_id').uniq().value().length
+                                   };
+                                 }).value()
+                             });
+                             ctrl.stats.global.profil_id.push({
+                               key: 'utilisateurs uniques',
+                               values: _.chain(ctrl.logs)
+                                 .groupBy(function(line) { return line.profil_id; })
+                                 .map(function(loglines, profil_id) {
+                                   return {
+                                     key: 'utilisateurs uniques',
+                                     x: ctrl.labels.profil_id[profil_id],
+                                     y: _.chain(loglines).pluck('user_id').uniq().value().length
+                                   };
+                                 }).value()
+                             });
 
-                    _(ctrl.stats.structure_id).each(function(etab, structure_id) {
-                      etab.profil_id.push({
-                        key: 'utilisateurs uniques',
-                        values: _.chain(ctrl.logs)
-                          .where({ structure_id: structure_id })
-                          .groupBy(function(line) { return line.profil_id; })
-                          .map(function(loglines, profil_id) {
-                            return {
-                              key: 'utilisateurs uniques',
-                              x: ctrl.labels.profil_id[profil_id],
-                              y: _.chain(loglines).pluck('user_id').uniq().value().length
-                            };
-                          }).value()
+                             _(ctrl.stats.structure_id).each(function(etab, structure_id) {
+                               etab.profil_id.push({
+                                 key: 'utilisateurs uniques',
+                                 values: _.chain(ctrl.logs)
+                                   .where({ structure_id: structure_id })
+                                   .groupBy(function(line) { return line.profil_id; })
+                                   .map(function(loglines, profil_id) {
+                                     return {
+                                       key: 'utilisateurs uniques',
+                                       x: ctrl.labels.profil_id[profil_id],
+                                       y: _.chain(loglines).pluck('user_id').uniq().value().length
+                                     };
+                                   }).value()
                       });
                     });
                   });
