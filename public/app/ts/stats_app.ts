@@ -126,11 +126,16 @@ angular.module('statsApp',
 
               return log;
             });
+            ctrl.logs_SSO = _(ctrl.logs).where({ application_id: "SSO" });
 
             ctrl.totals = {
               users: _(ctrl.logs).countBy((log) => { return log.user_id; }),
-              profile: _(ctrl.logs).countBy((log) => { return log.profil_id; })
+              profile: _(ctrl.logs).countBy((log) => { return log.profil_id; }),
             }
+
+            ctrl.logs = _(ctrl.logs).reject((logline) => { return logline.application_id == "SSO"; })
+
+            console.log(ctrl.totals)
 
             ctrl.log_structures = _.chain(ctrl.logs).pluck("structure_id").uniq().map((structure_id) => _(ctrl.structures).findWhere({ id: structure_id })).value();
             ctrl.log_applications = _.chain(ctrl.logs).pluck("application_id").uniq().map((application_id) => _(ctrl.applications).findWhere({ id: application_id })).value();
@@ -244,12 +249,8 @@ angular.module('statsApp',
           ctrl.filter_data = (data) => {
             return _(data)
               .select((logline) => {
-                return (ctrl.structures_types.selected == undefined ||
-                  ctrl.structures_types.selected == null ||
-                  _.chain(ctrl.structures).where({ type: ctrl.structures_types.selected.id }).pluck("id").contains(logline.structure_id).value()) &&
-                  (ctrl.cities.selected == undefined ||
-                    ctrl.cities.selected == null ||
-                    _.chain(ctrl.structures).where({ zip_code: ctrl.cities.selected.zip_code }).pluck("id").contains(logline.structure_id).value());
+                return (ctrl.structures_types.selected == undefined || _.chain(ctrl.structures).where({ type: ctrl.structures_types.selected.id }).pluck("id").contains(logline.structure_id).value()) &&
+                  (ctrl.cities.selected == undefined || _.chain(ctrl.structures).where({ zip_code: ctrl.cities.selected.zip_code }).pluck("id").contains(logline.structure_id).value());
               });
           };
 
@@ -321,68 +322,68 @@ angular.module('statsApp',
             });
         }
       ],
-      template: `
-<div ng:if="$ctrl.allowed">
-<h2>
-{{ $ctrl.debut | amDateFormat:'dddd Do MMMM YYYY' }} - {{ $ctrl.fin | amDateFormat:'dddd Do MMMM YYYY' }}
-</h2>
-<h3>
-<select ng:options="period_type.value as period_type.label for period_type in $ctrl.period_types.list"
-ng:model="$ctrl.period_types.selected"
-ng:change="$ctrl.period.reset()"></select>
-<button class="btn btn-lg" ng:click="$ctrl.period.reset()"> ✕ </button>
-<button class="btn btn-lg" ng:click="$ctrl.period.decr()"> ◀ </button>
-<button class="btn btn-lg" ng:click="$ctrl.period.incr()"> ▶ </button>
-</h3>
-<h3>
-<select ng:options="city as city.zip_code + ' : ' + city.city for city in $ctrl.cities.list"
-ng:model="$ctrl.cities.selected"
-ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
-<select ng:options="st as st.name for st in $ctrl.structures_types.list"
-ng:model="$ctrl.structures_types.selected"
-ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
-</h3>
+  template: `
+  <div ng:if="$ctrl.allowed">
+    <h2>
+      {{ $ctrl.debut | amDateFormat:'dddd Do MMMM YYYY' }} - {{ $ctrl.fin | amDateFormat:'dddd Do MMMM YYYY' }}
+    </h2>
+    <h3>
+      <select ng:options="period_type.value as period_type.label for period_type in $ctrl.period_types.list"
+              ng:model="$ctrl.period_types.selected"
+              ng:change="$ctrl.period.reset()"></select>
+      <button class="btn btn-lg" ng:click="$ctrl.period.reset()"> ✕ </button>
+      <button class="btn btn-lg" ng:click="$ctrl.period.decr()"> ◀ </button>
+      <button class="btn btn-lg" ng:click="$ctrl.period.incr()"> ▶ </button>
+    </h3>
+    <h3>
+      <select ng:options="city as city.zip_code + ' : ' + city.city for city in $ctrl.cities.list"
+              ng:model="$ctrl.cities.selected"
+              ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
+      <select ng:options="st as st.name for st in $ctrl.structures_types.list"
+              ng:model="$ctrl.structures_types.selected"
+              ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
+    </h3>
 
-<div class="col-md-12"
-ng:repeat="(type, values) in $ctrl.stats">
-<div class="panel panel-default"
-ng:if="type === 'global'">
-<div class="panel-heading">{{$ctrl.types_labels[type]}}</div>
-<div class="panel-body">
-<uib-tabset>
-<uib-tab index="$index + 1"
-ng:repeat="(key, stat) in values"
-heading="{{stat[0].values.length}} {{$ctrl.types_labels[key]}}">
-<nvd3 data="stat"
-options="$ctrl.chart_options( key, stat )">
-</nvd3>
-</uib-tab>
-</uib-tabset>
-</div>
-</div>
+    <div class="col-md-12"
+         ng:repeat="(type, values) in $ctrl.stats">
+      <div class="panel panel-default"
+           ng:if="type == 'global'">
+        <div class="panel-heading">{{$ctrl.types_labels[type]}} {{$ctrl.logs_SSO.length}} connexions</div>
+        <div class="panel-body">
+          <uib-tabset>
+            <uib-tab index="$index + 1"
+                     ng:repeat="(key, stat) in values"
+                     heading="{{stat[0].values.length}} {{$ctrl.types_labels[key]}}">
+              <nvd3 data="stat"
+                    options="$ctrl.chart_options( key, stat )">
+              </nvd3>
+            </uib-tab>
+          </uib-tabset>
+        </div>
+      </div>
 
-<div class="panel panel-default"
-ng:if="type !== 'global'">
-<div class="panel-heading">Statistiques par {{$ctrl.types_labels[type]}}</div>
-<div class="panel-body">
-<uib-tabset>
-<uib-tab index="$index + 1"
-ng:repeat="(key, value) in values"
-heading="{{value[0].values.length}} {{$ctrl.labels[type](key)}}">
-<uib-tabset>
-<uib-tab index="$index + 1"
-ng:repeat="(subkey, stat) in value"
-heading="{{stat[0].values.length}} {{$ctrl.types_labels[subkey]}}">
-<nvd3 data="stat"
-options="$ctrl.chart_options( subkey, stat )">
-</nvd3>
-</uib-tab>
-</uib-tabset>
-</uib-tab>
-</uib-tabset>
-</div>
-</div>
-</div>
-</div>
+      <div class="panel panel-default"
+           ng:if="type !== 'global'">
+        <div class="panel-heading">Statistiques par {{$ctrl.types_labels[type]}}</div>
+        <div class="panel-body">
+          <uib-tabset>
+            <uib-tab index="$index + 1"
+                     ng:repeat="(key, value) in values"
+                     heading="{{value[0].values.length}} {{$ctrl.labels[type](key)}}">
+              <uib-tabset>
+                <uib-tab index="$index + 1"
+                         ng:repeat="(subkey, stat) in value"
+                         heading="{{stat[0].values.length}} {{$ctrl.types_labels[subkey]}}">
+                  <nvd3 data="stat"
+                        options="$ctrl.chart_options( subkey, stat )">
+                  </nvd3>
+                </uib-tab>
+              </uib-tabset>
+            </uib-tab>
+          </uib-tabset>
+        </div>
+      </div>
+    </div>
+  </div>
 `
     });
