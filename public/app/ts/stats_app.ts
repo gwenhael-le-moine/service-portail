@@ -133,16 +133,14 @@ angular.module('statsApp',
             });
             ctrl.logs_SSO = _(ctrl.logs).where({ application_id: "SSO" });
 
+            let session_cutoff = moment().subtract(4, "hours");
             ctrl.totals = {
-              users: _(ctrl.logs).countBy((log) => { return log.user_id; }),
-              profile: _(ctrl.logs).countBy((log) => { return log.profil_id; }),
+              clicks: ctrl.logs.length,
+              users: _.chain(ctrl.logs).countBy((log) => log.user_id).size().value(),
+              apps: _.chain(ctrl.logs).countBy((log) => log.application_id).size().value(),
               connections: ctrl.logs_SSO.length,
-              active_connections: _(ctrl.logs_SSO).select((connection) => {
-                let session_cutoff = moment().subtract(4, "hours");
-
-                return connection.timestamp.isAfter(session_cutoff);
-              }).length,
-            }
+              active_connections: _(ctrl.logs_SSO).select((connection) => connection.timestamp.isAfter(session_cutoff)).length,
+            };
 
             ctrl.logs = _(ctrl.logs).reject((logline) => { return logline.application_id == "SSO"; })
 
@@ -364,14 +362,18 @@ angular.module('statsApp',
         <button class="btn btn-lg" ng:click="$ctrl.period.decr()"> ◀ </button>
         <button class="btn btn-lg" ng:click="$ctrl.period.incr()"> ▶ </button>
       </h3>
-      <h3>
+      <h4>
         <select ng:options="city as city.zip_code + ' : ' + city.city for city in $ctrl.cities.list"
                 ng:model="$ctrl.cities.selected"
                 ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
         <select ng:options="st as st.name for st in $ctrl.structures_types.list"
                 ng:model="$ctrl.structures_types.selected"
                 ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
-      </h3>
+      </h4>
+
+      <div class="col-md-12">
+        <h4 ng:repeat="(type, value) in $ctrl.totals">{{type}}: {{value}}</h4>
+      </div>
 
       <div class="col-md-12"
            ng:repeat="(type, values) in $ctrl.stats">
