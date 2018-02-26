@@ -301,7 +301,12 @@ angular.module('statsApp',
                     .then(function(response) {
                       ctrl.profiles_types = response.data;
                       ctrl.labels.profil_id = _.memoize((profile_type) => {
-                        return _(ctrl.profiles_types).findWhere({ id: profile_type }).name;
+                        let label = _(ctrl.profiles_types).findWhere({ id: profile_type }).name;
+                        if (label == undefined) {
+                          label = profile_type;
+                        }
+
+                        return label;
                       });
                     }),
 
@@ -309,7 +314,12 @@ angular.module('statsApp',
                     .then(function(response) {
                       ctrl.applications = response.data;
                       ctrl.labels.application_id = _.memoize((application_id) => {
-                        return _(ctrl.applications).findWhere({ id: application_id }).name;
+                        let label = _(ctrl.applications).findWhere({ id: application_id }).name;
+                        if (label == undefined) {
+                          label = application_id;
+                        }
+
+                        return label;
                       });
                     })
                 ];
@@ -322,7 +332,7 @@ angular.module('statsApp',
             });
         }
       ],
-  template: `
+      template: `
   <div ng:if="$ctrl.allowed">
     <h2>
       {{ $ctrl.debut | amDateFormat:'dddd Do MMMM YYYY' }} - {{ $ctrl.fin | amDateFormat:'dddd Do MMMM YYYY' }}
