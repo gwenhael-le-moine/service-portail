@@ -101,8 +101,11 @@ angular.module('statsApp',
               case "structure_id":
               case "profil_id":
               case "url":
+                let left_margin = _.chain(data[0].values).pluck('x').map(function(label) { return label.length; }).max().value() * 8;
+                left_margin = left_margin > 250 ? 250 : left_margin;
+
                 ctrl.multibarhorizontalchart_options.chart.height = 24 * data.length * data[0].values.length + 40;
-                ctrl.multibarhorizontalchart_options.chart.margin.left = _.chain(data[0].values).pluck('x').map(function(label) { return label.length; }).max().value() * 8;
+                ctrl.multibarhorizontalchart_options.chart.margin.left = left_margin;
                 return ctrl.multibarhorizontalchart_options;
               default:
                 return ctrl.multibarchart_options;
