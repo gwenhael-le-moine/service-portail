@@ -234,13 +234,14 @@ angular.module('statsApp', [
                         $http.get(URL_ENT + '/api/structures', { params: { expand: false, "id[]": _.chain(ctrl.raw_logs).pluck("structure_id").uniq().value() } })
                             .then(function (response) {
                             ctrl.structures = response.data;
-                            ctrl.labels.structure_id = _.memoize(function (uai) {
-                                var label = _(ctrl.structures).findWhere({ id: uai }).name;
-                                if (label == undefined) {
-                                    label = '';
+                            ctrl.labels.structure_id = function (uai) {
+                                var label = '';
+                                var structure = _(ctrl.structures).findWhere({ id: uai });
+                                if (structure != undefined) {
+                                    label = structure.name;
                                 }
                                 return label + " (" + uai + ")";
-                            });
+                            };
                             ctrl.cities.list = _.chain(ctrl.structures).map(function (structure) { return { zip_code: structure.zip_code, city: structure.city }; }).uniq(function (city) { return city.zip_code; }).reject(function (city) { return city.zip_code == null || city.zip_code == ""; }).value();
                             return $http.get(URL_ENT + '/api/structures_types', { params: { "id[]": _.chain(ctrl.structures).pluck("type").uniq().value() } });
                         })
@@ -265,9 +266,10 @@ angular.module('statsApp', [
                             .then(function (response) {
                             ctrl.profiles_types = response.data;
                             ctrl.labels.profil_id = _.memoize(function (profile_type) {
-                                var label = _(ctrl.profiles_types).findWhere({ id: profile_type }).name;
-                                if (label == undefined) {
-                                    label = profile_type;
+                                var label = profile_type;
+                                var profile = _(ctrl.profiles_types).findWhere({ id: profile_type });
+                                if (profile != undefined) {
+                                    label = profile.name;
                                 }
                                 return label;
                             });
@@ -276,9 +278,10 @@ angular.module('statsApp', [
                             .then(function (response) {
                             ctrl.applications = response.data;
                             ctrl.labels.application_id = _.memoize(function (application_id) {
-                                var label = _(ctrl.applications).findWhere({ id: application_id }).name;
-                                if (label == undefined) {
-                                    label = application_id;
+                                var label = application_id;
+                                var app = _(ctrl.applications).findWhere({ id: application_id });
+                                if (app != undefined) {
+                                    label = app.name;
                                 }
                                 return label;
                             });

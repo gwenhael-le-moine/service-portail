@@ -268,14 +268,15 @@ angular.module('statsApp',
                   $http.get(URL_ENT + '/api/structures', { params: { expand: false, "id[]": _.chain(ctrl.raw_logs).pluck("structure_id").uniq().value() } })
                     .then(function(response) {
                       ctrl.structures = response.data;
-                      ctrl.labels.structure_id = _.memoize((uai) => {
-                        let label = _(ctrl.structures).findWhere({ id: uai }).name;
-                        if (label == undefined) {
-                          label = '';
+                      ctrl.labels.structure_id = (uai) => {
+                        let label = '';
+                        let structure = _(ctrl.structures).findWhere({ id: uai });
+                        if (structure != undefined) {
+                          label = structure.name;
                         }
 
                         return `${label} (${uai})`;
-                      });
+                      };
 
                       ctrl.cities.list = _.chain(ctrl.structures).map((structure) => { return { zip_code: structure.zip_code, city: structure.city }; }).uniq((city) => city.zip_code).reject((city) => { return city.zip_code == null || city.zip_code == ""; }).value();
 
@@ -304,9 +305,10 @@ angular.module('statsApp',
                     .then(function(response) {
                       ctrl.profiles_types = response.data;
                       ctrl.labels.profil_id = _.memoize((profile_type) => {
-                        let label = _(ctrl.profiles_types).findWhere({ id: profile_type }).name;
-                        if (label == undefined) {
-                          label = profile_type;
+                        let label = profile_type;
+                        let profile = _(ctrl.profiles_types).findWhere({ id: profile_type });
+                        if (profile != undefined) {
+                          label = profile.name;
                         }
 
                         return label;
@@ -317,9 +319,10 @@ angular.module('statsApp',
                     .then(function(response) {
                       ctrl.applications = response.data;
                       ctrl.labels.application_id = _.memoize((application_id) => {
-                        let label = _(ctrl.applications).findWhere({ id: application_id }).name;
-                        if (label == undefined) {
-                          label = application_id;
+                        let label = application_id;
+                        let app = _(ctrl.applications).findWhere({ id: application_id });
+                        if (app != undefined) {
+                          label = app.name;
                         }
 
                         return label;
