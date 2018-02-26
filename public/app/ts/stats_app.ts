@@ -41,7 +41,8 @@ angular.module('statsApp',
             profil_id: 'Profils utilisateurs',
             user_id: 'Utilisateurs',
             weekday: 'Jours de la semaine',
-            hour: 'Heures de la journée'
+            hour: 'Heures de la journée',
+            url: 'URL externes'
           };
 
           ctrl.period_types = {
@@ -119,7 +120,8 @@ angular.module('statsApp',
                 h = `0${h}`;
               }
               return `${h}:00 - ${h}:59`;
-            }
+            },
+            url: angular.identity,
           };
 
           ctrl.process_data = function(data) {
@@ -148,7 +150,7 @@ angular.module('statsApp',
             ctrl.log_applications = _.chain(ctrl.logs).pluck("application_id").uniq().map((application_id) => _(ctrl.applications).findWhere({ id: application_id })).value();
             ctrl.log_profiles_types = _.chain(ctrl.logs).pluck("profil_id").uniq().map((profile_id) => _(ctrl.profiles_types).findWhere({ id: profile_id })).value();
 
-            let keys = ['structure_id', 'application_id', 'profil_id', 'weekday', 'hour'];
+            let keys = ['structure_id', 'application_id', 'profil_id', 'weekday', 'hour', 'url'];
 
             let stats_to_nvd3_data = function(key, values) {
               let data = [{
@@ -181,7 +183,7 @@ angular.module('statsApp',
             let extract_stats = function(logs, keys) {
               return _.chain(keys)
                 .map(function(key) {
-                  return [key, stats_to_nvd3_data(key, _(logs).countBy(key))];
+                  return [key, stats_to_nvd3_data(key, _.chain(logs).select((logline) => { return key != "url" || logline[key].match(/^http.*/) != null; }).countBy(key).value())];
                 })
                 .object()
                 .value();
@@ -349,72 +351,72 @@ angular.module('statsApp',
             });
         }
       ],
-    template: `
-    <div ng:if="$ctrl.allowed">
-      <h2>
-        {{ $ctrl.debut | amDateFormat:'dddd Do MMMM YYYY' }} - {{ $ctrl.fin | amDateFormat:'dddd Do MMMM YYYY' }}
-      </h2>
-      <h3>
-        <select ng:options="period_type.value as period_type.label for period_type in $ctrl.period_types.list"
-                ng:model="$ctrl.period_types.selected"
-                ng:change="$ctrl.period.reset()"></select>
-        <button class="btn btn-lg" ng:click="$ctrl.period.reset()"> ✕ </button>
-        <button class="btn btn-lg" ng:click="$ctrl.period.decr()"> ◀ </button>
-        <button class="btn btn-lg" ng:click="$ctrl.period.incr()"> ▶ </button>
-      </h3>
-      <h4>
-        <select ng:options="city as city.zip_code + ' : ' + city.city for city in $ctrl.cities.list"
-                ng:model="$ctrl.cities.selected"
-                ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
-        <select ng:options="st as st.name for st in $ctrl.structures_types.list"
-                ng:model="$ctrl.structures_types.selected"
-                ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
-      </h4>
+      template: `
+<div ng:if="$ctrl.allowed">
+<h2>
+{{ $ctrl.debut | amDateFormat:'dddd Do MMMM YYYY' }} - {{ $ctrl.fin | amDateFormat:'dddd Do MMMM YYYY' }}
+</h2>
+<h3>
+<select ng:options="period_type.value as period_type.label for period_type in $ctrl.period_types.list"
+ng:model="$ctrl.period_types.selected"
+ng:change="$ctrl.period.reset()"></select>
+<button class="btn btn-lg" ng:click="$ctrl.period.reset()"> ✕ </button>
+<button class="btn btn-lg" ng:click="$ctrl.period.decr()"> ◀ </button>
+<button class="btn btn-lg" ng:click="$ctrl.period.incr()"> ▶ </button>
+</h3>
+<h4>
+<select ng:options="city as city.zip_code + ' : ' + city.city for city in $ctrl.cities.list"
+ng:model="$ctrl.cities.selected"
+ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
+<select ng:options="st as st.name for st in $ctrl.structures_types.list"
+ng:model="$ctrl.structures_types.selected"
+ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
+</h4>
 
-      <div class="col-md-12">
-        <h4 ng:repeat="(type, value) in $ctrl.totals">{{type}}: {{value}}</h4>
-      </div>
+<div class="col-md-12">
+<h4 ng:repeat="(type, value) in $ctrl.totals">{{type}}: {{value}}</h4>
+</div>
 
-      <div class="col-md-12"
-           ng:repeat="(type, values) in $ctrl.stats">
-        <div class="panel panel-default"
-             ng:if="type == 'global'">
-          <div class="panel-heading">{{$ctrl.types_labels[type]}} {{$ctrl.totals.connections}} connexions dont {{$ctrl.totals.active_connections}} en cours</div>
-          <div class="panel-body">
-            <uib-tabset>
-              <uib-tab index="$index + 1"
-                       ng:repeat="(key, stat) in values"
-                       heading="{{stat[0].values.length}} {{$ctrl.types_labels[key]}}">
-                <nvd3 data="stat"
-                      options="$ctrl.chart_options( key, stat )">
-                </nvd3>
-              </uib-tab>
-            </uib-tabset>
-          </div>
-        </div>
+<div class="col-md-12"
+ng:repeat="(type, values) in $ctrl.stats">
+<div class="panel panel-default"
+ng:if="type == 'global'">
+<div class="panel-heading">{{$ctrl.types_labels[type]}} {{$ctrl.totals.connections}} connexions dont {{$ctrl.totals.active_connections}} en cours</div>
+<div class="panel-body">
+<uib-tabset>
+<uib-tab index="$index + 1"
+ng:repeat="(key, stat) in values"
+heading="{{stat[0].values.length}} {{$ctrl.types_labels[key]}}">
+<nvd3 data="stat"
+options="$ctrl.chart_options( key, stat )">
+</nvd3>
+</uib-tab>
+</uib-tabset>
+</div>
+</div>
 
-        <div class="panel panel-default"
-             ng:if="type !== 'global'">
-          <div class="panel-heading">Statistiques par {{$ctrl.types_labels[type]}}</div>
-          <div class="panel-body">
-            <uib-tabset>
-              <uib-tab index="$index + 1"
-                       ng:repeat="(key, value) in values"
-                       heading="{{value[0].values.length}} {{$ctrl.labels[type](key)}}">
-                <uib-tabset>
-                  <uib-tab index="$index + 1"
-                           ng:repeat="(subkey, stat) in value"
-                           heading="{{stat[0].values.length}} {{$ctrl.types_labels[subkey]}}">
-                    <nvd3 data="stat"
-                          options="$ctrl.chart_options( subkey, stat )">
-                    </nvd3>
-                  </uib-tab>
-                </uib-tabset>
-              </uib-tab>
-            </uib-tabset>
-          </div>
-        </div>
-      </div>
-    </div>
+<div class="panel panel-default"
+ng:if="type !== 'global'">
+<div class="panel-heading">Statistiques par {{$ctrl.types_labels[type]}}</div>
+<div class="panel-body">
+<uib-tabset>
+<uib-tab index="$index + 1"
+ng:repeat="(key, value) in values"
+heading="{{value[0].values.length}} {{$ctrl.labels[type](key)}}">
+<uib-tabset>
+<uib-tab index="$index + 1"
+ng:repeat="(subkey, stat) in value"
+heading="{{stat[0].values.length}} {{$ctrl.types_labels[subkey]}}">
+<nvd3 data="stat"
+options="$ctrl.chart_options( subkey, stat )">
+</nvd3>
+</uib-tab>
+</uib-tabset>
+</uib-tab>
+</uib-tabset>
+</div>
+</div>
+</div>
+</div>
 `
     });

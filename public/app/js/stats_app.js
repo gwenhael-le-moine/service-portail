@@ -33,7 +33,8 @@ angular.module('statsApp', [
                 profil_id: 'Profils utilisateurs',
                 user_id: 'Utilisateurs',
                 weekday: 'Jours de la semaine',
-                hour: 'Heures de la journée'
+                hour: 'Heures de la journée',
+                url: 'URL externes'
             };
             ctrl.period_types = {
                 list: [
@@ -104,7 +105,8 @@ angular.module('statsApp', [
                         h = "0" + h;
                     }
                     return h + ":00 - " + h + ":59";
-                }
+                },
+                url: angular.identity,
             };
             ctrl.process_data = function (data) {
                 ctrl.logs = _(data).map(function (log) {
@@ -126,7 +128,7 @@ angular.module('statsApp', [
                 ctrl.log_structures = _.chain(ctrl.logs).pluck("structure_id").uniq().map(function (structure_id) { return _(ctrl.structures).findWhere({ id: structure_id }); }).value();
                 ctrl.log_applications = _.chain(ctrl.logs).pluck("application_id").uniq().map(function (application_id) { return _(ctrl.applications).findWhere({ id: application_id }); }).value();
                 ctrl.log_profiles_types = _.chain(ctrl.logs).pluck("profil_id").uniq().map(function (profile_id) { return _(ctrl.profiles_types).findWhere({ id: profile_id }); }).value();
-                var keys = ['structure_id', 'application_id', 'profil_id', 'weekday', 'hour'];
+                var keys = ['structure_id', 'application_id', 'profil_id', 'weekday', 'hour', 'url'];
                 var stats_to_nvd3_data = function (key, values) {
                     var data = [{
                             key: "clicks",
@@ -156,7 +158,7 @@ angular.module('statsApp', [
                 var extract_stats = function (logs, keys) {
                     return _.chain(keys)
                         .map(function (key) {
-                        return [key, stats_to_nvd3_data(key, _(logs).countBy(key))];
+                        return [key, stats_to_nvd3_data(key, _.chain(logs).select(function (logline) { return key != "url" || logline[key].match(/^http.*/) != null; }).countBy(key).value())];
                     })
                         .object()
                         .value();
