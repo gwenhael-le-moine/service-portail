@@ -98,8 +98,9 @@ angular.module('statsApp',
 
           ctrl.chart_options = function(type, data) {
             switch (type) {
-              case 'structure_id':
-              case 'profil_id':
+              case "structure_id":
+              case "profil_id":
+              case "url":
                 ctrl.multibarhorizontalchart_options.chart.height = 24 * data.length * data[0].values.length + 40;
                 ctrl.multibarhorizontalchart_options.chart.margin.left = _.chain(data[0].values).pluck('x').map(function(label) { return label.length; }).max().value() * 8;
                 return ctrl.multibarhorizontalchart_options;
@@ -355,68 +356,68 @@ angular.module('statsApp',
 <div ng:if="$ctrl.allowed">
 <h2>
 {{ $ctrl.debut | amDateFormat:'dddd Do MMMM YYYY' }} - {{ $ctrl.fin | amDateFormat:'dddd Do MMMM YYYY' }}
-</h2>
-<h3>
-<select ng:options="period_type.value as period_type.label for period_type in $ctrl.period_types.list"
-ng:model="$ctrl.period_types.selected"
-ng:change="$ctrl.period.reset()"></select>
-<button class="btn btn-lg" ng:click="$ctrl.period.reset()"> ✕ </button>
-<button class="btn btn-lg" ng:click="$ctrl.period.decr()"> ◀ </button>
-<button class="btn btn-lg" ng:click="$ctrl.period.incr()"> ▶ </button>
-</h3>
-<h4>
-<select ng:options="city as city.zip_code + ' : ' + city.city for city in $ctrl.cities.list"
-ng:model="$ctrl.cities.selected"
-ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
-<select ng:options="st as st.name for st in $ctrl.structures_types.list"
-ng:model="$ctrl.structures_types.selected"
-ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
-</h4>
+      </h2>
+      <h3>
+        <select ng:options="period_type.value as period_type.label for period_type in $ctrl.period_types.list"
+                ng:model="$ctrl.period_types.selected"
+                ng:change="$ctrl.period.reset()"></select>
+        <button class="btn btn-lg" ng:click="$ctrl.period.reset()"> ✕ </button>
+        <button class="btn btn-lg" ng:click="$ctrl.period.decr()"> ◀ </button>
+        <button class="btn btn-lg" ng:click="$ctrl.period.incr()"> ▶ </button>
+      </h3>
+      <h4>
+        <select ng:options="city as city.zip_code + ' : ' + city.city for city in $ctrl.cities.list"
+                ng:model="$ctrl.cities.selected"
+                ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
+        <select ng:options="st as st.name for st in $ctrl.structures_types.list"
+                ng:model="$ctrl.structures_types.selected"
+                ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
+      </h4>
 
-<div class="col-md-12">
-<h4 ng:repeat="(type, value) in $ctrl.totals">{{type}}: {{value}}</h4>
-</div>
+      <div class="col-md-12">
+        <h4 ng:repeat="(type, value) in $ctrl.totals">{{type}}: {{value}}</h4>
+      </div>
 
-<div class="col-md-12"
-ng:repeat="(type, values) in $ctrl.stats">
-<div class="panel panel-default"
-ng:if="type == 'global'">
-<div class="panel-heading">{{$ctrl.types_labels[type]}} {{$ctrl.totals.connections}} connexions dont {{$ctrl.totals.active_connections}} en cours</div>
-<div class="panel-body">
-<uib-tabset>
-<uib-tab index="$index + 1"
-ng:repeat="(key, stat) in values"
-heading="{{stat[0].values.length}} {{$ctrl.types_labels[key]}}">
-<nvd3 data="stat"
-options="$ctrl.chart_options( key, stat )">
-</nvd3>
-</uib-tab>
-</uib-tabset>
-</div>
-</div>
+      <div class="col-md-12"
+           ng:repeat="(type, values) in $ctrl.stats">
+        <div class="panel panel-default"
+             ng:if="type == 'global'">
+          <div class="panel-heading">{{$ctrl.types_labels[type]}} {{$ctrl.totals.connections}} connexions dont {{$ctrl.totals.active_connections}} en cours</div>
+          <div class="panel-body">
+            <uib-tabset>
+              <uib-tab index="$index + 1"
+                       ng:repeat="(key, stat) in values"
+                       heading="{{stat[0].values.length}} {{$ctrl.types_labels[key]}}">
+                <nvd3 data="stat"
+                      options="$ctrl.chart_options( key, stat )">
+                </nvd3>
+              </uib-tab>
+            </uib-tabset>
+          </div>
+        </div>
 
-<div class="panel panel-default"
-ng:if="type !== 'global'">
-<div class="panel-heading">Statistiques par {{$ctrl.types_labels[type]}}</div>
-<div class="panel-body">
-<uib-tabset>
-<uib-tab index="$index + 1"
-ng:repeat="(key, value) in values"
-heading="{{value[0].values.length}} {{$ctrl.labels[type](key)}}">
-<uib-tabset>
-<uib-tab index="$index + 1"
-ng:repeat="(subkey, stat) in value"
-heading="{{stat[0].values.length}} {{$ctrl.types_labels[subkey]}}">
-<nvd3 data="stat"
-options="$ctrl.chart_options( subkey, stat )">
-</nvd3>
-</uib-tab>
-</uib-tabset>
-</uib-tab>
-</uib-tabset>
-</div>
-</div>
-</div>
-</div>
+        <div class="panel panel-default"
+             ng:if="type !== 'global'">
+          <div class="panel-heading">Statistiques par {{$ctrl.types_labels[type]}}</div>
+          <div class="panel-body">
+            <uib-tabset>
+              <uib-tab index="$index + 1"
+                       ng:repeat="(key, value) in values"
+                       heading="{{value[0].values.length}} {{$ctrl.labels[type](key)}}">
+                <uib-tabset>
+                  <uib-tab index="$index + 1"
+                           ng:repeat="(subkey, stat) in value"
+                           heading="{{stat[0].values.length}} {{$ctrl.types_labels[subkey]}}">
+                    <nvd3 data="stat"
+                          options="$ctrl.chart_options( subkey, stat )">
+                    </nvd3>
+                  </uib-tab>
+                </uib-tabset>
+              </uib-tab>
+            </uib-tabset>
+          </div>
+        </div>
+      </div>
+    </div>
 `
     });
