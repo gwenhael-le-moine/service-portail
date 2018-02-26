@@ -112,9 +112,14 @@ angular.module('statsApp',
               let week_days = angular.copy($locale.DATETIME_FORMATS.DAY);
               week_days.push(week_days.shift());
 
-              return week_days[nb];
+              return `${nb + 1} ${week_days[nb]}`;
             }),
-            hour: (h) => `${h}h`
+            hour: (h) => {
+              if (h < 10) {
+                h = `0${h}`;
+              }
+              return `${h}:00 - ${h}:59`;
+            }
           };
 
           ctrl.process_data = function(data) {
@@ -144,14 +149,16 @@ angular.module('statsApp',
             let stats_to_nvd3_data = function(key, values) {
               let data = [{
                 key: "clicks",
-                values: _.chain(values).keys().map(function(subkey) {
-                  return {
-                    key: key,
-                    value: subkey,
-                    x: ctrl.labels[key](subkey),
-                    y: values[subkey]
-                  };
-                })
+                values: _.chain(values)
+                  .keys()
+                  .map(function(subkey) {
+                    return {
+                      key: key,
+                      value: subkey,
+                      x: ctrl.labels[key](subkey),
+                      y: values[subkey]
+                    };
+                  })
                   .sortBy(function(record) {
                     switch (key) {
                       case 'structure_id':

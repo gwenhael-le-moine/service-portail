@@ -97,9 +97,14 @@ angular.module('statsApp', [
                 weekday: _.memoize(function (nb) {
                     var week_days = angular.copy($locale.DATETIME_FORMATS.DAY);
                     week_days.push(week_days.shift());
-                    return week_days[nb];
+                    return nb + 1 + " " + week_days[nb];
                 }),
-                hour: function (h) { return h + "h"; }
+                hour: function (h) {
+                    if (h < 10) {
+                        h = "0" + h;
+                    }
+                    return h + ":00 - " + h + ":59";
+                }
             };
             ctrl.process_data = function (data) {
                 ctrl.logs = _(data).map(function (log) {
@@ -121,7 +126,9 @@ angular.module('statsApp', [
                 var stats_to_nvd3_data = function (key, values) {
                     var data = [{
                             key: "clicks",
-                            values: _.chain(values).keys().map(function (subkey) {
+                            values: _.chain(values)
+                                .keys()
+                                .map(function (subkey) {
                                 return {
                                     key: key,
                                     value: subkey,
