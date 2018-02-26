@@ -114,7 +114,6 @@ angular.module('statsApp', [
                     profile: _(ctrl.logs).countBy(function (log) { return log.profil_id; }),
                 };
                 ctrl.logs = _(ctrl.logs).reject(function (logline) { return logline.application_id == "SSO"; });
-                console.log(ctrl.totals);
                 ctrl.log_structures = _.chain(ctrl.logs).pluck("structure_id").uniq().map(function (structure_id) { return _(ctrl.structures).findWhere({ id: structure_id }); }).value();
                 ctrl.log_applications = _.chain(ctrl.logs).pluck("application_id").uniq().map(function (application_id) { return _(ctrl.applications).findWhere({ id: application_id }); }).value();
                 ctrl.log_profiles_types = _.chain(ctrl.logs).pluck("profil_id").uniq().map(function (profile_id) { return _(ctrl.profiles_types).findWhere({ id: profile_id }); }).value();
@@ -236,7 +235,11 @@ angular.module('statsApp', [
                             .then(function (response) {
                             ctrl.structures = response.data;
                             ctrl.labels.structure_id = _.memoize(function (uai) {
-                                return _(ctrl.structures).findWhere({ id: uai }).name + " (" + uai + ")";
+                                var label = _(ctrl.structures).findWhere({ id: uai }).name;
+                                if (label == undefined) {
+                                    label = '';
+                                }
+                                return label + " (" + uai + ")";
                             });
                             ctrl.cities.list = _.chain(ctrl.structures).map(function (structure) { return { zip_code: structure.zip_code, city: structure.city }; }).uniq(function (city) { return city.zip_code; }).reject(function (city) { return city.zip_code == null || city.zip_code == ""; }).value();
                             return $http.get(URL_ENT + '/api/structures_types', { params: { "id[]": _.chain(ctrl.structures).pluck("type").uniq().value() } });

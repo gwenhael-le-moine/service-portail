@@ -135,8 +135,6 @@ angular.module('statsApp',
 
             ctrl.logs = _(ctrl.logs).reject((logline) => { return logline.application_id == "SSO"; })
 
-            console.log(ctrl.totals)
-
             ctrl.log_structures = _.chain(ctrl.logs).pluck("structure_id").uniq().map((structure_id) => _(ctrl.structures).findWhere({ id: structure_id })).value();
             ctrl.log_applications = _.chain(ctrl.logs).pluck("application_id").uniq().map((application_id) => _(ctrl.applications).findWhere({ id: application_id })).value();
             ctrl.log_profiles_types = _.chain(ctrl.logs).pluck("profil_id").uniq().map((profile_id) => _(ctrl.profiles_types).findWhere({ id: profile_id })).value();
@@ -271,7 +269,12 @@ angular.module('statsApp',
                     .then(function(response) {
                       ctrl.structures = response.data;
                       ctrl.labels.structure_id = _.memoize((uai) => {
-                        return `${_(ctrl.structures).findWhere({ id: uai }).name} (${uai})`;
+                        let label = _(ctrl.structures).findWhere({ id: uai }).name;
+                        if (label == undefined) {
+                          label = '';
+                        }
+
+                        return `${label} (${uai})`;
                       });
 
                       ctrl.cities.list = _.chain(ctrl.structures).map((structure) => { return { zip_code: structure.zip_code, city: structure.city }; }).uniq((city) => city.zip_code).reject((city) => { return city.zip_code == null || city.zip_code == ""; }).value();
