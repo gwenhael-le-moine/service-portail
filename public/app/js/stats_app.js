@@ -149,6 +149,7 @@ angular.module('statsApp', [
                                 switch (key) {
                                     case 'structure_id':
                                     case 'profil_id':
+                                    case 'url':
                                         return record.y * -1;
                                     default:
                                         return record.x;
