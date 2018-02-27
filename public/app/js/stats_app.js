@@ -102,7 +102,7 @@ angular.module('statsApp', [
                     case "url":
                         ctrl.multibarhorizontalchart_options.chart.height = 24 * data.length * data[0].values.length + 40;
                         ctrl.multibarhorizontalchart_options.chart.showXAxis = false;
-                        ctrl.multibarhorizontalchart_options.chart.margin.left = 0;
+                        ctrl.multibarhorizontalchart_options.chart.margin.left = 10;
                         return ctrl.multibarhorizontalchart_options;
                     default:
                         return ctrl.multibarchart_options;
