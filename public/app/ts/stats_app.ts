@@ -252,7 +252,7 @@ angular.module('statsApp',
                 .pluck('value')
                 .map(function(value) {
                   return [value, extract_stats(_(ctrl.logs).select(function(logline) { return logline[key] === value; }),
-                                               _(keys).difference([key]))];
+                    _(keys).difference([key]))];
                 })
                 .object()
                 .value();
@@ -272,9 +272,6 @@ angular.module('statsApp',
                     };
                   }).value()
               });
-
-              console.log(ctrl)
-
             });
           };
 
