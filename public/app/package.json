@@ -21,6 +21,8 @@
     "homepage": "https://github.com/laclasse-com/service-portail#readme",
     "dependencies": {
         "@types/angular": "^1.6.42",
+        "@types/d3": "^5.0.0",
+        "@types/moment": "^2.13.0",
         "@types/underscore": "^1.8.7",
         "@uirouter/angularjs": "^1.0.6",
         "angular": "^1.6.9",

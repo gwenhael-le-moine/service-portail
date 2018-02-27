@@ -67,6 +67,9 @@ angular.module('statsApp',
           ctrl.multibarchart_options = {
             chart: {
               type: 'multiBarChart',
+              x: (d) => { return d.x },
+              y: (d) => { return d.y },
+              valueFormat: (v) => { return v; },
               height: 256,
               width: 1050,
               margin: {
@@ -83,7 +86,10 @@ angular.module('statsApp',
               labelThreshold: 0.01,
               labelSunbeamLayout: true,
               rotateLabels: -25,
-              reduceXTicks: false
+              reduceXTicks: false,
+              yAxis: {
+                tickFormat: (v) => d3.format(',.0f')(v)
+              }
             }
           };
           ctrl.multibarhorizontalchart_options = angular.copy(ctrl.multibarchart_options);
@@ -100,12 +106,19 @@ angular.module('statsApp',
             switch (type) {
               case "structure_id":
               case "profil_id":
-              case "url":
                 let left_margin = _.chain(data[0].values).pluck('x').map(function(label) { return label.length; }).max().value() * 8;
                 left_margin = left_margin > 250 ? 250 : left_margin;
 
                 ctrl.multibarhorizontalchart_options.chart.height = 24 * data.length * data[0].values.length + 40;
                 ctrl.multibarhorizontalchart_options.chart.margin.left = left_margin;
+                ctrl.multibarhorizontalchart_options.chart.showXAxis = true;
+
+                return ctrl.multibarhorizontalchart_options;
+              case "url":
+                ctrl.multibarhorizontalchart_options.chart.height = 24 * data.length * data[0].values.length + 40;
+                ctrl.multibarhorizontalchart_options.chart.showXAxis = false;
+                ctrl.multibarhorizontalchart_options.chart.margin.left = 0;
+
                 return ctrl.multibarhorizontalchart_options;
               default:
                 return ctrl.multibarchart_options;
@@ -117,7 +130,7 @@ angular.module('statsApp',
               let week_days = angular.copy($locale.DATETIME_FORMATS.DAY);
               week_days.push(week_days.shift());
 
-              return `${nb + 1} ${week_days[nb]}`;
+              return `${nb} ${week_days[nb]}`;
             }),
             hour: (h) => {
               if (h < 10) {
@@ -259,6 +272,9 @@ angular.module('statsApp',
                     };
                   }).value()
               });
+
+              console.log(ctrl)
+
             });
           };
 
