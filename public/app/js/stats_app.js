@@ -239,7 +239,6 @@ angular.module('statsApp', [
                             };
                         }).value()
                     });
-                    console.log(ctrl);
                 });
             };
             ctrl.filter_data = function (data) {
