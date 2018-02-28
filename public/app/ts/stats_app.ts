@@ -156,7 +156,6 @@ angular.module('statsApp',
             ctrl.totals = {
               clicks: ctrl.logs.length,
               users: _.chain(ctrl.logs).countBy((log) => log.user_id).size().value(),
-              apps: _.chain(ctrl.logs).countBy((log) => log.application_id).size().value(),
               connections: ctrl.logs_SSO.length,
               active_connections: _(ctrl.logs_SSO).select((connection) => connection.timestamp.isAfter(session_cutoff)).length,
             };
@@ -208,6 +207,7 @@ angular.module('statsApp',
             };
 
             ctrl.stats = {};
+            // compute global stats
             ctrl.stats.global = extract_stats(ctrl.logs, keys);
 
             ctrl.stats.global.structure_id.push({
@@ -247,17 +247,21 @@ angular.module('statsApp',
                 }).value()
             });
 
-            keys.forEach(function(key) {
-              ctrl.stats[key] = _.chain(ctrl.stats.global[key][0].values)
-                .pluck('value')
-                .map(function(value) {
-                  return [value, extract_stats(_(ctrl.logs).select(function(logline) { return logline[key] === value; }),
-                    _(keys).difference([key]))];
-                })
-                .object()
-                .value();
-            });
+            // compute stats per key except hour and weekday
+            keys
+              .filter((key) => !_(["hour", "weekday"]).contains(key))
+              .forEach(function(key) {
+                ctrl.stats[key] = _.chain(ctrl.stats.global[key][0].values)
+                  .pluck('value')
+                  .map(function(value) {
+                    return [value, extract_stats(_(ctrl.logs).select(function(logline) { return logline[key] === value; }),
+                      _(keys).difference([key]))];
+                  })
+                  .object()
+                  .value();
+              });
 
+            // adding unique user un structures' stats
             _(ctrl.stats.structure_id).each(function(etab, structure_id) {
               etab.profil_id.push({
                 key: 'utilisateurs uniques',
@@ -323,6 +327,15 @@ angular.module('statsApp',
               });
           };
 
+          ctrl.download_json = function(data, name) {
+            var a = document.createElement('a');
+            a.href = `data:application/json;charset=utf-8,${JSON.stringify(data)}`;
+            a.setAttribute('download', `${name}.json`);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+          };
+
           $http.get(URL_ENT + '/api/users/current')
             .then(function success(response) {
               ctrl.allowed = _.chain(response.data.profiles)
@@ -369,10 +382,10 @@ angular.module('statsApp',
             });
         }
       ],
-      template: `
-<div ng:if="$ctrl.allowed">
-<h2>
-{{ $ctrl.debut | amDateFormat:'dddd Do MMMM YYYY' }} - {{ $ctrl.fin | amDateFormat:'dddd Do MMMM YYYY' }}
+    template: `
+    <div ng:if="$ctrl.allowed">
+      <h2>
+        {{ $ctrl.debut | amDateFormat:'dddd Do MMMM YYYY' }} - {{ $ctrl.fin | amDateFormat:'dddd Do MMMM YYYY' }}
       </h2>
       <h3>
         <select ng:options="period_type.value as period_type.label for period_type in $ctrl.period_types.list"
@@ -392,19 +405,24 @@ angular.module('statsApp',
       </h4>
 
       <div class="col-md-12">
-        <h4 ng:repeat="(type, value) in $ctrl.totals">{{type}}: {{value}}</h4>
+        <em class="badge">{{$ctrl.totals.clicks}} clicks</em>
+        <em class="badge">{{$ctrl.totals.users}} utilisateurs uniques</em>
+        <em class="badge">{{$ctrl.totals.connections}} connexions</em>
+        <em class="badge">{{$ctrl.totals.active_connections}} connexions actives</em>
       </div>
 
       <div class="col-md-12"
            ng:repeat="(type, values) in $ctrl.stats">
         <div class="panel panel-default"
              ng:if="type == 'global'">
-          <div class="panel-heading">{{$ctrl.types_labels[type]}} {{$ctrl.totals.connections}} connexions dont {{$ctrl.totals.active_connections}} en cours</div>
+          <div class="panel-heading">{{$ctrl.types_labels[type]}}</div>
           <div class="panel-body">
             <uib-tabset>
               <uib-tab index="$index + 1"
-                       ng:repeat="(key, stat) in values"
-                       heading="{{stat[0].values.length}} {{$ctrl.types_labels[key]}}">
+                       ng:repeat="(key, stat) in values">
+                <uib-tab-heading>
+                  <em class="badge">{{stat[0].values.length}}</em> {{$ctrl.types_labels[key]}} <button class="btn btn-xs btn-primary" ng:click="$ctrl.download_json(stat, key)">dl</button>
+                </uib-tab-heading>
                 <nvd3 data="stat"
                       options="$ctrl.chart_options( key, stat )">
                 </nvd3>
@@ -414,17 +432,22 @@ angular.module('statsApp',
         </div>
 
         <div class="panel panel-default"
-             ng:if="type !== 'global'">
+             ng:if="type != 'global'">
           <div class="panel-heading">Statistiques par {{$ctrl.types_labels[type]}}</div>
           <div class="panel-body">
             <uib-tabset>
               <uib-tab index="$index + 1"
-                       ng:repeat="(key, value) in values"
-                       heading="{{value[0].values.length}} {{$ctrl.labels[type](key)}}">
+                       ng:repeat="(key, value) in values">
+                <uib-tab-heading>
+                  <em class="badge">{{value[0].values.length}}</em> {{$ctrl.labels[type](key)}} <button class="btn btn-xs btn-primary" ng:click="$ctrl.download_json(value, key)">dl</button>
+                </uib-tab-heading>
                 <uib-tabset>
                   <uib-tab index="$index + 1"
                            ng:repeat="(subkey, stat) in value"
-                           heading="{{stat[0].values.length}} {{$ctrl.types_labels[subkey]}}">
+                           heading="">
+                    <uib-tab-heading>
+                      <em class="badge">{{stat[0].values.length}}</em> {{$ctrl.types_labels[subkey]}} <button class="btn btn-xs btn-primary" ng:click="$ctrl.download_json(stat, subkey)">dl</button>
+                    </uib-tab-heading>
                     <nvd3 data="stat"
                           options="$ctrl.chart_options( subkey, stat )">
                     </nvd3>
