@@ -14,11 +14,11 @@ angular.module('statsApp', [
             ctrl.allowed = false;
             ctrl.period = {
                 decr: function () {
-                    ctrl.debut.subtract(1, ctrl.period_types.selected + 's');
+                    ctrl.debut.subtract(1, ctrl.period_types.selected + "s");
                     ctrl.retrieve_data();
                 },
                 incr: function () {
-                    ctrl.debut.add(1, ctrl.period_types.selected + 's');
+                    ctrl.debut.add(1, ctrl.period_types.selected + "s");
                     ctrl.retrieve_data();
                 },
                 reset: function () {
@@ -27,7 +27,6 @@ angular.module('statsApp', [
                 }
             };
             ctrl.types_labels = {
-                global: 'Statistiques globales',
                 structure_id: 'Établissements',
                 application_id: 'Tuiles',
                 profil_id: 'Profils utilisateurs',
@@ -38,20 +37,13 @@ angular.module('statsApp', [
             };
             ctrl.period_types = {
                 list: [
-                    { label: 'jour', value: 'day' },
                     { label: 'semaine', value: 'week' },
                     { label: 'mois', value: 'month' }
                 ],
                 selected: 'week'
             };
-            ctrl.cities = {
-                list: [],
-                selected: undefined
-            };
-            ctrl.structures_types = {
-                list: [],
-                selected: undefined
-            };
+            ["cities", "structures_types", "profiles_types", "structures", "applications"]
+                .forEach(function (key) { ctrl[key] = { list: [], selected: [] }; });
             ctrl.multibarchart_options = {
                 chart: {
                     type: 'multiBarChart',
@@ -141,46 +133,40 @@ angular.module('statsApp', [
                 ctrl.log_structures = _.chain(ctrl.logs).pluck("structure_id").uniq().map(function (structure_id) { return _(ctrl.structures).findWhere({ id: structure_id }); }).value();
                 ctrl.log_applications = _.chain(ctrl.logs).pluck("application_id").uniq().map(function (application_id) { return _(ctrl.applications).findWhere({ id: application_id }); }).value();
                 ctrl.log_profiles_types = _.chain(ctrl.logs).pluck("profil_id").uniq().map(function (profile_id) { return _(ctrl.profiles_types).findWhere({ id: profile_id }); }).value();
-                var keys = ['structure_id', 'application_id', 'profil_id', 'weekday', 'hour', 'url'];
-                var stats_to_nvd3_data = function (key, values) {
-                    var data = [{
-                            key: "clicks",
-                            values: _.chain(values)
-                                .keys()
-                                .map(function (subkey) {
-                                return {
-                                    key: key,
-                                    value: subkey,
-                                    x: ctrl.labels[key](subkey),
-                                    y: values[subkey]
-                                };
-                            })
-                                .sortBy(function (record) {
-                                switch (key) {
-                                    case 'structure_id':
-                                    case 'profil_id':
-                                    case 'url':
-                                        return record.y * -1;
-                                    default:
-                                        return record.x;
-                                }
-                            })
-                                .value()
-                        }];
-                    return data;
-                };
-                var extract_stats = function (logs, keys) {
-                    var stats = _.chain(keys)
-                        .map(function (key) {
-                        return [key, stats_to_nvd3_data(key, _.chain(logs).select(function (logline) { return key != "url" || logline[key].match(/^http.*/) != null; }).countBy(key).value())];
-                    })
-                        .object()
-                        .value();
-                    return stats;
-                };
-                ctrl.stats = {};
-                ctrl.stats.global = extract_stats(ctrl.logs, keys);
-                ctrl.stats.global.structure_id.push({
+                ctrl.stats = _.chain(['structure_id', 'application_id', 'profil_id', 'weekday', 'hour', 'url'])
+                    .map(function (key) {
+                    var values = _.chain(ctrl.logs).select(function (logline) { return key != "url" || logline[key].match(/^http.*/) != null; }).countBy(key).value();
+                    return [
+                        key,
+                        [{
+                                key: "clicks",
+                                values: _.chain(values)
+                                    .keys()
+                                    .map(function (subkey) {
+                                    return {
+                                        key: key,
+                                        value: subkey,
+                                        x: ctrl.labels[key](subkey),
+                                        y: values[subkey]
+                                    };
+                                })
+                                    .sortBy(function (record) {
+                                    switch (key) {
+                                        case 'structure_id':
+                                        case 'profil_id':
+                                        case 'url':
+                                            return record.y * -1;
+                                        default:
+                                            return record.x;
+                                    }
+                                })
+                                    .value()
+                            }]
+                    ];
+                })
+                    .object()
+                    .value();
+                ctrl.stats.structure_id.push({
                     key: 'utilisateurs uniques',
                     values: _.chain(ctrl.logs)
                         .groupBy(function (line) { return line.structure_id; })
@@ -192,7 +178,7 @@ angular.module('statsApp', [
                         };
                     }).value()
                 });
-                ctrl.stats.global.structure_id.push({
+                ctrl.stats.structure_id.push({
                     key: 'apps',
                     values: _.chain(ctrl.logs)
                         .groupBy(function (line) { return line.structure_id; })
@@ -204,7 +190,7 @@ angular.module('statsApp', [
                         };
                     }).value()
                 });
-                ctrl.stats.global.profil_id.push({
+                ctrl.stats.profil_id.push({
                     key: 'utilisateurs uniques',
                     values: _.chain(ctrl.logs)
                         .groupBy(function (line) { return line.profil_id; })
@@ -216,40 +202,15 @@ angular.module('statsApp', [
                         };
                     }).value()
                 });
-                keys
-                    .filter(function (key) { return !_(["hour", "weekday", "url"]).contains(key); })
-                    .forEach(function (key) {
-                    ctrl.stats[key] = _.chain(ctrl.stats.global[key][0].values)
-                        .pluck('value')
-                        .map(function (value) {
-                        return [value, extract_stats(_(ctrl.logs).select(function (logline) { return logline[key] === value; }), _(keys).difference([key]))];
-                    })
-                        .object()
-                        .value();
-                    if (key == "structure_id") {
-                        _(ctrl.stats.structure_id).each(function (etab, structure_id) {
-                            etab.profil_id.push({
-                                key: 'utilisateurs uniques',
-                                values: _.chain(ctrl.logs)
-                                    .where({ structure_id: structure_id })
-                                    .groupBy(function (line) { return line.profil_id; })
-                                    .map(function (loglines, profil_id) {
-                                    return {
-                                        key: 'utilisateurs uniques',
-                                        x: ctrl.labels.profil_id(profil_id),
-                                        y: _.chain(loglines).pluck('user_id').uniq().value().length
-                                    };
-                                }).value()
-                            });
-                        });
-                    }
-                });
             };
             ctrl.filter_data = function (data) {
                 return _(data)
                     .select(function (logline) {
-                    return (ctrl.structures_types.selected == undefined || _.chain(ctrl.structures).where({ type: ctrl.structures_types.selected.id }).pluck("id").contains(logline.structure_id).value()) &&
-                        (ctrl.cities.selected == undefined || _.chain(ctrl.structures).where({ zip_code: ctrl.cities.selected.zip_code }).pluck("id").contains(logline.structure_id).value());
+                    return (ctrl.structures_types.selected.length == 0 || _.chain(ctrl.structures.list).where({ type: _(ctrl.structures_types.selected).pluck("id") }).pluck("id").contains(logline.structure_id).value()) &&
+                        (ctrl.cities.selected.length == 0 || _.chain(ctrl.structures.list).where({ zip_code: _(ctrl.cities.selected).pluck("zip_code") }).pluck("id").contains(logline.structure_id).value()) &&
+                        (ctrl.applications.selected.length == 0 || _.chain(ctrl.applications.selected).pluck("id").contains(logline.application_id).value()) &&
+                        (ctrl.structures.selected.length == 0 || _.chain(ctrl.structures.selected).pluck("id").contains(logline.structure_id).value()) &&
+                        (ctrl.profiles_types.selected.length == 0 || _.chain(ctrl.profiles_types.selected).pluck("id").contains(logline.profil_id).value());
                 });
             };
             ctrl.retrieve_data = function () {
@@ -265,22 +226,23 @@ angular.module('statsApp', [
                     if (ctrl.raw_logs.length > 0) {
                         $http.get(URL_ENT + '/api/structures', { params: { expand: false, "id[]": _.chain(ctrl.raw_logs).pluck("structure_id").uniq().value() } })
                             .then(function (response) {
-                            ctrl.structures = response.data;
+                            ctrl.structures.list = response.data;
                             ctrl.labels.structure_id = function (uai) {
                                 var label = '';
-                                var structure = _(ctrl.structures).findWhere({ id: uai });
+                                var structure = _(ctrl.structures.list).findWhere({ id: uai });
                                 if (structure != undefined) {
                                     label = structure.name;
                                 }
                                 return label + " (" + uai + ")";
                             };
-                            ctrl.cities.list = _.chain(ctrl.structures).map(function (structure) { return { zip_code: structure.zip_code, city: structure.city }; }).uniq(function (city) { return city.zip_code; }).reject(function (city) { return city.zip_code == null || city.zip_code == ""; }).value();
-                            return $http.get(URL_ENT + '/api/structures_types', { params: { "id[]": _.chain(ctrl.structures).pluck("type").uniq().value() } });
+                            ctrl.cities.list = _.chain(ctrl.structures.list).map(function (structure) { return { zip_code: structure.zip_code, city: structure.city }; }).uniq(function (city) { return city.zip_code; }).reject(function (city) { return city.zip_code == null || city.zip_code == ""; }).value();
+                            return $http.get(URL_ENT + '/api/structures_types', { params: { "id[]": _.chain(ctrl.structures.list).pluck("type").uniq().value() } });
                         })
                             .then(function (response) {
                             ctrl.structures_types.list = response.data;
                         })
                             .then(function () {
+                            console.log(ctrl);
                             ctrl.process_data(ctrl.filter_data(ctrl.raw_logs));
                         });
                     }
@@ -304,10 +266,10 @@ angular.module('statsApp', [
                     var promises = [
                         $http.get(URL_ENT + '/api/profiles_types')
                             .then(function (response) {
-                            ctrl.profiles_types = response.data;
+                            ctrl.profiles_types.list = response.data;
                             ctrl.labels.profil_id = _.memoize(function (profile_type) {
                                 var label = profile_type;
-                                var profile = _(ctrl.profiles_types).findWhere({ id: profile_type });
+                                var profile = _(ctrl.profiles_types.list).findWhere({ id: profile_type });
                                 if (profile != undefined) {
                                     label = profile.name;
                                 }
@@ -316,10 +278,10 @@ angular.module('statsApp', [
                         }),
                         $http.get(URL_ENT + '/api/applications')
                             .then(function (response) {
-                            ctrl.applications = response.data;
+                            ctrl.applications.list = response.data;
                             ctrl.labels.application_id = _.memoize(function (application_id) {
                                 var label = application_id;
-                                var app = _(ctrl.applications).findWhere({ id: application_id });
+                                var app = _(ctrl.applications.list).findWhere({ id: application_id });
                                 if (app != undefined) {
                                     label = app.name;
                                 }
@@ -335,5 +297,5 @@ angular.module('statsApp', [
             });
         }
     ],
-    template: "\n    <div ng:if=\"$ctrl.allowed\">\n      <h2>\n        {{ $ctrl.debut | amDateFormat:'dddd Do MMMM YYYY' }} - {{ $ctrl.fin | amDateFormat:'dddd Do MMMM YYYY' }}\n      </h2>\n      <h3>\n        <select ng:options=\"period_type.value as period_type.label for period_type in $ctrl.period_types.list\"\n                ng:model=\"$ctrl.period_types.selected\"\n                ng:change=\"$ctrl.period.reset()\"></select>\n        <button class=\"btn btn-lg\" ng:click=\"$ctrl.period.reset()\"> \u2715 </button>\n        <button class=\"btn btn-lg\" ng:click=\"$ctrl.period.decr()\"> \u25C0 </button>\n        <button class=\"btn btn-lg\" ng:click=\"$ctrl.period.incr()\"> \u25B6 </button>\n      </h3>\n      <h4>\n        <select ng:options=\"city as city.zip_code + ' : ' + city.city for city in $ctrl.cities.list\"\n                ng:model=\"$ctrl.cities.selected\"\n                ng:change=\"$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));\"></select>\n        <select ng:options=\"st as st.name for st in $ctrl.structures_types.list\"\n                ng:model=\"$ctrl.structures_types.selected\"\n                ng:change=\"$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));\"></select>\n      </h4>\n\n      <div class=\"col-md-12\">\n        <em class=\"badge\">{{$ctrl.totals.clicks}} clicks</em>\n        <em class=\"badge\">{{$ctrl.totals.users}} utilisateurs uniques</em>\n        <em class=\"badge\">{{$ctrl.totals.connections}} connexions</em>\n        <em class=\"badge\">{{$ctrl.totals.active_connections}} connexions actives</em>\n      </div>\n\n      <div class=\"col-md-12\"\n           ng:repeat=\"(type, values) in $ctrl.stats\">\n        <div class=\"panel panel-default\"\n             ng:if=\"type == 'global'\">\n          <div class=\"panel-heading\">{{$ctrl.types_labels[type]}}</div>\n          <div class=\"panel-body\">\n            <uib-tabset>\n              <uib-tab index=\"$index + 1\"\n                       ng:repeat=\"(key, stat) in values\">\n                <uib-tab-heading>\n                  <em class=\"badge\">{{stat[0].values.length}}</em> {{$ctrl.types_labels[key]}} <button class=\"btn btn-xs btn-primary\" ng:click=\"$ctrl.download_json(stat, key)\">dl</button>\n                </uib-tab-heading>\n                <nvd3 data=\"stat\"\n                      options=\"$ctrl.chart_options( key, stat )\">\n                </nvd3>\n              </uib-tab>\n            </uib-tabset>\n          </div>\n        </div>\n\n        <div class=\"panel panel-default\"\n             ng:if=\"type != 'global'\">\n          <div class=\"panel-heading\">Statistiques par {{$ctrl.types_labels[type]}}</div>\n          <div class=\"panel-body\">\n            <uib-tabset>\n              <uib-tab index=\"$index + 1\"\n                       ng:repeat=\"(key, value) in values\">\n                <uib-tab-heading>\n                  <em class=\"badge\">{{value[0].values.length}}</em> {{$ctrl.labels[type](key)}} <button class=\"btn btn-xs btn-primary\" ng:click=\"$ctrl.download_json(value, key)\">dl</button>\n                </uib-tab-heading>\n                <uib-tabset>\n                  <uib-tab index=\"$index + 1\"\n                           ng:repeat=\"(subkey, stat) in value\"\n                           heading=\"\">\n                    <uib-tab-heading>\n                      <em class=\"badge\">{{stat[0].values.length}}</em> {{$ctrl.types_labels[subkey]}} <button class=\"btn btn-xs btn-primary\" ng:click=\"$ctrl.download_json(stat, subkey)\">dl</button>\n                    </uib-tab-heading>\n                    <nvd3 data=\"stat\"\n                          options=\"$ctrl.chart_options( subkey, stat )\">\n                    </nvd3>\n                  </uib-tab>\n                </uib-tabset>\n              </uib-tab>\n            </uib-tabset>\n          </div>\n        </div>\n      </div>\n    </div>\n"
+    template: "\n    <div ng:if=\"$ctrl.allowed\">\n      <h2>\n        {{ $ctrl.debut | amDateFormat:'dddd Do MMMM YYYY' }} - {{ $ctrl.fin | amDateFormat:'dddd Do MMMM YYYY' }}\n      </h2>\n      <h3>\n        <select ng:options=\"period_type.value as period_type.label for period_type in $ctrl.period_types.list\"\n                ng:model=\"$ctrl.period_types.selected\"\n                ng:change=\"$ctrl.period.reset()\"></select>\n        <button class=\"btn btn-lg\" ng:click=\"$ctrl.period.reset()\"> \u2715 </button>\n        <button class=\"btn btn-lg\" ng:click=\"$ctrl.period.decr()\"> \u25C0 </button>\n        <button class=\"btn btn-lg\" ng:click=\"$ctrl.period.incr()\"> \u25B6 </button>\n      </h3>\n      <h4>\n        <select multiple ng:options=\"city as city.zip_code + ' : ' + city.city for city in $ctrl.cities.list\"\n                ng:model=\"$ctrl.cities.selected\"\n                ng:change=\"$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));\"></select>\n        <button class=\"btn btn-xs btn-warning\" ng:click=\"$ctrl.cities.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));\">x</button>\n\n        <select multiple ng:options=\"st as st.id + ' : ' + st.name for st in $ctrl.structures_types.list\"\n                ng:model=\"$ctrl.structures_types.selected\"\n                ng:change=\"$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));\"></select>\n        <button class=\"btn btn-xs btn-warning\" ng:click=\"$ctrl.structures_types.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));\">x</button>\n\n        <select multiple ng:options=\"pt as pt.name for pt in $ctrl.profiles_types.list\"\n                ng:model=\"$ctrl.profiles_types.selected\"\n                ng:change=\"$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));\"></select>\n        <button class=\"btn btn-xs btn-warning\" ng:click=\"$ctrl.profiles_types.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));\">x</button>\n\n        <select multiple ng:options=\"app as app.name for app in $ctrl.applications.list\"\n                ng:model=\"$ctrl.applications.selected\"\n                ng:change=\"$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));\"></select>\n        <button class=\"btn btn-xs btn-warning\" ng:click=\"$ctrl.applications.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));\">x</button>\n\n        <select multiple ng:options=\"structure as structure.id + ' : ' + structure.name for structure in $ctrl.structures.list\"\n                ng:model=\"$ctrl.structures.selected\"\n                ng:change=\"$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));\"></select>\n        <button class=\"btn btn-xs btn-warning\" ng:click=\"$ctrl.structures.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));\">x</button>\n      </h4>\n\n      <div class=\"col-md-12\">\n        <em class=\"badge\">{{$ctrl.totals.clicks}} clicks</em>\n        <em class=\"badge\">{{$ctrl.totals.users}} utilisateurs uniques</em>\n        <em class=\"badge\">{{$ctrl.totals.connections}} connexions</em>\n        <em class=\"badge\">{{$ctrl.totals.active_connections}} connexions actives</em>\n      </div>\n\n      <div class=\"col-md-12\">\n        <div class=\"panel panel-default\">\n          <div class=\"panel-heading\">stats</div>\n          <div class=\"panel-body\">\n            <uib-tabset>\n              <uib-tab index=\"$index + 1\"\n                       ng:repeat=\"(key, stat) in $ctrl.stats\">\n                <uib-tab-heading>\n                  <em class=\"badge\">{{stat[0].values.length}}</em> {{$ctrl.types_labels[key]}} <button class=\"btn btn-xs btn-primary\" ng:click=\"$ctrl.download_json(stat, key)\">dl</button>\n                </uib-tab-heading>\n                <nvd3 data=\"stat\"\n                      options=\"$ctrl.chart_options( key, stat )\">\n                </nvd3>\n              </uib-tab>\n            </uib-tabset>\n          </div>\n        </div>\n      </div>\n    </div>\n"
 });

@@ -19,12 +19,12 @@ angular.module('statsApp',
 
           ctrl.period = {
             decr: function() {
-              ctrl.debut.subtract(1, ctrl.period_types.selected + 's');
+              ctrl.debut.subtract(1, `${ctrl.period_types.selected}s`);
               ctrl.retrieve_data();
             },
 
             incr: function() {
-              ctrl.debut.add(1, ctrl.period_types.selected + 's');
+              ctrl.debut.add(1, `${ctrl.period_types.selected}s`);
               ctrl.retrieve_data();
             },
 
@@ -35,7 +35,6 @@ angular.module('statsApp',
           };
 
           ctrl.types_labels = {
-            global: 'Statistiques globales',
             structure_id: 'Établissements',
             application_id: 'Tuiles',
             profil_id: 'Profils utilisateurs',
@@ -47,22 +46,14 @@ angular.module('statsApp',
 
           ctrl.period_types = {
             list: [
-              { label: 'jour', value: 'day' },
               { label: 'semaine', value: 'week' },
               { label: 'mois', value: 'month' }
             ],
             selected: 'week'
           };
 
-          ctrl.cities = {
-            list: [],
-            selected: undefined
-          };
-
-          ctrl.structures_types = {
-            list: [],
-            selected: undefined
-          };
+          ["cities", "structures_types", "profiles_types", "structures", "applications"]
+            .forEach((key) => { ctrl[key] = { list: [], selected: [] }; })
 
           ctrl.multibarchart_options = {
             chart: {
@@ -161,58 +152,45 @@ angular.module('statsApp',
             };
 
             ctrl.logs = _(ctrl.logs).reject((logline) => { return logline.application_id == "SSO"; })
-
             ctrl.log_structures = _.chain(ctrl.logs).pluck("structure_id").uniq().map((structure_id) => _(ctrl.structures).findWhere({ id: structure_id })).value();
             ctrl.log_applications = _.chain(ctrl.logs).pluck("application_id").uniq().map((application_id) => _(ctrl.applications).findWhere({ id: application_id })).value();
             ctrl.log_profiles_types = _.chain(ctrl.logs).pluck("profil_id").uniq().map((profile_id) => _(ctrl.profiles_types).findWhere({ id: profile_id })).value();
 
-            let keys = ['structure_id', 'application_id', 'profil_id', 'weekday', 'hour', 'url'];
+            ctrl.stats = _.chain(['structure_id', 'application_id', 'profil_id', 'weekday', 'hour', 'url'])
+              .map(function(key) {
+                let values = _.chain(ctrl.logs).select((logline) => { return key != "url" || logline[key].match(/^http.*/) != null; }).countBy(key).value();
+                return [
+                  key,
+                  [{
+                    key: "clicks",
+                    values: _.chain(values)
+                      .keys()
+                      .map(function(subkey) {
+                        return {
+                          key: key,
+                          value: subkey,
+                          x: ctrl.labels[key](subkey),
+                          y: values[subkey]
+                        };
+                      })
+                      .sortBy(function(record) {
+                        switch (key) {
+                          case 'structure_id':
+                          case 'profil_id':
+                          case 'url':
+                            return record.y * -1;
+                          default:
+                            return record.x;
+                        }
+                      })
+                      .value()
+                  }]
+                ];
+              })
+              .object()
+              .value();
 
-            let stats_to_nvd3_data = function(key, values) {
-              let data = [{
-                key: "clicks",
-                values: _.chain(values)
-                  .keys()
-                  .map(function(subkey) {
-                    return {
-                      key: key,
-                      value: subkey,
-                      x: ctrl.labels[key](subkey),
-                      y: values[subkey]
-                    };
-                  })
-                  .sortBy(function(record) {
-                    switch (key) {
-                      case 'structure_id':
-                      case 'profil_id':
-                      case 'url':
-                        return record.y * -1;
-                      default:
-                        return record.x;
-                    }
-                  })
-                  .value()
-              }];
-
-              return data;
-            };
-
-            let extract_stats = function(logs, keys) {
-              let stats = _.chain(keys)
-                .map(function(key) {
-                  return [key, stats_to_nvd3_data(key, _.chain(logs).select((logline) => { return key != "url" || logline[key].match(/^http.*/) != null; }).countBy(key).value())];
-                })
-                .object()
-                .value();
-
-              return stats;
-            };
-
-            ctrl.stats = {};
-            // compute global stats
-            ctrl.stats.global = extract_stats(ctrl.logs, keys);
-
-            ctrl.stats.global.structure_id.push({
+            ctrl.stats.structure_id.push({
               key: 'utilisateurs uniques',
               values: _.chain(ctrl.logs)
                 .groupBy(function(line) { return line.structure_id; })
@@ -224,7 +202,7 @@ angular.module('statsApp',
                   };
                 }).value()
             });
-            ctrl.stats.global.structure_id.push({
+            ctrl.stats.structure_id.push({
               key: 'apps',
               values: _.chain(ctrl.logs)
                 .groupBy(function(line) { return line.structure_id; })
@@ -236,7 +214,7 @@ angular.module('statsApp',
                   };
                 }).value()
             });
-            ctrl.stats.global.profil_id.push({
+            ctrl.stats.profil_id.push({
               key: 'utilisateurs uniques',
               values: _.chain(ctrl.logs)
                 .groupBy(function(line) { return line.profil_id; })
@@ -248,46 +226,16 @@ angular.module('statsApp',
                   };
                 }).value()
             });
-
-            // compute stats per key except some
-            keys
-              .filter((key) => !_(["hour", "weekday", "url"]).contains(key))
-              .forEach(function(key) {
-                ctrl.stats[key] = _.chain(ctrl.stats.global[key][0].values)
-                  .pluck('value')
-                  .map(function(value) {
-                    return [value, extract_stats(_(ctrl.logs).select(function(logline) { return logline[key] === value; }),
-                      _(keys).difference([key]))];
-                  })
-                  .object()
-                  .value();
-
-                if (key == "structure_id") {
-                  // adding unique user un structures' stats
-                  _(ctrl.stats.structure_id).each(function(etab, structure_id) {
-                    etab.profil_id.push({
-                      key: 'utilisateurs uniques',
-                      values: _.chain(ctrl.logs)
-                        .where({ structure_id: structure_id })
-                        .groupBy(function(line) { return line.profil_id; })
-                        .map(function(loglines, profil_id) {
-                          return {
-                            key: 'utilisateurs uniques',
-                            x: ctrl.labels.profil_id(profil_id),
-                            y: _.chain(loglines).pluck('user_id').uniq().value().length
-                          };
-                        }).value()
-                    });
-                  });
-                }
-              });
           };
 
           ctrl.filter_data = (data) => {
             return _(data)
               .select((logline) => {
-                return (ctrl.structures_types.selected == undefined || _.chain(ctrl.structures).where({ type: ctrl.structures_types.selected.id }).pluck("id").contains(logline.structure_id).value()) &&
-                  (ctrl.cities.selected == undefined || _.chain(ctrl.structures).where({ zip_code: ctrl.cities.selected.zip_code }).pluck("id").contains(logline.structure_id).value());
+                return (ctrl.structures_types.selected.length == 0 || _.chain(ctrl.structures.list).where({ type: _(ctrl.structures_types.selected).pluck("id") }).pluck("id").contains(logline.structure_id).value()) &&
+                  (ctrl.cities.selected.length == 0 || _.chain(ctrl.structures.list).where({ zip_code: _(ctrl.cities.selected).pluck("zip_code") }).pluck("id").contains(logline.structure_id).value()) &&
+                  (ctrl.applications.selected.length == 0 || _.chain(ctrl.applications.selected).pluck("id").contains(logline.application_id).value()) &&
+                  (ctrl.structures.selected.length == 0 || _.chain(ctrl.structures.selected).pluck("id").contains(logline.structure_id).value()) &&
+                  (ctrl.profiles_types.selected.length == 0 || _.chain(ctrl.profiles_types.selected).pluck("id").contains(logline.profil_id).value());
               });
           };
 
@@ -305,11 +253,12 @@ angular.module('statsApp',
 
                 if (ctrl.raw_logs.length > 0) {
                   $http.get(URL_ENT + '/api/structures', { params: { expand: false, "id[]": _.chain(ctrl.raw_logs).pluck("structure_id").uniq().value() } })
-                    .then(function(response) {
-                      ctrl.structures = response.data;
+                    .then((response) => {
+                      ctrl.structures.list = response.data;
+
                       ctrl.labels.structure_id = (uai) => {
                         let label = '';
-                        let structure = _(ctrl.structures).findWhere({ id: uai });
+                        let structure = _(ctrl.structures.list).findWhere({ id: uai });
                         if (structure != undefined) {
                           label = structure.name;
                         }
@@ -317,14 +266,15 @@ angular.module('statsApp',
                         return `${label} (${uai})`;
                       };
 
-                      ctrl.cities.list = _.chain(ctrl.structures).map((structure) => { return { zip_code: structure.zip_code, city: structure.city }; }).uniq((city) => city.zip_code).reject((city) => { return city.zip_code == null || city.zip_code == ""; }).value();
+                      ctrl.cities.list = _.chain(ctrl.structures.list).map((structure) => { return { zip_code: structure.zip_code, city: structure.city }; }).uniq((city) => city.zip_code).reject((city) => { return city.zip_code == null || city.zip_code == ""; }).value();
 
-                      return $http.get(URL_ENT + '/api/structures_types', { params: { "id[]": _.chain(ctrl.structures).pluck("type").uniq().value() } });
+                      return $http.get(URL_ENT + '/api/structures_types', { params: { "id[]": _.chain(ctrl.structures.list).pluck("type").uniq().value() } });
                     })
-                    .then(function(response) {
+                    .then((response) => {
                       ctrl.structures_types.list = response.data;
                     })
                     .then(() => {
+                      console.log(ctrl)
                       ctrl.process_data(ctrl.filter_data(ctrl.raw_logs));
                     });
                 }
@@ -351,10 +301,11 @@ angular.module('statsApp',
                 let promises = [
                   $http.get(URL_ENT + '/api/profiles_types')
                     .then(function(response) {
-                      ctrl.profiles_types = response.data;
+                      ctrl.profiles_types.list = response.data;
+
                       ctrl.labels.profil_id = _.memoize((profile_type) => {
                         let label = profile_type;
-                        let profile = _(ctrl.profiles_types).findWhere({ id: profile_type });
+                        let profile = _(ctrl.profiles_types.list).findWhere({ id: profile_type });
                         if (profile != undefined) {
                           label = profile.name;
                         }
@@ -365,10 +316,11 @@ angular.module('statsApp',
 
                   $http.get(URL_ENT + '/api/applications')
                     .then(function(response) {
-                      ctrl.applications = response.data;
+                      ctrl.applications.list = response.data;
+
                       ctrl.labels.application_id = _.memoize((application_id) => {
                         let label = application_id;
-                        let app = _(ctrl.applications).findWhere({ id: application_id });
+                        let app = _(ctrl.applications.list).findWhere({ id: application_id });
                         if (app != undefined) {
                           label = app.name;
                         }
@@ -386,7 +338,7 @@ angular.module('statsApp',
             });
         }
       ],
-      template: `
+    template: `
     <div ng:if="$ctrl.allowed">
       <h2>
         {{ $ctrl.debut | amDateFormat:'dddd Do MMMM YYYY' }} - {{ $ctrl.fin | amDateFormat:'dddd Do MMMM YYYY' }}
@@ -400,12 +352,30 @@ angular.module('statsApp',
         <button class="btn btn-lg" ng:click="$ctrl.period.incr()"> ▶ </button>
       </h3>
       <h4>
-        <select ng:options="city as city.zip_code + ' : ' + city.city for city in $ctrl.cities.list"
+        <select multiple ng:options="city as city.zip_code + ' : ' + city.city for city in $ctrl.cities.list"
                 ng:model="$ctrl.cities.selected"
                 ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
-        <select ng:options="st as st.name for st in $ctrl.structures_types.list"
+        <button class="btn btn-xs btn-warning" ng:click="$ctrl.cities.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));">x</button>
+
+        <select multiple ng:options="st as st.id + ' : ' + st.name for st in $ctrl.structures_types.list"
                 ng:model="$ctrl.structures_types.selected"
                 ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
+        <button class="btn btn-xs btn-warning" ng:click="$ctrl.structures_types.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));">x</button>
+
+        <select multiple ng:options="pt as pt.name for pt in $ctrl.profiles_types.list"
+                ng:model="$ctrl.profiles_types.selected"
+                ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
+        <button class="btn btn-xs btn-warning" ng:click="$ctrl.profiles_types.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));">x</button>
+
+        <select multiple ng:options="app as app.name for app in $ctrl.applications.list"
+                ng:model="$ctrl.applications.selected"
+                ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
+        <button class="btn btn-xs btn-warning" ng:click="$ctrl.applications.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));">x</button>
+
+        <select multiple ng:options="structure as structure.id + ' : ' + structure.name for structure in $ctrl.structures.list"
+                ng:model="$ctrl.structures.selected"
+                ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
+        <button class="btn btn-xs btn-warning" ng:click="$ctrl.structures.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));">x</button>
       </h4>
 
       <div class="col-md-12">
@@ -415,48 +385,19 @@ angular.module('statsApp',
         <em class="badge">{{$ctrl.totals.active_connections}} connexions actives</em>
       </div>
 
-      <div class="col-md-12"
-           ng:repeat="(type, values) in $ctrl.stats">
-        <div class="panel panel-default"
-             ng:if="type == 'global'">
-          <div class="panel-heading">{{$ctrl.types_labels[type]}}</div>
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">stats</div>
           <div class="panel-body">
             <uib-tabset>
               <uib-tab index="$index + 1"
-                       ng:repeat="(key, stat) in values">
+                       ng:repeat="(key, stat) in $ctrl.stats">
                 <uib-tab-heading>
                   <em class="badge">{{stat[0].values.length}}</em> {{$ctrl.types_labels[key]}} <button class="btn btn-xs btn-primary" ng:click="$ctrl.download_json(stat, key)">dl</button>
                 </uib-tab-heading>
                 <nvd3 data="stat"
                       options="$ctrl.chart_options( key, stat )">
                 </nvd3>
-              </uib-tab>
-            </uib-tabset>
-          </div>
-        </div>
-
-        <div class="panel panel-default"
-             ng:if="type != 'global'">
-          <div class="panel-heading">Statistiques par {{$ctrl.types_labels[type]}}</div>
-          <div class="panel-body">
-            <uib-tabset>
-              <uib-tab index="$index + 1"
-                       ng:repeat="(key, value) in values">
-                <uib-tab-heading>
-                  <em class="badge">{{value[0].values.length}}</em> {{$ctrl.labels[type](key)}} <button class="btn btn-xs btn-primary" ng:click="$ctrl.download_json(value, key)">dl</button>
-                </uib-tab-heading>
-                <uib-tabset>
-                  <uib-tab index="$index + 1"
-                           ng:repeat="(subkey, stat) in value"
-                           heading="">
-                    <uib-tab-heading>
-                      <em class="badge">{{stat[0].values.length}}</em> {{$ctrl.types_labels[subkey]}} <button class="btn btn-xs btn-primary" ng:click="$ctrl.download_json(stat, subkey)">dl</button>
-                    </uib-tab-heading>
-                    <nvd3 data="stat"
-                          options="$ctrl.chart_options( subkey, stat )">
-                    </nvd3>
-                  </uib-tab>
-                </uib-tabset>
               </uib-tab>
             </uib-tabset>
           </div>
