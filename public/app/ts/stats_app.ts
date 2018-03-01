@@ -198,12 +198,14 @@ angular.module('statsApp',
             };
 
             let extract_stats = function(logs, keys) {
-              return _.chain(keys)
+              let stats = _.chain(keys)
                 .map(function(key) {
                   return [key, stats_to_nvd3_data(key, _.chain(logs).select((logline) => { return key != "url" || logline[key].match(/^http.*/) != null; }).countBy(key).value())];
                 })
                 .object()
                 .value();
+
+              return stats;
             };
 
             ctrl.stats = {};
@@ -247,9 +249,9 @@ angular.module('statsApp',
                 }).value()
             });
 
-            // compute stats per key except hour and weekday
+            // compute stats per key except some
             keys
-              .filter((key) => !_(["hour", "weekday"]).contains(key))
+              .filter((key) => !_(["hour", "weekday", "url"]).contains(key))
               .forEach(function(key) {
                 ctrl.stats[key] = _.chain(ctrl.stats.global[key][0].values)
                   .pluck('value')
@@ -259,24 +261,26 @@ angular.module('statsApp',
                   })
                   .object()
                   .value();
-              });
 
-            // adding unique user un structures' stats
-            _(ctrl.stats.structure_id).each(function(etab, structure_id) {
-              etab.profil_id.push({
-                key: 'utilisateurs uniques',
-                values: _.chain(ctrl.logs)
-                  .where({ structure_id: structure_id })
-                  .groupBy(function(line) { return line.profil_id; })
-                  .map(function(loglines, profil_id) {
-                    return {
+                if (key == "structure_id") {
+                  // adding unique user un structures' stats
+                  _(ctrl.stats.structure_id).each(function(etab, structure_id) {
+                    etab.profil_id.push({
                       key: 'utilisateurs uniques',
-                      x: ctrl.labels.profil_id(profil_id),
-                      y: _.chain(loglines).pluck('user_id').uniq().value().length
-                    };
-                  }).value()
+                      values: _.chain(ctrl.logs)
+                        .where({ structure_id: structure_id })
+                        .groupBy(function(line) { return line.profil_id; })
+                        .map(function(loglines, profil_id) {
+                          return {
+                            key: 'utilisateurs uniques',
+                            x: ctrl.labels.profil_id(profil_id),
+                            y: _.chain(loglines).pluck('user_id').uniq().value().length
+                          };
+                        }).value()
+                    });
+                  });
+                }
               });
-            });
           };
 
           ctrl.filter_data = (data) => {
@@ -382,7 +386,7 @@ angular.module('statsApp',
             });
         }
       ],
-    template: `
+      template: `
     <div ng:if="$ctrl.allowed">
       <h2>
         {{ $ctrl.debut | amDateFormat:'dddd Do MMMM YYYY' }} - {{ $ctrl.fin | amDateFormat:'dddd Do MMMM YYYY' }}

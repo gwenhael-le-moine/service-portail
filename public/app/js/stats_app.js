@@ -170,12 +170,13 @@ angular.module('statsApp', [
                     return data;
                 };
                 var extract_stats = function (logs, keys) {
-                    return _.chain(keys)
+                    var stats = _.chain(keys)
                         .map(function (key) {
                         return [key, stats_to_nvd3_data(key, _.chain(logs).select(function (logline) { return key != "url" || logline[key].match(/^http.*/) != null; }).countBy(key).value())];
                     })
                         .object()
                         .value();
+                    return stats;
                 };
                 ctrl.stats = {};
                 ctrl.stats.global = extract_stats(ctrl.logs, keys);
@@ -216,7 +217,7 @@ angular.module('statsApp', [
                     }).value()
                 });
                 keys
-                    .filter(function (key) { return !_(["hour", "weekday"]).contains(key); })
+                    .filter(function (key) { return !_(["hour", "weekday", "url"]).contains(key); })
                     .forEach(function (key) {
                     ctrl.stats[key] = _.chain(ctrl.stats.global[key][0].values)
                         .pluck('value')
@@ -225,21 +226,23 @@ angular.module('statsApp', [
                     })
                         .object()
                         .value();
-                });
-                _(ctrl.stats.structure_id).each(function (etab, structure_id) {
-                    etab.profil_id.push({
-                        key: 'utilisateurs uniques',
-                        values: _.chain(ctrl.logs)
-                            .where({ structure_id: structure_id })
-                            .groupBy(function (line) { return line.profil_id; })
-                            .map(function (loglines, profil_id) {
-                            return {
+                    if (key == "structure_id") {
+                        _(ctrl.stats.structure_id).each(function (etab, structure_id) {
+                            etab.profil_id.push({
                                 key: 'utilisateurs uniques',
-                                x: ctrl.labels.profil_id(profil_id),
-                                y: _.chain(loglines).pluck('user_id').uniq().value().length
-                            };
-                        }).value()
-                    });
+                                values: _.chain(ctrl.logs)
+                                    .where({ structure_id: structure_id })
+                                    .groupBy(function (line) { return line.profil_id; })
+                                    .map(function (loglines, profil_id) {
+                                    return {
+                                        key: 'utilisateurs uniques',
+                                        x: ctrl.labels.profil_id(profil_id),
+                                        y: _.chain(loglines).pluck('user_id').uniq().value().length
+                                    };
+                                }).value()
+                            });
+                        });
+                    }
                 });
             };
             ctrl.filter_data = function (data) {
