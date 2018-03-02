@@ -37,15 +37,16 @@ angular.module('statsApp',
           ctrl.types_labels = {
             structure_id: 'Établissements',
             application_id: 'Tuiles',
-            profil_id: 'Profils utilisateurs',
+            profil_id: 'Profils',
             user_id: 'Utilisateurs',
-            weekday: 'Jours de la semaine',
-            hour: 'Heures de la journée',
-            url: 'URL externes'
+            weekday: 'Jours',
+            hour: 'Heures',
+            url: 'URLs'
           };
 
           ctrl.period_types = {
             list: [
+              { label: 'journée', value: 'day' },
               { label: 'semaine', value: 'week' },
               { label: 'mois', value: 'month' }
             ],
@@ -231,16 +232,31 @@ angular.module('statsApp',
           ctrl.filter_data = (data) => {
             return _(data)
               .select((logline) => {
-                return (ctrl.structures_types.selected.length == 0 || _.chain(ctrl.structures.list).where({ type: _(ctrl.structures_types.selected).pluck("id") }).pluck("id").contains(logline.structure_id).value()) &&
-                  (ctrl.cities.selected.length == 0 || _.chain(ctrl.structures.list).where({ zip_code: _(ctrl.cities.selected).pluck("zip_code") }).pluck("id").contains(logline.structure_id).value()) &&
+                return (ctrl.structures_types.selected.length == 0 ||
+                  _.chain(ctrl.structures.list)
+                    .select((structure) => _.chain(ctrl.structures_types.selected).pluck("id").contains(structure.type).value())
+                    .pluck("id")
+                    .contains(logline.structure_id)
+                    .value()) &&
+
+                  (ctrl.cities.selected.length == 0 ||
+                    _.chain(ctrl.structures.list)
+                      .select((structure) => _.chain(ctrl.cities.selected).pluck("zip_code").contains(structure.zip_code).value())
+                      .pluck("id")
+                      .contains(logline.structure_id)
+                      .value()) &&
+
                   (ctrl.applications.selected.length == 0 || _.chain(ctrl.applications.selected).pluck("id").contains(logline.application_id).value()) &&
+
                   (ctrl.structures.selected.length == 0 || _.chain(ctrl.structures.selected).pluck("id").contains(logline.structure_id).value()) &&
+
                   (ctrl.profiles_types.selected.length == 0 || _.chain(ctrl.profiles_types.selected).pluck("id").contains(logline.profil_id).value());
               });
           };
 
           ctrl.retrieve_data = function() {
             ctrl.fin = ctrl.debut.clone().endOf(ctrl.period_types.selected);
+            ctrl.raw_logs = [];
 
             $http.get(URL_ENT + '/api/logs', {
               params: {
@@ -274,7 +290,6 @@ angular.module('statsApp',
                       ctrl.structures_types.list = response.data;
                     })
                     .then(() => {
-                      console.log(ctrl)
                       ctrl.process_data(ctrl.filter_data(ctrl.raw_logs));
                     });
                 }
@@ -339,69 +354,116 @@ angular.module('statsApp',
         }
       ],
     template: `
-    <div ng:if="$ctrl.allowed">
-      <h2>
-        {{ $ctrl.debut | amDateFormat:'dddd Do MMMM YYYY' }} - {{ $ctrl.fin | amDateFormat:'dddd Do MMMM YYYY' }}
-      </h2>
-      <h3>
-        <select ng:options="period_type.value as period_type.label for period_type in $ctrl.period_types.list"
-                ng:model="$ctrl.period_types.selected"
-                ng:change="$ctrl.period.reset()"></select>
-        <button class="btn btn-lg" ng:click="$ctrl.period.reset()"> ✕ </button>
-        <button class="btn btn-lg" ng:click="$ctrl.period.decr()"> ◀ </button>
-        <button class="btn btn-lg" ng:click="$ctrl.period.incr()"> ▶ </button>
-      </h3>
-      <h4>
-        <select multiple ng:options="city as city.zip_code + ' : ' + city.city for city in $ctrl.cities.list"
-                ng:model="$ctrl.cities.selected"
-                ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
-        <button class="btn btn-xs btn-warning" ng:click="$ctrl.cities.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));">x</button>
-
-        <select multiple ng:options="st as st.id + ' : ' + st.name for st in $ctrl.structures_types.list"
-                ng:model="$ctrl.structures_types.selected"
-                ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
-        <button class="btn btn-xs btn-warning" ng:click="$ctrl.structures_types.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));">x</button>
-
-        <select multiple ng:options="pt as pt.name for pt in $ctrl.profiles_types.list"
-                ng:model="$ctrl.profiles_types.selected"
-                ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
-        <button class="btn btn-xs btn-warning" ng:click="$ctrl.profiles_types.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));">x</button>
-
-        <select multiple ng:options="app as app.name for app in $ctrl.applications.list"
-                ng:model="$ctrl.applications.selected"
-                ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
-        <button class="btn btn-xs btn-warning" ng:click="$ctrl.applications.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));">x</button>
-
-        <select multiple ng:options="structure as structure.id + ' : ' + structure.name for structure in $ctrl.structures.list"
-                ng:model="$ctrl.structures.selected"
-                ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
-        <button class="btn btn-xs btn-warning" ng:click="$ctrl.structures.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));">x</button>
-      </h4>
-
-      <div class="col-md-12">
-        <em class="badge">{{$ctrl.totals.clicks}} clicks</em>
-        <em class="badge">{{$ctrl.totals.users}} utilisateurs uniques</em>
-        <em class="badge">{{$ctrl.totals.connections}} connexions</em>
-        <em class="badge">{{$ctrl.totals.active_connections}} connexions actives</em>
-      </div>
-
-      <div class="col-md-12">
-        <div class="panel panel-default">
-          <div class="panel-heading">stats</div>
-          <div class="panel-body">
-            <uib-tabset>
-              <uib-tab index="$index + 1"
-                       ng:repeat="(key, stat) in $ctrl.stats">
-                <uib-tab-heading>
-                  <em class="badge">{{stat[0].values.length}}</em> {{$ctrl.types_labels[key]}} <button class="btn btn-xs btn-primary" ng:click="$ctrl.download_json(stat, key)">dl</button>
-                </uib-tab-heading>
-                <nvd3 data="stat"
-                      options="$ctrl.chart_options( key, stat )">
-                </nvd3>
-              </uib-tab>
-            </uib-tabset>
-          </div>
+    <div class="container" ng:if="$ctrl.allowed">
+      <div class="col-md-12" style="text-align: center;">
+        <div class="controls pull-right">
+          <select ng:options="period_type.value as period_type.label for period_type in $ctrl.period_types.list"
+                  ng:model="$ctrl.period_types.selected"
+                  ng:change="$ctrl.period.reset()"></select>
+          <button class="btn btn-warning" ng:click="$ctrl.period.reset()"> ✕ </button>
+          <button class="btn btn-success" ng:click="$ctrl.period.decr()"> ◀ </button>
+          <button class="btn btn-success" ng:click="$ctrl.period.incr()"> ▶ </button>
         </div>
+        <h2>
+          {{ $ctrl.debut | amDateFormat:'Do MMMM YYYY' }} - {{ $ctrl.fin | amDateFormat:'Do MMMM YYYY' }}
+        </h2>
+      </div>
+      <h1 style="text-align: center;" ng:if="$ctrl.raw_logs.length == 0">
+        <span class="label label-primary">Aucune donnée disponible pour la période donnée.</span>
+      </h1>
+      <div ng:if="$ctrl.raw_logs.length > 0">
+        <div class="col-md-12">
+
+          <div class="col-md-3">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Communes <button class="btn btn-xs btn-warning pull-right" ng:click="$ctrl.cities.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"> ✕ </button>
+              </div>
+              <div class="panel-body" style="padding: 0;">
+                <select multiple style="width: 100%;"
+                        ng:options="city as city.zip_code + ' : ' + city.city for city in $ctrl.cities.list | orderBy:'zip_code'"
+                        ng:model="$ctrl.cities.selected"
+                        ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Établissements <button class="btn btn-xs btn-warning pull-right" ng:click="$ctrl.structures.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"> ✕ </button>
+              </div>
+              <div class="panel-body" style="padding: 0;">
+                <select multiple style="width: 100%;"
+                        ng:options="structure as structure.name for structure in $ctrl.structures.list | orderBy:'name'"
+                        ng:model="$ctrl.structures.selected"
+                        ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Structures <button class="btn btn-xs btn-warning pull-right" ng:click="$ctrl.structures_types.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"> ✕ </button>
+              </div>
+              <div class="panel-body" style="padding: 0;">
+                <select multiple style="width: 100%;"
+                        ng:options="st as '' + st.name for st in $ctrl.structures_types.list | orderBy:'name'"
+                        ng:model="$ctrl.structures_types.selected"
+                        ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Profils <button class="btn btn-xs btn-warning pull-right" ng:click="$ctrl.profiles_types.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"> ✕ </button>
+              </div>
+              <div class="panel-body" style="padding: 0;">
+                <select multiple style="width: 100%;"
+                        ng:options="pt as pt.name for pt in $ctrl.profiles_types.list | orderBy:'name'"
+                        ng:model="$ctrl.profiles_types.selected"
+                        ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Tuiles <button class="btn btn-xs btn-warning pull-right" ng:click="$ctrl.applications.selected = []; $ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"> ✕ </button>
+              </div>
+              <div class="panel-body" style="padding: 0;">
+                <select multiple style="width: 100%;"
+                        ng:options="app as app.name for app in $ctrl.applications.list | orderBy:'name'"
+                        ng:model="$ctrl.applications.selected"
+                        ng:change="$ctrl.process_data($ctrl.filter_data($ctrl.raw_logs));"></select>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-md-12">
+          <em class="col-md-3 label label-default">{{$ctrl.totals.clicks}} clicks</em>
+          <em class="col-md-3 label label-primary">{{$ctrl.totals.users}} utilisateurs uniques</em>
+          <em class="col-md-3 label label-success">{{$ctrl.totals.connections}} connexions</em>
+          <em class="col-md-3 label label-info">{{$ctrl.totals.active_connections}} connexions actives</em>
+        </div>
+
+        <uib-tabset>
+          <uib-tab index="$index + 1"
+                   ng:repeat="(key, stat) in $ctrl.stats">
+            <uib-tab-heading>
+              <em class="badge">{{stat[0].values.length}}</em> {{$ctrl.types_labels[key]}} <button class="btn btn-xs btn-primary" ng:click="$ctrl.download_json(stat, key)"><span class="glyphicon glyphicon-save"></span></button>
+            </uib-tab-heading>
+            <nvd3 data="stat"
+                  options="$ctrl.chart_options( key, stat )">
+            </nvd3>
+          </uib-tab>
+        </uib-tabset>
       </div>
     </div>
 `
