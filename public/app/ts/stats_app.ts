@@ -5,11 +5,84 @@ angular.module('statsApp',
   [
     'ui.bootstrap',
     'nvd3',
-    'angularMoment',
-    'chieffancypants.loadingBar',
+    'angularMoment'
   ])
   .run(['amMoment', function(amMoment) { amMoment.changeLocale('fr'); }])
   .config(['$httpProvider', function(provider) { provider.defaults.withCredentials = true; }])
+  .component("loaderSpinner",
+    {
+      template: `
+<style>
+  .loader,
+  .loader:before,
+  .loader:after {
+  border-radius: 50%;
+  }
+  .loader {
+  color: #1aaacc;
+  font-size: 11px;
+  text-indent: -99999em;
+  margin: 55px auto;
+  position: relative;
+  width: 10em;
+  height: 10em;
+  box-shadow: inset 0 0 0 1em;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  }
+  .loader:before,
+  .loader:after {
+  position: absolute;
+  content: '';
+  }
+  .loader:before {
+  width: 5.2em;
+  height: 10.2em;
+  background: #ffffff;
+  border-radius: 10.2em 0 0 10.2em;
+  top: -0.1em;
+  left: -0.1em;
+  -webkit-transform-origin: 5.2em 5.1em;
+  transform-origin: 5.2em 5.1em;
+  -webkit-animation: load2 2s infinite ease 1.5s;
+  animation: load2 2s infinite ease 1.5s;
+  }
+  .loader:after {
+  width: 5.2em;
+  height: 10.2em;
+  background: #ffffff;
+  border-radius: 0 10.2em 10.2em 0;
+  top: -0.1em;
+  left: 5.1em;
+  -webkit-transform-origin: 0px 5.1em;
+  transform-origin: 0px 5.1em;
+  -webkit-animation: load2 2s infinite ease;
+  animation: load2 2s infinite ease;
+  }
+  @-webkit-keyframes load2 {
+  0% {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
+  }
+  100% {
+  -webkit-transform: rotate(360deg);
+  transform: rotate(360deg);
+  }
+  }
+  @keyframes load2 {
+  0% {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
+  }
+  100% {
+  -webkit-transform: rotate(360deg);
+  transform: rotate(360deg);
+  }
+  }
+</style>
+<div class="loader">Loading...</div>
+`})
   .component('stats',
     {
       controller: ['$http', '$locale', '$q', 'moment', 'URL_ENT',
@@ -349,18 +422,7 @@ angular.module('statsApp',
             });
         }
       ],
-      template: `
-    <style>
-      #loading-bar-spinner {
-      top: 50%;
-      left: 50%;
-      }
-      #loading-bar-spinner .spinner-icon {
-      height: 128px;
-      width: 128px;
-      border: 10px solid transparent;
-      }
-    </style>
+    template: `
     <div class="container" ng:if="$ctrl.allowed">
       <div class="col-md-12" style="text-align: center;">
         <div class="controls pull-right">
@@ -379,7 +441,7 @@ angular.module('statsApp',
         <span class="label label-primary">Aucune donnée disponible pour la période donnée.</span>
       </h1>
       <h1 style="text-align: center;" ng:if="$ctrl.raw_logs.length == 0 && $ctrl.loading">
-        <span class="label label-warning">Chargement et traitement des données en cours.</span>
+        <span class="label label-warning">Chargement et traitement des données en cours <loader-spinner></loader-spinner></span>
       </h1>
       <div ng:if="$ctrl.raw_logs.length > 0 && !$ctrl.loading">
         <div class="col-md-12">
