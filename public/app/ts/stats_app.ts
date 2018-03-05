@@ -49,7 +49,8 @@ angular.module('statsApp',
             list: [
               { label: 'journée', value: 'day' },
               { label: 'semaine', value: 'week' },
-              { label: 'mois', value: 'month' }
+              { label: 'mois', value: 'month' },
+              { label: 'année', value: 'year' }
             ],
             selected: 'week'
           };
@@ -349,10 +350,21 @@ angular.module('statsApp',
         }
       ],
       template: `
-<div class="container" ng:if="$ctrl.allowed">
-<div class="col-md-12" style="text-align: center;">
-<div class="controls pull-right">
-<select ng:options="period_type.value as period_type.label for period_type in $ctrl.period_types.list"
+    <style>
+      #loading-bar-spinner {
+      top: 50%;
+      left: 50%;
+      }
+      #loading-bar-spinner .spinner-icon {
+      height: 128px;
+      width: 128px;
+      border: 10px solid transparent;
+      }
+    </style>
+    <div class="container" ng:if="$ctrl.allowed">
+      <div class="col-md-12" style="text-align: center;">
+        <div class="controls pull-right">
+          <select ng:options="period_type.value as period_type.label for period_type in $ctrl.period_types.list"
                   ng:model="$ctrl.period_types.selected"
                   ng:change="$ctrl.period.reset()"></select>
           <button class="btn btn-warning" ng:click="$ctrl.period.reset()"> ✕ </button>
