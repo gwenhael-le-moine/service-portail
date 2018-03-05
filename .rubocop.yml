@@ -13,9 +13,6 @@ Style/CommandLiteral:
 Style/SymbolArray:
   Enabled: false
 
-Layout/SpaceInsideBrackets:
-  Enabled: false
-
 Layout/SpaceInsideHashLiteralBraces:
   Enabled: false
 

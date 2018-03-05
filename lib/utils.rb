@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 module Portail
   module Utils
     module RSS
