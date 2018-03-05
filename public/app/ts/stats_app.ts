@@ -16,6 +16,7 @@ angular.module('statsApp',
         function($http, $locale, $q, moment, URL_ENT) {
           let ctrl = this;
           ctrl.allowed = false;
+          ctrl.loading = false;
 
           ctrl.period = {
             decr: function() {
@@ -255,6 +256,7 @@ angular.module('statsApp',
           };
 
           ctrl.retrieve_data = function() {
+            ctrl.loading = true;
             ctrl.fin = ctrl.debut.clone().endOf(ctrl.period_types.selected);
             ctrl.raw_logs = [];
 
@@ -291,7 +293,10 @@ angular.module('statsApp',
                     })
                     .then(() => {
                       ctrl.process_data(ctrl.filter_data(ctrl.raw_logs));
+                      ctrl.loading = false;
                     });
+                } else {
+                  ctrl.loading = false;
                 }
               });
           };
@@ -368,10 +373,13 @@ angular.module('statsApp',
           {{ $ctrl.debut | amDateFormat:'Do MMMM YYYY' }} - {{ $ctrl.fin | amDateFormat:'Do MMMM YYYY' }}
         </h2>
       </div>
-      <h1 style="text-align: center;" ng:if="$ctrl.raw_logs.length == 0">
+      <h1 style="text-align: center;" ng:if="$ctrl.raw_logs.length == 0 && !$ctrl.loading">
         <span class="label label-primary">Aucune donnée disponible pour la période donnée.</span>
       </h1>
-      <div ng:if="$ctrl.raw_logs.length > 0">
+      <h1 style="text-align: center;" ng:if="$ctrl.raw_logs.length == 0 && $ctrl.loading">
+        <span class="label label-warning">Chargement et traitement des données en cours.</span>
+      </h1>
+      <div ng:if="$ctrl.raw_logs.length > 0 && !$ctrl.loading">
         <div class="col-md-12">
 
           <div class="col-md-3">
