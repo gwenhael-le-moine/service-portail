@@ -71,6 +71,9 @@ angular.module('statsApp', [
                     reduceXTicks: false,
                     yAxis: {
                         tickFormat: function (v) { return d3.format(',.0f')(v); }
+                    },
+                    xAxis: {
+                        orient: "left"
                     }
                 }
             };
@@ -95,7 +98,7 @@ angular.module('statsApp', [
                         return ctrl.multibarhorizontalchart_options;
                     case "url":
                         ctrl.multibarhorizontalchart_options.chart.height = 24 * data.length * data[0].values.length + 40;
-                        ctrl.multibarhorizontalchart_options.chart.showXAxis = false;
+                        ctrl.multibarhorizontalchart_options.chart.xAxis.orient = "right";
                         ctrl.multibarhorizontalchart_options.chart.margin.left = 10;
                         return ctrl.multibarhorizontalchart_options;
                     default:
@@ -168,41 +171,25 @@ angular.module('statsApp', [
                 })
                     .object()
                     .value();
-                ctrl.stats.structure_id.push({
-                    key: 'utilisateurs uniques',
-                    values: _.chain(ctrl.logs)
-                        .groupBy(function (line) { return line.structure_id; })
-                        .map(function (loglines, structure_id) {
+                var count_unique_x_per_key = function (logs, x, key) {
+                    return _.chain(logs)
+                        .groupBy(function (line) { return line[key]; })
+                        .map(function (loglines, id) {
                         return {
-                            key: 'utilisateurs uniques',
-                            x: ctrl.labels.structure_id(structure_id),
-                            y: _.chain(loglines).pluck('user_id').uniq().value().length
+                            x: ctrl.labels[key](id),
+                            y: _.chain(loglines).pluck(x).uniq().value().length
                         };
-                    }).value()
+                    }).value();
+                };
+                ['structure_id', 'application_id', 'profil_id', 'weekday', 'hour'].forEach(function (key) {
+                    ctrl.stats[key].push({
+                        key: 'utilisateurs uniques',
+                        values: count_unique_x_per_key(ctrl.logs, 'user_id', key)
+                    });
                 });
                 ctrl.stats.structure_id.push({
                     key: 'apps',
-                    values: _.chain(ctrl.logs)
-                        .groupBy(function (line) { return line.structure_id; })
-                        .map(function (loglines, structure_id) {
-                        return {
-                            key: 'apps',
-                            x: ctrl.labels.structure_id(structure_id),
-                            y: _.chain(loglines).pluck('application_id').uniq().value().length
-                        };
-                    }).value()
-                });
-                ctrl.stats.profil_id.push({
-                    key: 'utilisateurs uniques',
-                    values: _.chain(ctrl.logs)
-                        .groupBy(function (line) { return line.profil_id; })
-                        .map(function (loglines, profil_id) {
-                        return {
-                            key: 'utilisateurs uniques',
-                            x: ctrl.labels.profil_id(profil_id),
-                            y: _.chain(loglines).pluck('user_id').uniq().value().length
-                        };
-                    }).value()
+                    values: count_unique_x_per_key(ctrl.logs, 'application_id', "structure_id")
                 });
             };
             ctrl.filter_data = function (data) {
@@ -229,7 +216,7 @@ angular.module('statsApp', [
                 ctrl.loading = true;
                 ctrl.fin = ctrl.debut.clone().endOf(ctrl.period_types.selected);
                 ctrl.raw_logs = [];
-                $http.get(URL_ENT + '/api/logs', {
+                $http.get(URL_ENT + "/api/logs", {
                     params: {
                         'timestamp>': ctrl.debut.clone().toDate(),
                         'timestamp<': ctrl.fin.clone().toDate()
@@ -238,7 +225,7 @@ angular.module('statsApp', [
                     .then(function (response) {
                     ctrl.raw_logs = response.data;
                     if (ctrl.raw_logs.length > 0) {
-                        $http.get(URL_ENT + '/api/structures', { params: { expand: false, "id[]": _.chain(ctrl.raw_logs).pluck("structure_id").uniq().value() } })
+                        $http.get(URL_ENT + "/api/structures", { params: { expand: false, "id[]": _.chain(ctrl.raw_logs).pluck("structure_id").uniq().value() } })
                             .then(function (response) {
                             ctrl.structures.list = response.data;
                             ctrl.labels.structure_id = function (uai) {
@@ -250,7 +237,7 @@ angular.module('statsApp', [
                                 return label + " (" + uai + ")";
                             };
                             ctrl.cities.list = _.chain(ctrl.structures.list).map(function (structure) { return { zip_code: structure.zip_code, city: structure.city }; }).uniq(function (city) { return city.zip_code; }).reject(function (city) { return city.zip_code == null || city.zip_code == ""; }).value();
-                            return $http.get(URL_ENT + '/api/structures_types', { params: { "id[]": _.chain(ctrl.structures.list).pluck("type").uniq().value() } });
+                            return $http.get(URL_ENT + "/api/structures_types", { params: { "id[]": _.chain(ctrl.structures.list).pluck("type").uniq().value() } });
                         })
                             .then(function (response) {
                             ctrl.structures_types.list = response.data;
@@ -273,7 +260,7 @@ angular.module('statsApp', [
                 a.click();
                 document.body.removeChild(a);
             };
-            $http.get(URL_ENT + '/api/users/current')
+            $http.get(URL_ENT + "/api/users/current")
                 .then(function success(response) {
                 ctrl.allowed = _.chain(response.data.profiles)
                     .pluck('type')
@@ -281,7 +268,7 @@ angular.module('statsApp', [
                     .value().length > 0;
                 if (ctrl.allowed) {
                     var promises = [
-                        $http.get(URL_ENT + '/api/profiles_types')
+                        $http.get(URL_ENT + "/api/profiles_types")
                             .then(function (response) {
                             ctrl.profiles_types.list = response.data;
                             ctrl.labels.profil_id = _.memoize(function (profile_type) {
@@ -293,7 +280,7 @@ angular.module('statsApp', [
                                 return label;
                             });
                         }),
-                        $http.get(URL_ENT + '/api/applications')
+                        $http.get(URL_ENT + "/api/applications")
                             .then(function (response) {
                             ctrl.applications.list = response.data;
                             ctrl.labels.application_id = _.memoize(function (application_id) {

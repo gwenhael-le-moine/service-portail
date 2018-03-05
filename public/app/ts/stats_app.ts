@@ -82,6 +82,9 @@ angular.module('statsApp',
               reduceXTicks: false,
               yAxis: {
                 tickFormat: (v) => d3.format(',.0f')(v)
+              },
+              xAxis: {
+                orient: "left"
               }
             }
           };
@@ -109,7 +112,8 @@ angular.module('statsApp',
                 return ctrl.multibarhorizontalchart_options;
               case "url":
                 ctrl.multibarhorizontalchart_options.chart.height = 24 * data.length * data[0].values.length + 40;
-                ctrl.multibarhorizontalchart_options.chart.showXAxis = false;
+                // ctrl.multibarhorizontalchart_options.chart.showXAxis = false;
+                ctrl.multibarhorizontalchart_options.chart.xAxis.orient = "right";
                 ctrl.multibarhorizontalchart_options.chart.margin.left = 10;
 
                 return ctrl.multibarhorizontalchart_options;
@@ -192,41 +196,28 @@ angular.module('statsApp',
               .object()
               .value();
 
-            ctrl.stats.structure_id.push({
-              key: 'utilisateurs uniques',
-              values: _.chain(ctrl.logs)
-                .groupBy(function(line) { return line.structure_id; })
-                .map(function(loglines, structure_id) {
+            let count_unique_x_per_key = (logs, x, key) => {
+              return _.chain(logs)
+                .groupBy(function(line) { return line[key]; })
+                .map(function(loglines, id) {
                   return {
-                    key: 'utilisateurs uniques',
-                    x: ctrl.labels.structure_id(structure_id),
-                    y: _.chain(loglines).pluck('user_id').uniq().value().length
+                    x: ctrl.labels[key](id),
+                    y: _.chain(loglines).pluck(x).uniq().value().length
                   };
                 }).value()
+            };
+
+            ['structure_id', 'application_id', 'profil_id', 'weekday', 'hour'].forEach((key) => {
+              ctrl.stats[key].push({
+                key: 'utilisateurs uniques',
+                values: count_unique_x_per_key(ctrl.logs, 'user_id', key)
+              });
             });
+
+            // count apps used for each structure
             ctrl.stats.structure_id.push({
               key: 'apps',
-              values: _.chain(ctrl.logs)
-                .groupBy(function(line) { return line.structure_id; })
-                .map(function(loglines, structure_id) {
-                  return {
-                    key: 'apps',
-                    x: ctrl.labels.structure_id(structure_id),
-                    y: _.chain(loglines).pluck('application_id').uniq().value().length
-                  };
-                }).value()
-            });
-            ctrl.stats.profil_id.push({
-              key: 'utilisateurs uniques',
-              values: _.chain(ctrl.logs)
-                .groupBy(function(line) { return line.profil_id; })
-                .map(function(loglines, profil_id) {
-                  return {
-                    key: 'utilisateurs uniques',
-                    x: ctrl.labels.profil_id(profil_id),
-                    y: _.chain(loglines).pluck('user_id').uniq().value().length
-                  };
-                }).value()
+              values: count_unique_x_per_key(ctrl.logs, 'application_id', "structure_id")
             });
           };
 
@@ -260,7 +251,7 @@ angular.module('statsApp',
             ctrl.fin = ctrl.debut.clone().endOf(ctrl.period_types.selected);
             ctrl.raw_logs = [];
 
-            $http.get(URL_ENT + '/api/logs', {
+            $http.get(`${URL_ENT}/api/logs`, {
               params: {
                 'timestamp>': ctrl.debut.clone().toDate(),
                 'timestamp<': ctrl.fin.clone().toDate()
@@ -270,7 +261,7 @@ angular.module('statsApp',
                 ctrl.raw_logs = response.data;
 
                 if (ctrl.raw_logs.length > 0) {
-                  $http.get(URL_ENT + '/api/structures', { params: { expand: false, "id[]": _.chain(ctrl.raw_logs).pluck("structure_id").uniq().value() } })
+                  $http.get(`${URL_ENT}/api/structures`, { params: { expand: false, "id[]": _.chain(ctrl.raw_logs).pluck("structure_id").uniq().value() } })
                     .then((response) => {
                       ctrl.structures.list = response.data;
 
@@ -286,7 +277,7 @@ angular.module('statsApp',
 
                       ctrl.cities.list = _.chain(ctrl.structures.list).map((structure) => { return { zip_code: structure.zip_code, city: structure.city }; }).uniq((city) => city.zip_code).reject((city) => { return city.zip_code == null || city.zip_code == ""; }).value();
 
-                      return $http.get(URL_ENT + '/api/structures_types', { params: { "id[]": _.chain(ctrl.structures.list).pluck("type").uniq().value() } });
+                      return $http.get(`${URL_ENT}/api/structures_types`, { params: { "id[]": _.chain(ctrl.structures.list).pluck("type").uniq().value() } });
                     })
                     .then((response) => {
                       ctrl.structures_types.list = response.data;
@@ -310,7 +301,7 @@ angular.module('statsApp',
             document.body.removeChild(a);
           };
 
-          $http.get(URL_ENT + '/api/users/current')
+          $http.get(`${URL_ENT}/api/users/current`)
             .then(function success(response) {
               ctrl.allowed = _.chain(response.data.profiles)
                 .pluck('type')
@@ -319,7 +310,7 @@ angular.module('statsApp',
 
               if (ctrl.allowed) {
                 let promises = [
-                  $http.get(URL_ENT + '/api/profiles_types')
+                  $http.get(`${URL_ENT}/api/profiles_types`)
                     .then(function(response) {
                       ctrl.profiles_types.list = response.data;
 
@@ -334,7 +325,7 @@ angular.module('statsApp',
                       });
                     }),
 
-                  $http.get(URL_ENT + '/api/applications')
+                  $http.get(`${URL_ENT}/api/applications`)
                     .then(function(response) {
                       ctrl.applications.list = response.data;
 
@@ -358,7 +349,7 @@ angular.module('statsApp',
             });
         }
       ],
-    template: `
+      template: `
     <div class="container" ng:if="$ctrl.allowed">
       <div class="col-md-12" style="text-align: center;">
         <div class="controls pull-right">
