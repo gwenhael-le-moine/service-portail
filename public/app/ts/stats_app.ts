@@ -83,9 +83,7 @@ angular.module('statsApp',
               yAxis: {
                 tickFormat: (v) => d3.format(',.0f')(v)
               },
-              xAxis: {
-                orient: "left"
-              }
+              xAxis: {}
             }
           };
           ctrl.multibarhorizontalchart_options = angular.copy(ctrl.multibarchart_options);
@@ -107,6 +105,7 @@ angular.module('statsApp',
 
                 ctrl.multibarhorizontalchart_options.chart.height = 24 * data.length * data[0].values.length + 40;
                 ctrl.multibarhorizontalchart_options.chart.margin.left = left_margin;
+                ctrl.multibarhorizontalchart_options.chart.xAxis.orient = "left";
                 ctrl.multibarhorizontalchart_options.chart.showXAxis = true;
 
                 return ctrl.multibarhorizontalchart_options;
@@ -350,10 +349,10 @@ angular.module('statsApp',
         }
       ],
       template: `
-    <div class="container" ng:if="$ctrl.allowed">
-      <div class="col-md-12" style="text-align: center;">
-        <div class="controls pull-right">
-          <select ng:options="period_type.value as period_type.label for period_type in $ctrl.period_types.list"
+<div class="container" ng:if="$ctrl.allowed">
+<div class="col-md-12" style="text-align: center;">
+<div class="controls pull-right">
+<select ng:options="period_type.value as period_type.label for period_type in $ctrl.period_types.list"
                   ng:model="$ctrl.period_types.selected"
                   ng:change="$ctrl.period.reset()"></select>
           <button class="btn btn-warning" ng:click="$ctrl.period.reset()"> ✕ </button>
