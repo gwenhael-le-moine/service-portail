@@ -112,7 +112,13 @@
               "summer": false,
               "color": "#e8c254",
               "icon": "app/node_modules/laclasse-common-client/images/14_classeultramobile.svg",
-              "index": 15 }
+              "index": 15 },
+          "GRR": {
+              "hidden": [ "ELV", "TUT" ],
+              "default": true,
+              "summer": false,
+              "color": "#1aa1cc",
+              "index": 16 }
       }
   },
   "news_feed": [
