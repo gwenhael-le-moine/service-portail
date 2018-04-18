@@ -7,7 +7,7 @@ angular.module('statsApp', [
     .run(['amMoment', function (amMoment) { amMoment.changeLocale('fr'); }])
     .config(['$httpProvider', function (provider) { provider.defaults.withCredentials = true; }])
     .component("loaderSpinner", {
-    template: "\n<style>\n.loader,\n.loader:before,\n.loader:after {\nborder-radius: 50%;\n}\n.loader {\ncolor: #1aaacc;\nfont-size: 11px;\ntext-indent: -99999em;\nmargin: 55px auto;\nposition: relative;\nwidth: 10em;\nheight: 10em;\nbox-shadow: inset 0 0 0 1em;\n-webkit-transform: translateZ(0);\n-ms-transform: translateZ(0);\ntransform: translateZ(0);\n}\n.loader:before,\n.loader:after {\nposition: absolute;\ncontent: '';\n}\n.loader:before {\nwidth: 5.2em;\nheight: 10.2em;\nbackground: #ffffff;\nborder-radius: 10.2em 0 0 10.2em;\ntop: -0.1em;\nleft: -0.1em;\n-webkit-transform-origin: 5.2em 5.1em;\ntransform-origin: 5.2em 5.1em;\n-webkit-animation: load2 2s infinite ease 1.5s;\nanimation: load2 2s infinite ease 1.5s;\n}\n.loader:after {\nwidth: 5.2em;\nheight: 10.2em;\nbackground: #ffffff;\nborder-radius: 0 10.2em 10.2em 0;\ntop: -0.1em;\nleft: 5.1em;\n-webkit-transform-origin: 0px 5.1em;\ntransform-origin: 0px 5.1em;\n-webkit-animation: load2 2s infinite ease;\nanimation: load2 2s infinite ease;\n}\n@-webkit-keyframes load2 {\n0% {\n-webkit-transform: rotate(0deg);\ntransform: rotate(0deg);\n}\n100% {\n-webkit-transform: rotate(360deg);\ntransform: rotate(360deg);\n}\n}\n@keyframes load2 {\n0% {\n-webkit-transform: rotate(0deg);\ntransform: rotate(0deg);\n}\n100% {\n-webkit-transform: rotate(360deg);\ntransform: rotate(360deg);\n}\n}\n</style>\n<div class=\"loader\">Loading...</div>\n"
+    template: "\n<style>\n  .loader,\n  .loader:before,\n  .loader:after {\n  border-radius: 50%;\n  }\n  .loader {\n  color: #1aaacc;\n  font-size: 11px;\n  text-indent: -99999em;\n  margin: 55px auto;\n  position: relative;\n  width: 10em;\n  height: 10em;\n  box-shadow: inset 0 0 0 1em;\n  -webkit-transform: translateZ(0);\n  -ms-transform: translateZ(0);\n  transform: translateZ(0);\n  }\n  .loader:before,\n  .loader:after {\n  position: absolute;\n  content: '';\n  }\n  .loader:before {\n  width: 5.2em;\n  height: 10.2em;\n  background: #ffffff;\n  border-radius: 10.2em 0 0 10.2em;\n  top: -0.1em;\n  left: -0.1em;\n  -webkit-transform-origin: 5.2em 5.1em;\n  transform-origin: 5.2em 5.1em;\n  -webkit-animation: load2 2s infinite ease 1.5s;\n  animation: load2 2s infinite ease 1.5s;\n  }\n  .loader:after {\n  width: 5.2em;\n  height: 10.2em;\n  background: #ffffff;\n  border-radius: 0 10.2em 10.2em 0;\n  top: -0.1em;\n  left: 5.1em;\n  -webkit-transform-origin: 0px 5.1em;\n  transform-origin: 0px 5.1em;\n  -webkit-animation: load2 2s infinite ease;\n  animation: load2 2s infinite ease;\n  }\n  @-webkit-keyframes load2 {\n  0% {\n  -webkit-transform: rotate(0deg);\n  transform: rotate(0deg);\n  }\n  100% {\n  -webkit-transform: rotate(360deg);\n  transform: rotate(360deg);\n  }\n  }\n  @keyframes load2 {\n  0% {\n  -webkit-transform: rotate(0deg);\n  transform: rotate(0deg);\n  }\n  100% {\n  -webkit-transform: rotate(360deg);\n  transform: rotate(360deg);\n  }\n  }\n</style>\n<div class=\"loader\">Loading...</div>\n"
 })
     .component('stats', {
     controller: ['$http', '$locale', '$q', 'moment', 'URL_ENT',
@@ -187,6 +187,17 @@ angular.module('statsApp', [
                     ctrl.stats[key].push({
                         key: 'utilisateurs uniques',
                         values: count_unique_x_per_key(ctrl.logs, 'user_id', key)
+                    });
+                });
+                ['structure_id', 'profil_id'].forEach(function (key) {
+                    var nb_uniq_users = count_unique_x_per_key(ctrl.logs, 'user_id', key);
+                    var nb_clicks = count_unique_x_per_key(ctrl.logs, 'id', key);
+                    ctrl.stats[key].push({
+                        key: 'nombre de clicks moyens par utilisateur unique',
+                        values: _(nb_clicks).map(function (item) {
+                            item.y = item.y / _(nb_uniq_users).findWhere({ x: item.x }).y;
+                            return item;
+                        })
                     });
                 });
                 ctrl.stats.structure_id.push({

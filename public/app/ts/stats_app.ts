@@ -11,75 +11,75 @@ angular.module('statsApp',
   .config(['$httpProvider', function(provider) { provider.defaults.withCredentials = true; }])
   .component("loaderSpinner",
     {
-      template: `
+template: `
 <style>
-.loader,
-.loader:before,
-.loader:after {
-border-radius: 50%;
-}
-.loader {
-color: #1aaacc;
-font-size: 11px;
-text-indent: -99999em;
-margin: 55px auto;
-position: relative;
-width: 10em;
-height: 10em;
-box-shadow: inset 0 0 0 1em;
--webkit-transform: translateZ(0);
--ms-transform: translateZ(0);
-transform: translateZ(0);
-}
-.loader:before,
-.loader:after {
-position: absolute;
-content: '';
-}
-.loader:before {
-width: 5.2em;
-height: 10.2em;
-background: #ffffff;
-border-radius: 10.2em 0 0 10.2em;
-top: -0.1em;
-left: -0.1em;
--webkit-transform-origin: 5.2em 5.1em;
-transform-origin: 5.2em 5.1em;
--webkit-animation: load2 2s infinite ease 1.5s;
-animation: load2 2s infinite ease 1.5s;
-}
-.loader:after {
-width: 5.2em;
-height: 10.2em;
-background: #ffffff;
-border-radius: 0 10.2em 10.2em 0;
-top: -0.1em;
-left: 5.1em;
--webkit-transform-origin: 0px 5.1em;
-transform-origin: 0px 5.1em;
--webkit-animation: load2 2s infinite ease;
-animation: load2 2s infinite ease;
-}
-@-webkit-keyframes load2 {
-0% {
--webkit-transform: rotate(0deg);
-transform: rotate(0deg);
-}
-100% {
--webkit-transform: rotate(360deg);
-transform: rotate(360deg);
-}
-}
-@keyframes load2 {
-0% {
--webkit-transform: rotate(0deg);
-transform: rotate(0deg);
-}
-100% {
--webkit-transform: rotate(360deg);
-transform: rotate(360deg);
-}
-}
+  .loader,
+  .loader:before,
+  .loader:after {
+  border-radius: 50%;
+  }
+  .loader {
+  color: #1aaacc;
+  font-size: 11px;
+  text-indent: -99999em;
+  margin: 55px auto;
+  position: relative;
+  width: 10em;
+  height: 10em;
+  box-shadow: inset 0 0 0 1em;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  }
+  .loader:before,
+  .loader:after {
+  position: absolute;
+  content: '';
+  }
+  .loader:before {
+  width: 5.2em;
+  height: 10.2em;
+  background: #ffffff;
+  border-radius: 10.2em 0 0 10.2em;
+  top: -0.1em;
+  left: -0.1em;
+  -webkit-transform-origin: 5.2em 5.1em;
+  transform-origin: 5.2em 5.1em;
+  -webkit-animation: load2 2s infinite ease 1.5s;
+  animation: load2 2s infinite ease 1.5s;
+  }
+  .loader:after {
+  width: 5.2em;
+  height: 10.2em;
+  background: #ffffff;
+  border-radius: 0 10.2em 10.2em 0;
+  top: -0.1em;
+  left: 5.1em;
+  -webkit-transform-origin: 0px 5.1em;
+  transform-origin: 0px 5.1em;
+  -webkit-animation: load2 2s infinite ease;
+  animation: load2 2s infinite ease;
+  }
+  @-webkit-keyframes load2 {
+  0% {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
+  }
+  100% {
+  -webkit-transform: rotate(360deg);
+  transform: rotate(360deg);
+  }
+  }
+  @keyframes load2 {
+  0% {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
+  }
+  100% {
+  -webkit-transform: rotate(360deg);
+  transform: rotate(360deg);
+  }
+  }
 </style>
 <div class="loader">Loading...</div>
 `})
@@ -284,6 +284,20 @@ transform: rotate(360deg);
               ctrl.stats[key].push({
                 key: 'utilisateurs uniques',
                 values: count_unique_x_per_key(ctrl.logs, 'user_id', key)
+              });
+            });
+
+            ['structure_id', 'profil_id'].forEach((key) => {
+              let nb_uniq_users = count_unique_x_per_key(ctrl.logs, 'user_id', key);
+              let nb_clicks = count_unique_x_per_key(ctrl.logs, 'id', key);
+
+              ctrl.stats[key].push({
+                key: 'nombre de clicks moyens par utilisateur unique',
+                values: _(nb_clicks).map((item) => {
+                  item.y = item.y / _(nb_uniq_users).findWhere({x: item.x}).y;
+
+                  return item;
+                })
               });
             });
 
