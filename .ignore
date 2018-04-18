@@ -1,0 +1,5 @@
+public/app/js/
+public/app/node_modules/
+*.sql
+LICENSE
+README.md
