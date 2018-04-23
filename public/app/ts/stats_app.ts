@@ -445,7 +445,7 @@ template: `
           <button class="btn btn-warning" ng:click="$ctrl.period.reset()"> ✕ </button>
           <button class="btn btn-primary" ng:click="$ctrl.period.decr()"> ◀ </button>
           <button class="btn btn-primary" ng:click="$ctrl.period.incr()"> ▶ </button>
-          <button class="btn btn-success" ng:click="$ctrl.retrieve_data()"> ⮋ </button>
+          <button class="btn btn-success" ng:click="$ctrl.retrieve_data()"> Valider </button>
         </div>
         <h2>
           {{ $ctrl.debut | amDateFormat:'Do MMMM YYYY' }} - {{ $ctrl.fin | amDateFormat:'Do MMMM YYYY' }}
