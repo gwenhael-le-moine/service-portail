@@ -94,17 +94,17 @@ template: `
           ctrl.period = {
             decr: function() {
               ctrl.debut.subtract(1, `${ctrl.period_types.selected}s`);
-              ctrl.retrieve_data();
+              ctrl.fin = ctrl.debut.clone().endOf(ctrl.period_types.selected);
             },
 
             incr: function() {
               ctrl.debut.add(1, `${ctrl.period_types.selected}s`);
-              ctrl.retrieve_data();
+              ctrl.fin = ctrl.debut.clone().endOf(ctrl.period_types.selected);
             },
 
             reset: function() {
               ctrl.debut = moment().startOf(ctrl.period_types.selected);
-              ctrl.retrieve_data();
+              ctrl.fin = ctrl.debut.clone().endOf(ctrl.period_types.selected);
             }
           };
 
@@ -335,7 +335,6 @@ template: `
 
           ctrl.retrieve_data = function() {
             ctrl.loading = true;
-            ctrl.fin = ctrl.debut.clone().endOf(ctrl.period_types.selected);
             ctrl.raw_logs = [];
 
             $http.get(`${URL_ENT}/api/logs`, {
@@ -363,11 +362,6 @@ template: `
                       };
 
                       ctrl.cities.list = _.chain(ctrl.structures.list).map((structure) => { return { zip_code: structure.zip_code, city: structure.city }; }).uniq((city) => city.zip_code).reject((city) => { return city.zip_code == null || city.zip_code == ""; }).value();
-
-                      return $http.get(`${URL_ENT}/api/structures_types`, { params: { "id[]": _.chain(ctrl.structures.list).pluck("type").uniq().value() } });
-                    })
-                    .then((response) => {
-                      ctrl.structures_types.list = response.data;
                     })
                     .then(() => {
                       ctrl.process_data(ctrl.filter_data(ctrl.raw_logs));
@@ -425,6 +419,11 @@ template: `
 
                         return label;
                       });
+                    }),
+
+                  $http.get(`${URL_ENT}/api/structures_types`)
+                    .then((response) => {
+                      ctrl.structures_types.list = response.data;
                     })
                 ];
 
@@ -435,7 +434,7 @@ template: `
               }
             });
         }
-      ],
+                  ],
     template: `
     <div class="container" ng:if="$ctrl.allowed">
       <div class="col-md-12" style="text-align: center;">
@@ -444,8 +443,9 @@ template: `
                   ng:model="$ctrl.period_types.selected"
                   ng:change="$ctrl.period.reset()"></select>
           <button class="btn btn-warning" ng:click="$ctrl.period.reset()"> ✕ </button>
-          <button class="btn btn-success" ng:click="$ctrl.period.decr()"> ◀ </button>
-          <button class="btn btn-success" ng:click="$ctrl.period.incr()"> ▶ </button>
+          <button class="btn btn-primary" ng:click="$ctrl.period.decr()"> ◀ </button>
+          <button class="btn btn-primary" ng:click="$ctrl.period.incr()"> ▶ </button>
+          <button class="btn btn-success" ng:click="$ctrl.retrieve_data()"> ⮋ </button>
         </div>
         <h2>
           {{ $ctrl.debut | amDateFormat:'Do MMMM YYYY' }} - {{ $ctrl.fin | amDateFormat:'Do MMMM YYYY' }}
