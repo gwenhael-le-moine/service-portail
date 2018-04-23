@@ -271,8 +271,8 @@ template: `
 
             let count_unique_x_per_key = (logs, x, key) => {
               return _.chain(logs)
-                .groupBy(function(line) { return line[key]; })
-                .map(function(loglines, id) {
+                .groupBy((line) => line[key])
+                .map((loglines, id) => {
                   return {
                     x: ctrl.labels[key](id),
                     y: _.chain(loglines).pluck(x).uniq().value().length
