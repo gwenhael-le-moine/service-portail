@@ -22,8 +22,4 @@ class SinatraApp < Sinatra::Base
   get '/?' do
     erb :app
   end
-
-  get '/stats/?' do
-    erb :stats, layout: false
-  end
 end

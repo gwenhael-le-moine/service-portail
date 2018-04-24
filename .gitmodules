@@ -1,0 +1,3 @@
+[submodule "public/laclasse-stats"]
+	path = public/stats
+	url = https://github.com/laclasse-com/laclasse-stats
