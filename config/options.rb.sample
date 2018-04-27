@@ -7,7 +7,7 @@ ENV[ 'RACK_ENV' ] = 'development'
 APP_PATH = '/portail'.freeze
 
 # Url de l'ENT
-URL_ENT = 'http://localhost/annuaire'.freeze
+URL_ENT = 'http://localhost'.freeze
 
 # Langage par défaut de l'application
 LANG = 'fr'.freeze
